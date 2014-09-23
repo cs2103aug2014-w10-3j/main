@@ -1,5 +1,7 @@
 package sg.codengineers.ldo.parser;
 
+import java.util.Iterator;
+
 /**
  * This interface specifies the public methods of the Command Class
  * 
@@ -24,4 +26,12 @@ public interface Command {
 	 */
 	public String getPrimaryOperand();
 
+	/**
+	 * Gets an iterator to iterate through all the additional arguments received
+	 * from the user.
+	 * 
+	 * @return An Iterator that is able to iterate through all the additional
+	 *         arguments
+	 */
+	public Iterator<AdditionalArgument> getIterator();
 }

@@ -3,11 +3,11 @@ package sg.codengineers.ldo.parser;
 public interface AdditionalArgument {
 
 	/**
-	 * Gets the value of the additional argument field.
+	 * Gets the operand of the additional argument field.
 	 * 
-	 * @return A String containing the value
+	 * @return A String containing the operand
 	 */
-	public String getValue();
+	public String getOperand();
 
 	/**
 	 * Gets the argument type of the additional argument field.

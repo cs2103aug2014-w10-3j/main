@@ -18,27 +18,27 @@ public class AdditionalArgumentImpl implements AdditionalArgument {
 	/* Static Variables */
 	private static TreeMap<String, ArgumentType>	_argsMap;
 	private static boolean							_isInitialised;
-	
+
 	/* Member variables */
 	private ArgumentType							_argumentType;
-	private String									_value;
+	private String									_operand;
 
 	/* Constructors */
 	public AdditionalArgumentImpl(String argumentType, String value) {
 		initialise();
 		_argumentType = getArgumentType(argumentType);
-		_value = value;
+		_operand = value;
 	}
 
 	/* public methods */
 
 	/**
-	 * Gets the value of the argument
+	 * Gets the Operand of the argument
 	 * 
 	 * @return A String containing the value of the argument
 	 */
-	public String getValue() {
-		return _value;
+	public String getOperand() {
+		return _operand;
 	}
 
 	/**
@@ -56,9 +56,9 @@ public class AdditionalArgumentImpl implements AdditionalArgument {
 	 * initialises by populating the argument map
 	 */
 	private void initialise() {
-		if(!_isInitialised){
+		if (!_isInitialised) {
 			populateArgsMap();
-			_isInitialised=true;
+			_isInitialised = true;
 		}
 	}
 
