@@ -19,6 +19,11 @@ public class CommandImpl implements Command{
 		_argsMap = new TreeMap<String, String>();
 	}
 	
+	private CommandType getCommandType(String commandWord) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public CommandImpl.CommandType getCommandType() {
 		return _commandType;
 	}

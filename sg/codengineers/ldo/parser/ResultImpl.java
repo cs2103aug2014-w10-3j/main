@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import sg.codengineers.ldo.logic.Task;
+import sg.codengineers.ldo.parser.CommandImpl.CommandType;
 
 public class ResultImpl implements Result {
 
@@ -23,7 +24,8 @@ public class ResultImpl implements Result {
 	public ResultImpl(CommandType commandType, Time time, Task task) {
 		_commandType = commandType;
 		_operationTime = time;
-		_tasks = new ArrayList<Task>(task);
+		_tasks = new ArrayList<Task>();
+		_tasks.add(task);
 	}
 
 	/* Public Methods */

@@ -4,6 +4,10 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import sg.codengineers.ldo.logic.Task;
+
+//import sg.codengineers.ldo.parser.CommandImpl.CommandType;
+
 /**
  * This interface specifies the available public methods to the Result Class
  * 
@@ -17,7 +21,7 @@ public interface Result {
 	 * 
 	 * @return A CommandType class representing the command type of the result
 	 */
-	public CommandType getCommandType();
+	public CommandImpl.CommandType getCommandType();
 
 	/**
 	 * Gets the time stamp of the completion of the operation
