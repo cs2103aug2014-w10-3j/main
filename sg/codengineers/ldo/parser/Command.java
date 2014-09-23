@@ -24,9 +24,4 @@ public interface Command {
 	 */
 	public String getPrimaryOperand();
 
-	/**
-	 * Initialises the command class by populating the possible arguments and
-	 * commands
-	 */
-	public void initialise();
 }
