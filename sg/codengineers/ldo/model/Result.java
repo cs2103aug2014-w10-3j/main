@@ -1,10 +1,10 @@
-package sg.codengineers.ldo.parser;
+package sg.codengineers.ldo.model;
 
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import sg.codengineers.ldo.logic.Task;
+import sg.codengineers.ldo.model.Command.CommandType;
 
 //import sg.codengineers.ldo.parser.CommandImpl.CommandType;
 
@@ -21,7 +21,7 @@ public interface Result {
 	 * 
 	 * @return A CommandType class representing the command type of the result
 	 */
-	public CommandImpl.CommandType getCommandType();
+	public CommandType getCommandType();
 
 	/**
 	 * Gets the time stamp of the completion of the operation

@@ -1,4 +1,4 @@
-package sg.codengineers.ldo.logic;
+package sg.codengineers.ldo.model;
 
 /**
  * This interface exposes public functionality for a task

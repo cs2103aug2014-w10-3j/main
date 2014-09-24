@@ -4,8 +4,9 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import sg.codengineers.ldo.logic.Task;
-import sg.codengineers.ldo.parser.CommandImpl.CommandType;
+import sg.codengineers.ldo.model.Result;
+import sg.codengineers.ldo.model.Task;
+import sg.codengineers.ldo.model.Command.CommandType;
 
 public class ResultImpl implements Result {
 

@@ -2,6 +2,8 @@ package sg.codengineers.ldo.parser;
 
 import java.util.TreeMap;
 
+import sg.codengineers.ldo.model.AdditionalArgument;
+
 /**
  * This class implements Additional Argument as specified by the Additional
  * Argument interface
@@ -10,10 +12,6 @@ import java.util.TreeMap;
  * 
  */
 public class AdditionalArgumentImpl implements AdditionalArgument {
-
-	enum ArgumentType {
-		HELP, NAME, DEADLINE, TIME, TAG, DONE, PRIORITY, DESCRIPTION, INVALID
-	};
 
 	/* Static Variables */
 	private static TreeMap<String, ArgumentType>	_argsMap;

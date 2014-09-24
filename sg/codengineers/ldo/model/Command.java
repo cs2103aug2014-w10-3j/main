@@ -1,4 +1,4 @@
-package sg.codengineers.ldo.parser;
+package sg.codengineers.ldo.model;
 
 import java.util.Iterator;
 
@@ -10,14 +10,16 @@ import java.util.Iterator;
  * 
  */
 public interface Command {
-
+	public enum CommandType {
+		CREATE, RETRIEVE, UPDATE, DELETE, SHOW, INVALID
+	};
 	/**
 	 * Gets the command type of the command.
 	 * 
 	 * @return the command type; either create, retrieve, update, delete show or
 	 *         invalid
 	 */
-	public CommandImpl.CommandType getCommandType();
+	public CommandType getCommandType();
 
 	/**
 	 * Gets the primary operand of the command.

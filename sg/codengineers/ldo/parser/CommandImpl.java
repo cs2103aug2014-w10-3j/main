@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeMap;
 
+import sg.codengineers.ldo.model.AdditionalArgument;
+import sg.codengineers.ldo.model.Command;
+
 public class CommandImpl implements Command {
 
 	/* Constants */
 	private static final int	PRIMARY_OPERAND_POSITION	= 0;
-
-	public enum CommandType {
-		CREATE, RETRIEVE, UPDATE, DELETE, SHOW, INVALID
-	};
 
 	/* Static Variables */
 	private static TreeMap<String, CommandType>	_cmdMap;

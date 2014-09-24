@@ -1,7 +1,9 @@
-package sg.codengineers.ldo.parser;
+package sg.codengineers.ldo.model;
 
 public interface AdditionalArgument {
-
+	enum ArgumentType {
+		HELP, NAME, DEADLINE, TIME, TAG, DONE, PRIORITY, DESCRIPTION, INVALID
+	};
 	/**
 	 * Gets the operand of the additional argument field.
 	 * 
@@ -14,5 +16,5 @@ public interface AdditionalArgument {
 	 * 
 	 * @return an ArgumentType of the field.
 	 */
-	public AdditionalArgumentImpl.ArgumentType getArgumentType();
+	public ArgumentType getArgumentType();
 }
