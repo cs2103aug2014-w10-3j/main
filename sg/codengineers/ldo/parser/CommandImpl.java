@@ -34,7 +34,7 @@ public class CommandImpl implements Command {
 
 	/* Public Methods */
 
-	public CommandImpl.CommandType getCommandType() {
+	public CommandType getCommandType() {
 		return _commandType;
 	}
 

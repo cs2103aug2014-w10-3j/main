@@ -1,5 +1,5 @@
 package sg.codengineers.ldo.db;
 
-public class DBConnector {
+public class DbConnector {
 	//public write(String )
 }
