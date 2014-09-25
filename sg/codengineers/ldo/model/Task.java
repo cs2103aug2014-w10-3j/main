@@ -6,7 +6,7 @@ package sg.codengineers.ldo.model;
  * @author Sean
  */
 public interface Task {
-
+	
 	/**
 	 * Gets the unique ID of each task
 	 * @return Unique ID of the task

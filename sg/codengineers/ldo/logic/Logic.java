@@ -23,11 +23,14 @@ public class Logic {
 		if(_isInitialized){
 			return;
 		}
+		
+		_taskList = _dbConnector.retrieveTaskList();
+		
 		_map = new HashMap<CommandType, Handler> ();
-		_map.put(CommandType.CREATE, new CreateHandler());
-		_map.put(CommandType.DELETE, new DeleteHandler());
-		_map.put(CommandType.UPDATE, new UpdateHandler());
-		RetrieveHandler retrieveHandler = new RetrieveHandler();
+		_map.put(CommandType.CREATE, new CreateHandler(_taskList));
+		_map.put(CommandType.DELETE, new DeleteHandler(_taskList));
+		_map.put(CommandType.UPDATE, new UpdateHandler(_taskList));
+		RetrieveHandler retrieveHandler = new RetrieveHandler(_taskList);
 		_map.put(CommandType.RETRIEVE, retrieveHandler);
 		_map.put(CommandType.SHOW, retrieveHandler);
 		_map.put(CommandType.INVALID, null);

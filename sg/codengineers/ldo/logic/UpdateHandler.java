@@ -1,11 +1,17 @@
 package sg.codengineers.ldo.logic;
 
-import sg.codengineers.ldo.db.DbConnector;
+import java.util.ArrayList;
+
 import sg.codengineers.ldo.model.Command;
 import sg.codengineers.ldo.model.Handler;
 import sg.codengineers.ldo.model.Result;
+import sg.codengineers.ldo.model.Task;
 
-public class UpdateHandler implements Handler {
+public class UpdateHandler extends Handler {
+	
+	public UpdateHandler(ArrayList<Task> taskList) {
+		super(taskList);
+	}
 
 	@Override
 	public Result execute(Command command) {
