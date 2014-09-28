@@ -1,5 +1,7 @@
 package sg.codengineers.ldo.model;
 
+import java.util.Date;
+
 /**
  * This interface exposes public functionality for a task
  *
@@ -24,34 +26,28 @@ public interface Task {
 	 * @return Status tagged to task
 	 */
 	public String getTag();
-
+	
+	/**
+	 * Gets the description of the task
+	 * @return The task description
+	 */
+	public String getDescription();
+	
 	/**
 	 * Gets the time that the task should start
 	 * @return Start time of the task
 	 */
-	public String getStartTime();
+	public Date getStartTime();
 
 	/**
 	 * Gets the time that the task should end
 	 * @return The end time of the task
 	 */
-	public String getEndTime();
+	public Date getEndTime();
 
 	/**
 	 * Gets the deadline of the task for the user
 	 * @return The task deadline
 	 */
-	public String getDeadline();
-
-	/**
-	 * Gets the description of the task
-	 * @return The task description
-	 */
-	public String getDesc();
-
-	/**
-	 * Gets the priority of the task
-	 * @return The task priority
-	 */
-	public String getPriority();
+	public Date getDeadline();
 }
