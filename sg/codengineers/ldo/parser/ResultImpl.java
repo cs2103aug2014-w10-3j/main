@@ -48,8 +48,8 @@ public class ResultImpl implements Result {
 	 * Returns an iterator which iterates through all the
 	 * tasks completed.
 	 */
-	public Iterator<ArrayList<Task>> getTasksIterator() {
+	public Iterator<Task> getTasksIterator() {
 		// TODO Auto-generated method stub
-		return null;
+		return _tasks.iterator();
 	}
 }
