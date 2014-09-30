@@ -19,16 +19,25 @@ public class OutputImpl implements Output {
 	/* Constants */
 
 	/* Message Strings */
-	private static final String	CREATED_MESSAGE	= "added %1s\n";
-	private static final String	UPDATED_MESSAGE	= "updated %1s with %2s\n";
+	private static final String	CREATED_MESSAGE	= "Added %1s\n";
+	private static final String	UPDATED_MESSAGE	= "Updated %1s with %2s\n";
+	private static final String DELETED_MESSAGE	= "Deleted %1s\n";
 	private static final String	STUB_MESSAGE	= "This module is still under development.\n";
 	/* Member Variables */
 	private Result				_result;
+	private Iterator<Task>		_taskItr;
 
 	@Override
+	/**
+	 * Displays the result to user
+	 * 
+	 * @param result
+	 * 			Result from the executed command
+	 */
 	public void displayResult(Result result) {
 		// TODO Auto-generated method stub
 		_result = result;
+		_taskItr = result.getTasksIterator();
 		CommandType commandType = _result.getCommandType();
 		switch (commandType) {
 			case CREATE :
@@ -52,8 +61,7 @@ public class OutputImpl implements Output {
 	}
 
 	private void feedbackForCreate() {
-		Iterator<Task> taskItr = _result.getTasksIterator();
-		Task completedTask = taskItr.next();
+		Task completedTask = _taskItr.next();
 		showToUser(String.format(CREATED_MESSAGE, completedTask.getName()));
 	}
 
@@ -63,8 +71,8 @@ public class OutputImpl implements Output {
 	}
 
 	private void feedbackForDelete() {
-		// TODO Auto-generated method stub
-		stub();
+		Task completedTask = _taskItr.next();
+		showToUser(String.format(DELETED_MESSAGE,completedTask.getName()));
 	}
 
 	private void feedbackForRetrieve() {
