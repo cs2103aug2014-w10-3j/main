@@ -24,4 +24,9 @@ public interface Output {
 	 *            behind the error
 	 */
 	public void displayError(String message, Exception e);
+
+	/**
+	 * Displays the welcome message to the user
+	 */
+	public void displayWelcome();
 }
