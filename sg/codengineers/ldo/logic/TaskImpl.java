@@ -9,11 +9,18 @@ public class TaskImpl implements Task {
 	private String _name, _description, _tag;
 	private Date _timeStart, _timeEnd;
 	
+	private static int _accumulateId = -1;
+	
 	public TaskImpl(int id, String name) {
 		_id = id;
 		_name = name;
 		_description = _tag = "";
 		_timeStart = _timeEnd = new Date();
+	}
+	
+	public static int getNextId(){
+		_accumulateId ++;
+		return _accumulateId;
 	}
 	
 	@Override
@@ -52,27 +59,27 @@ public class TaskImpl implements Task {
 		return _timeStart;
 	}
 	
-	private void setName(String name){
+	public void setName(String name){
 		_name = name;
 	}
 	
-	private void setTag(String tag) {
+	public void setTag(String tag) {
 		_tag = tag;
 	}
 	
-	private void setDescription(String description) {
+	public void setDescription(String description) {
 		_description = description;
 	}
 	
-	private void setTimeStart(Date timeEnd) {
+	public void setTimeStart(Date timeEnd) {
 		_timeEnd = timeEnd;
 	}
 	
-	private void setTimeEnd(Date timeEnd) {
+	public void setTimeEnd(Date timeEnd) {
 		_timeStart = timeEnd;
 	}
 	
-	private void setDeadline(Date deadline) {
+	public void setDeadline(Date deadline) {
 		_timeStart = deadline;
 		_timeEnd = deadline;
 	}
