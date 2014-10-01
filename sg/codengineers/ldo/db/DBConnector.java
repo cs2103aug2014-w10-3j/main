@@ -21,11 +21,16 @@ public class DBConnector {
 	}
 
 	public ArrayList<Task> retrieveTaskList(){
-		BufferedReader br = new BufferedReader(new FileReader(file));
-		String line;
-		ArrayList<Task> taskLst = new ArrayList<>();
-		while ((line =br.readLine()) != null) {
-			taskLst.add(parseLine(line));
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			String line;
+			ArrayList<Task> taskLst = new ArrayList<>();
+			while ((line = br.readLine()) != null) {
+				taskLst.add(parseLine(line));
+			}
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
