@@ -2,20 +2,27 @@ package sg.codengineers.ldo.logic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import sg.codengineers.ldo.db.DBConnector;
+import sg.codengineers.ldo.model.AdditionalArgument;
 import sg.codengineers.ldo.model.Command.CommandType;
 import sg.codengineers.ldo.model.Handler;
+import sg.codengineers.ldo.model.Result;
 import sg.codengineers.ldo.model.Task;
 
 public class Logic {
 	private DBConnector _dbConnector;
 	private ArrayList<Task> _taskList;
-	private HashMap<CommandType, Handler> _map;
 	private boolean _isInitialized = false;
 	
-	public Logic(DBConnector dbConnector){
-		this._dbConnector = dbConnector;
+	private CreateHandler createHandler;
+	private RetrieveHandler retrieveHandler;
+	private UpdateHandler updateHandler;
+	private DeleteHandler deleteHandler;
+	
+	public Logic(){
+		this._dbConnector = new DBConnector();
 		initialize();
 	}
 
@@ -24,16 +31,48 @@ public class Logic {
 			return;
 		}
 		
-		_taskList = _dbConnector.retrieveTaskList();
+		_taskList = _dbConnector.read();
 		
-		_map = new HashMap<CommandType, Handler> ();
-		_map.put(CommandType.CREATE, new CreateHandler(_taskList));
-		_map.put(CommandType.DELETE, new DeleteHandler(_taskList));
-		_map.put(CommandType.UPDATE, new UpdateHandler(_taskList));
-		RetrieveHandler retrieveHandler = new RetrieveHandler(_taskList);
-		_map.put(CommandType.RETRIEVE, retrieveHandler);
-		_map.put(CommandType.SHOW, retrieveHandler);
-		_map.put(CommandType.INVALID, null);
+		createHandler = new CreateHandler(_taskList);
+		retrieveHandler = new RetrieveHandler(_taskList);
+		updateHandler = new UpdateHandler(_taskList);
+		deleteHandler = new DeleteHandler(_taskList);
+		
 		_isInitialized = true;
 	}
+	
+	private void commitChange(){
+		_dbConnector.write(_taskList);
+	}
+
+	public Result createTask(String primaryOperand,
+			Iterator<AdditionalArgument> iterator) {
+		Result result = createHandler.execute(primaryOperand, iterator);
+		commitChange();
+		return result;
+	}
+
+	public Result deleteTask(String primaryOperand,
+			Iterator<AdditionalArgument> iterator) {
+		Result result =deleteHandler.execute(primaryOperand, iterator);
+		commitChange();
+		return result;
+	}
+
+	public Result updateTask(String primaryOperand,
+			Iterator<AdditionalArgument> iterator) {
+		Result result = updateHandler.execute(primaryOperand, iterator);
+		commitChange();
+		return result;
+	}
+
+	public Result retrieveTask(String primaryOperand,
+			Iterator<AdditionalArgument> iterator) {
+		return retrieveHandler.execute(primaryOperand, iterator);
+	}
+
+	public Result showTasks(Iterator<AdditionalArgument> iterator) {
+		return retrieveHandler.execute(null, iterator);
+	}
+	
 }

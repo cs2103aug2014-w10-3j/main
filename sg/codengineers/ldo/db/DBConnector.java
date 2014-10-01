@@ -6,8 +6,4 @@ import sg.codengineers.ldo.model.Task;
 
 public class DBConnector {
 	
-	public ArrayList<Task> retrieveTaskList(){
-		return null;
-	}
-	
 }

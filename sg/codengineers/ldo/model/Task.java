@@ -50,4 +50,16 @@ public interface Task {
 	 * @return The task deadline
 	 */
 	public Date getDeadline();
+	
+	public void setName(String name);
+	
+	public void setTag(String tag);
+	
+	public void setDescription(String description);
+	
+	public void setTimeStart(Date timeEnd);
+	
+	public void setTimeEnd(Date timeEnd);
+	
+	public void setDeadline(Date deadline);
 }
