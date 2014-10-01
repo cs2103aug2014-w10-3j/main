@@ -29,6 +29,12 @@ public class DBConnector {
 		}
 	}
 
+	private Task parseLine(String line) {
+		String[] lineArr = line.trim().split(" ");
+		Task t = new TaskImpl(lineArr[0], lineArr[1]);
+		t.setDescription(lineArr[2]);
+		t.setTimeStart(lineArr[3]);
+		return t;
 	}
 	
 }
