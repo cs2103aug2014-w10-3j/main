@@ -41,5 +41,21 @@ public class DBConnector {
 		t.setTimeStart(lineArr[3]);
 		return t;
 	}
-	
+
+	public writeTask(Task task) {
+		try {
+			String line = task.getId() + " ";
+			line += line + task.getName() + " ";
+			line += line + task.getDescription() + " ";
+			line += line + task.getStartTime() + " ";
+			line += line + task.getEndTime() + " ";
+			line += line + task.getTag();
+
+			BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
+			bw.write(line);
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }
