@@ -1,5 +1,6 @@
 package sg.codengineers.ldo.parser;
 
+import java.util.Map;
 import java.util.TreeMap;
 
 import sg.codengineers.ldo.model.AdditionalArgument;
@@ -14,12 +15,12 @@ import sg.codengineers.ldo.model.AdditionalArgument;
 public class AdditionalArgumentImpl implements AdditionalArgument {
 
 	/* Static Variables */
-	private static TreeMap<String, ArgumentType>	_argsMap;
-	private static boolean							_isInitialised;
+	private static Map<String, ArgumentType>	_argsMap;
+	private static boolean						_isInitialised;
 
 	/* Member variables */
-	private ArgumentType							_argumentType;
-	private String									_operand;
+	private ArgumentType						_argumentType;
+	private String								_operand;
 
 	/* Constructors */
 	public AdditionalArgumentImpl(String argumentType, String value) {
