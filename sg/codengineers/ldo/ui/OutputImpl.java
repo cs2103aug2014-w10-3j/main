@@ -77,7 +77,8 @@ public class OutputImpl implements Output {
 
 	private void feedbackForDelete() {
 		Task completedTask = _taskItr.next();
-		showToUser(String.format(DELETED_MESSAGE, completedTask.getName()));
+		stub();
+//		showToUser(String.format(DELETED_MESSAGE, completedTask.getName()));
 	}
 
 	private void feedbackForRetrieve() {

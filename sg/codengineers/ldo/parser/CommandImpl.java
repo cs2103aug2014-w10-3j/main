@@ -63,10 +63,13 @@ public class CommandImpl implements Command {
 	 * Initialises the command map if it has yet to be done.
 	 */
 	private void initialise() {
-		if (!_isInitialised) {
+		_cmdMap = new TreeMap<String, CommandType>();
+		_additionalArguments = new ArrayList<AdditionalArgument>();
+
+//		if (!_isInitialised) {
 			populateCmdMap();
-			_isInitialised = true;
-		}
+//			_isInitialised = true;
+//		}
 	}
 
 	/**
@@ -107,7 +110,7 @@ public class CommandImpl implements Command {
 	private void populateAdditionalArguments(String[] parameters) {
 		int length = parameters.length;
 		if (_commandType != CommandType.SHOW) {
-			for (int i = 0; i < length; i++) {
+			for (int i = 0; i < length-1; i++) {
 				parameters[i] = parameters[1 + i];
 			}
 			length--;

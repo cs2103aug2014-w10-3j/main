@@ -27,11 +27,14 @@ public class LDo {
 	
 	public void runUserInteraction() {
 		try{
-			String userInput = input.readFromUser();
-			command = new CommandImpl(userInput);
-			Result result = executeCommand();
-			output.displayResult(result);
+			while(true){
+				String userInput = input.readFromUser();
+				command = new CommandImpl(userInput);
+				Result result = executeCommand();
+				output.displayResult(result);
+			}
 		} catch(Exception e) {
+			e.printStackTrace();
 			output.displayError(e.getMessage(), e);
 		}
 	}
