@@ -36,5 +36,5 @@ public interface Result {
 	 * @return An Iterator class containing all the tasks involved in the
 	 *         operation
 	 */
-	public Iterator<ArrayList<Task>> getTasksIterator();
+	public Iterator<Task> getTasksIterator();
 }
