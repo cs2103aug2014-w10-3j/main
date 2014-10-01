@@ -6,6 +6,7 @@ import sg.codengineers.ldo.model.Command.CommandType;
 import sg.codengineers.ldo.model.Input;
 import sg.codengineers.ldo.model.Output;
 import sg.codengineers.ldo.model.Result;
+import sg.codengineers.ldo.parser.CommandImpl;
 import sg.codengineers.ldo.ui.InputImpl;
 import sg.codengineers.ldo.ui.OutputImpl;
 
@@ -27,7 +28,7 @@ public class LDo {
 	public void runUserInteraction() {
 		try{
 			String userInput = input.readFromUser();
-			command = convertToCommandClass(userInput);
+			command = new CommandImpl(userInput);
 			Result result = executeCommand();
 			output.displayResult(result);
 		} catch(Exception e) {

@@ -22,7 +22,7 @@ public class Logic {
 	private DeleteHandler deleteHandler;
 	
 	public Logic(){
-		this._dbConnector = new DBConnector();
+		this._dbConnector = new DBConnector("LDoDatabase.txt");
 		initialize();
 	}
 
@@ -42,7 +42,9 @@ public class Logic {
 	}
 	
 	private void commitChange(){
-		_dbConnector.write(_taskList);
+		for (Task task : _taskList){
+			_dbConnector.write(task);
+		}
 	}
 
 	public Result createTask(String primaryOperand,

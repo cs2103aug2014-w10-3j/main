@@ -25,7 +25,7 @@ public class DBConnector {
 		}
 	}
 
-	public ArrayList<Task> retrieveTaskList(){
+	public ArrayList<Task> read(){
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			String line;
@@ -49,7 +49,7 @@ public class DBConnector {
 		return t;
 	}
 
-	public void writeTask(Task task) {
+	public void write(Task task) {
 		try {
 			String line = task.getId() + " ";
 			line += line + task.getName() + " ";
