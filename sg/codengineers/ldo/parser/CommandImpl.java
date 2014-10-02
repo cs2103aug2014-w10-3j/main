@@ -100,7 +100,7 @@ public class CommandImpl implements Command {
 	 * @return A String containing the primary operand
 	 */
 	private String getPrimaryOperand(String[] parameters) {
-		if (_commandType == CommandType.SHOW) {
+		if (_commandType == CommandType.SHOW || _commandType == CommandType.INVALID) {
 			return null;
 		} else {
 			return parameters[PRIMARY_OPERAND_POSITION];
@@ -138,6 +138,10 @@ public class CommandImpl implements Command {
 	 *         invalid command
 	 */
 	private CommandType getCommandType(String commandWord) {
+		CommandType commandType= _cmdMap.get(commandWord);
+		if(commandType==null){
+			return CommandType.INVALID;
+		}
 		return _cmdMap.get(commandWord);
 	}
 
