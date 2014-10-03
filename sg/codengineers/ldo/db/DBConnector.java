@@ -13,14 +13,18 @@ public class DBConnector {
 	private File file;
 
 	public DBConnector(String filename) {
-		try{
-			this.filename = filename;
+		this.filename = filename;
+		initFile();
+	}
+
+	private void initFile() {
+		try {
 			file = new File(filename);
-	
+
 			if (!file.exists()) {
 				file.createNewFile();
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
