@@ -25,11 +25,11 @@ public class DBConnector {
 		}
 	}
 
-	public ArrayList<Task> read(){
+	public List<Task> read(){
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			String line;
-			ArrayList<Task> taskLst = new ArrayList<>();
+			List<Task> taskLst = new ArrayList<Task>();
 			while ((line = br.readLine()) != null) {
 				taskLst.add(parseLine(line));
 			}
