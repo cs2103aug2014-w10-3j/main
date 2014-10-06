@@ -3,6 +3,7 @@ package sg.codengineers.ldo.parser;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import sg.codengineers.ldo.model.Result;
 import sg.codengineers.ldo.model.Task;
@@ -12,14 +13,14 @@ public class ResultImpl implements Result {
 
 	private CommandType		_commandType;
 	private Time			_operationTime;
-	private ArrayList<Task>	_tasks;
+	private List<Task>	_tasks;
 
 	/* Constructors */
 	public ResultImpl(CommandType commandType, Time time,
-			ArrayList<Task> tasks) {
+			List<Task> _taskList) {
 		_commandType = commandType;
 		_operationTime = time;
-		_tasks = tasks;
+		_tasks = _taskList;
 	}
 
 	public ResultImpl(CommandType commandType, Time time, Task task) {
