@@ -63,7 +63,7 @@ public class DBConnector {
 	}
 
 	private Task parseLine(String line) {
-		String[] lineArr = line.trim().split(" ");
+		String[] lineArr = line.trim().split(";");
 		Task t = new TaskImpl(Integer.parseInt(lineArr[0]), lineArr[1]);
 		t.setDescription(lineArr[2]);
 		try {
@@ -77,12 +77,12 @@ public class DBConnector {
 
 	public void write(Task task) {
 		try {
-			String line = task.getId() + " ";
-			line += line + task.getName() + " ";
-			line += line + task.getDescription() + " ";
-			line += line + task.getStartTime() + " ";
-			line += line + task.getEndTime() + " ";
-			line += line + task.getTag();
+			String line = task.getId() + ";";
+			line += task.getName() + ";";
+			line += task.getDescription() + ";";
+			line += task.getStartTime() + ";";
+			line += task.getEndTime() + ";";
+			line += task.getTag();
 
 			BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
 			bw.write(line);
