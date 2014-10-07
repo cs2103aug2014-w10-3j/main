@@ -86,6 +86,7 @@ public class DBConnector {
 
 			BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
 			bw.write(line);
+			bw.newLine();
 			bw.close();
 		} catch (IOException e) {
 			e.printStackTrace();
