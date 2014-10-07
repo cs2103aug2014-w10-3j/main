@@ -1,5 +1,12 @@
 package sg.codengineers.ldo.db;
 
+/**
+ * This class is the connector between the text file and
+ * the database abstraction layer.
+ *
+ * @author Sean
+ */
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.*;
