@@ -59,7 +59,12 @@ public class DBConnector {
 		String[] lineArr = line.trim().split(" ");
 		Task t = new TaskImpl(Integer.parseInt(lineArr[0]), lineArr[1]);
 		t.setDescription(lineArr[2]);
-		//t.setTimeStart(new Date(lineArr[3]));
+		try {
+			DateFormat df = DateFormat.getDateTimeInstance();
+			t.setTimeStart(df.parse(lineArr[3]));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		return t;
 	}
 
