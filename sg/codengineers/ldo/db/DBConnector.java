@@ -12,11 +12,20 @@ public class DBConnector {
 	private String filename;
 	private File file;
 
+	/**
+	 * Constructor
+	 * @param filename The name of the file to save the data to
+	 */
 	public DBConnector(String filename) {
 		this.filename = filename;
 		initFile();
 	}
 
+	/**
+	 * Initializes the file to make sure it exist before any IO
+	 * operations are performed on it. Create a new file with the
+	 * supplied filename if the file does not already exist
+	 */
 	private void initFile() {
 		try {
 			file = new File(filename);
