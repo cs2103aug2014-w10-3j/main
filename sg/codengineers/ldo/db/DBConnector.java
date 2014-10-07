@@ -77,11 +77,12 @@ public class DBConnector {
 
 	public void write(Task task) {
 		try {
+			DateFormat df = DateFormat.getDateTimeInstance();
 			String line = task.getId() + ";";
 			line += task.getName() + ";";
 			line += task.getDescription() + ";";
-			line += task.getStartTime() + ";";
-			line += task.getEndTime() + ";";
+			line += df.format(task.getStartTime()) + ";";
+			line += df.format(task.getEndTime()) + ";";
 			line += task.getTag();
 
 			BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
