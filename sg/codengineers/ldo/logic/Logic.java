@@ -3,17 +3,17 @@ package sg.codengineers.ldo.logic;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import sg.codengineers.ldo.db.DBConnector;
 import sg.codengineers.ldo.model.AdditionalArgument;
 import sg.codengineers.ldo.model.Command.CommandType;
-import sg.codengineers.ldo.model.Handler;
 import sg.codengineers.ldo.model.Result;
 import sg.codengineers.ldo.model.Task;
 
 public class Logic {
 	private DBConnector _dbConnector;
-	private ArrayList<Task> _taskList;
+	private List<Task> _taskList;
 	private boolean _isInitialized = false;
 	
 	private CreateHandler createHandler;
