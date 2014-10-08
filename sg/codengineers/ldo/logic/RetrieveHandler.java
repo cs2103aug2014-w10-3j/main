@@ -30,7 +30,7 @@ public class RetrieveHandler extends Handler {
 		} 
 		
 		if(primaryOperand == null && 
-				(iterator == null || iterator.hasNext())){
+				(iterator == null || !iterator.hasNext())){
 			result = constructResult(_taskList);
 		}
 		
