@@ -100,7 +100,8 @@ public class CommandImpl implements Command {
 	 * @return A String containing the primary operand
 	 */
 	private String getPrimaryOperand(String[] parameters) {
-		if (_commandType == CommandType.SHOW || _commandType == CommandType.INVALID) {
+		if (_commandType == CommandType.SHOW
+				|| _commandType == CommandType.INVALID) {
 			return null;
 		} else {
 			return parameters[PRIMARY_OPERAND_POSITION];
@@ -138,8 +139,8 @@ public class CommandImpl implements Command {
 	 *         invalid command
 	 */
 	private CommandType getCommandType(String commandWord) {
-		CommandType commandType= _cmdMap.get(commandWord);
-		if(commandType==null){
+		CommandType commandType = _cmdMap.get(commandWord);
+		if (commandType == null) {
 			return CommandType.INVALID;
 		}
 		return _cmdMap.get(commandWord);
@@ -148,14 +149,21 @@ public class CommandImpl implements Command {
 	/**
 	 * Gets the parameters input by user. This parameters encompasses all values
 	 * namely the primary operand and additional arguments, except for the
-	 * command type.
+	 * command type. The method will split the user input by detecting dashes,
+	 * which is used to indicate a keyword for an additional argument from user
 	 * 
 	 * @param userInput
 	 *            Input from user
-	 * @return An Array of String each representing the parameters
+	 * @return An Array of String each representing the parameters. The string
+	 *         is trimmed to ensure that there will be no leading or trailing
+	 *         whitespaces.
 	 */
 	private String[] getParameters(String userInput) {
-		return userInput.split("\\s+");
+		String[] parameter = userInput.split("-+");
+		for (int i = 0; i < parameter.length; i++) {
+			parameter[i] = parameter[i].trim();
+		}
+		return parameter;
 	}
 
 	/**
