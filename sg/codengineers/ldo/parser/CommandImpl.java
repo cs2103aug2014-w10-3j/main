@@ -35,7 +35,8 @@ public class CommandImpl implements Command {
 		initialise();
 		String commandWord = getFirstWord(userInput);
 		_commandType = getCommandType(commandWord);
-		if(_commandType!=CommandType.SHOW && _commandType!=CommandType.INVALID){
+		if (_commandType != CommandType.SHOW
+				&& _commandType != CommandType.INVALID) {
 			_primaryOperand = getPrimaryOperand(removeFirstWord(userInput));
 			String[] additionalArguments = splitToArguments(userInput);
 			populateAdditionalArguments(additionalArguments);
@@ -101,7 +102,7 @@ public class CommandImpl implements Command {
 	 * @return A String containing the primary operand
 	 */
 	private String getPrimaryOperand(String userInput) {
-		return userInput.split("--|-",2)[PRIMARY_OPERAND_POSITION];
+		return userInput.split("--|-", 2)[PRIMARY_OPERAND_POSITION];
 	}
 
 	/**
@@ -115,9 +116,10 @@ public class CommandImpl implements Command {
 		_additionalArguments = new ArrayList<AdditionalArgument>();
 		String[] argument = new String[2];
 		int length = additionalArguments.length;
-		for (int i = 0; i < length; i ++) {
-			argument = additionalArguments[i].split(" ",2);
-			_additionalArguments.add(new AdditionalArgumentImpl(argument[0],argument[1]));
+		for (int i = 0; i < length; i++) {
+			argument = additionalArguments[i].split(" ", 2);
+			_additionalArguments.add(new AdditionalArgumentImpl(argument[0],
+					argument[1]));
 		}
 	}
 
@@ -150,23 +152,23 @@ public class CommandImpl implements Command {
 	 *         white spaces.
 	 */
 	private String[] splitToArguments(String userInput) {
-		//Removing primary command and argument
-		userInput=removeFirstWord(userInput);
-		userInput=userInput.replace(_primaryOperand, "").trim();
-		
-		//Splitting string into additional argument along with operands
+		// Removing primary command and argument
+		userInput = removeFirstWord(userInput);
+		userInput = userInput.replace(_primaryOperand, "").trim();
+
+		// Splitting string into additional argument along with operands
 		String[] additionalArguments = userInput.split("--+|-+");
 		ArrayList<String> toReturn = new ArrayList<String>();
-		int length=additionalArguments.length;
+		int length = additionalArguments.length;
 		for (int i = 0; i < additionalArguments.length; i++) {
-			if(!additionalArguments[i].equals("")){
+			if (!additionalArguments[i].equals("")) {
 				toReturn.add(additionalArguments[i].trim());
 			}
-			else{
+			else {
 				length--;
 			}
 		}
-		
+
 		return toReturn.toArray(new String[length]);
 	}
 

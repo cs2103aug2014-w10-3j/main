@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 import org.junit.After;
 import org.junit.Before;
@@ -138,7 +137,9 @@ public class CommandImplTest {
 		String[] expected = new String[] {};
 		String[] actual = (String[]) splitToArguments.invoke(testClass,
 				"add test");
-		assertArrayEquals("Testing splitToArguments for no additional arguments",expected,actual);
+		assertArrayEquals(
+				"Testing splitToArguments for no additional arguments",
+				expected, actual);
 	}
 
 	@Test
@@ -153,7 +154,7 @@ public class CommandImplTest {
 				.invoke(testClass, "add hello --tag test");
 		assertArrayEquals("Testing splitToArguments with one word before dash",
 				expected, actual);
-	}  
+	}
 
 	@Test
 	public void testGetParameterWithMultipleWords()
@@ -193,13 +194,13 @@ public class CommandImplTest {
 		testClass = new CommandImpl("add test -a multiple dashes --tag test");
 		Method splitToArguments = getMethodFromClass("splitToArguments",
 				String.class);
-		String[] expected = new String[] {"a multiple dashes", "tag test"};
+		String[] expected = new String[] { "a multiple dashes", "tag test" };
 		String[] actual = (String[]) splitToArguments.invoke(testClass,
 				"add test -a multiple dashes --tag test");
 		assertArrayEquals(
 				"Testing splitToArguments with two sets of dashes in string",
 				expected, actual);
-		
+
 	}
 
 	/**
