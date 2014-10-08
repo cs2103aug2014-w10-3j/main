@@ -31,6 +31,8 @@ public class CreateHandler extends Handler {
 			modifyTask(task, arg);
 		}
 		
+		_taskList.add(task);
+		
 		Result result = new ResultImpl(CommandType.CREATE, new Time(System.currentTimeMillis()), task);
 		
 		return result;
