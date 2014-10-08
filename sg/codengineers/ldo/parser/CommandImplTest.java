@@ -53,13 +53,13 @@ public class CommandImplTest {
 				testClass.getCommandType());
 	}
 
-/*	@Test
+	@Test
 	public void testGetCommandTypeForShow() {
 		testClass = new CommandImpl("show 1");
 		assertEquals("get command type for show", CommandType.SHOW,
 				testClass.getCommandType());
 	}
-*/
+
 	@Test
 	public void testGetCommandForInvalid() {
 		testClass = new CommandImpl("aasdsa");
@@ -94,14 +94,14 @@ public class CommandImplTest {
 		assertEquals("get primary operand for delete", "1",
 				testClass.getPrimaryOperand());
 	}
-/*
+
 	@Test
 	public void testGetPrimaryOperandForShow() {
 		testClass = new CommandImpl("show 1");
 		assertEquals("get primary operand for show", null,
 				testClass.getPrimaryOperand());
 	}
-*/
+
 	@Test
 	public void testGetPrimaryOperandForInvalid() {
 		testClass = new CommandImpl("aasdsa");
