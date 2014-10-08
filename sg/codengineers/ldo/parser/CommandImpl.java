@@ -33,12 +33,13 @@ public class CommandImpl implements Command {
 	/* Constructors */
 	public CommandImpl(String userInput) {
 		initialise();
-		userInput = userInput.toLowerCase();
 		String commandWord = getFirstWord(userInput);
 		_commandType = getCommandType(commandWord);
-		String[] parameters = getParameters(removeFirstWord(userInput));
-		_primaryOperand = getPrimaryOperand(parameters);
-		populateAdditionalArguments(parameters);
+		if(_commandType!=CommandType.SHOW && _commandType!=CommandType.INVALID){
+			_primaryOperand = getPrimaryOperand(removeFirstWord(userInput));
+			String[] additionalArguments = splitToArguments(userInput);
+			populateAdditionalArguments(additionalArguments);
+		}
 	}
 
 	/* Public Methods */
@@ -99,34 +100,24 @@ public class CommandImpl implements Command {
 	 *            Parameters input by user
 	 * @return A String containing the primary operand
 	 */
-	private String getPrimaryOperand(String[] parameters) {
-		if (_commandType == CommandType.SHOW
-				|| _commandType == CommandType.INVALID) {
-			return null;
-		} else {
-			return parameters[PRIMARY_OPERAND_POSITION];
-		}
+	private String getPrimaryOperand(String userInput) {
+		return userInput.split("--|-",2)[PRIMARY_OPERAND_POSITION];
 	}
 
 	/**
 	 * Populates the list of additional arguments for this command
 	 * 
-	 * @param parameters
+	 * @param additionalArguments
 	 *            Parameters input by user from which the additional arguments
 	 *            and operands are extracted
 	 */
-	private void populateAdditionalArguments(String[] parameters) {
+	private void populateAdditionalArguments(String[] additionalArguments) {
 		_additionalArguments = new ArrayList<AdditionalArgument>();
-		int length = parameters.length;
-		if (_commandType != CommandType.SHOW) {
-			for (int i = 0; i < length - 1; i++) {
-				parameters[i] = parameters[1 + i];
-			}
-			length--;
-		}
-		for (int i = 0; i < length / 2; i += 2) {
-			_additionalArguments.add(new AdditionalArgumentImpl(parameters[i],
-					parameters[i + 1]));
+		String[] argument = new String[2];
+		int length = additionalArguments.length;
+		for (int i = 0; i < length; i ++) {
+			argument = additionalArguments[i].split(" ",2);
+			_additionalArguments.add(new AdditionalArgumentImpl(argument[0],argument[1]));
 		}
 	}
 
@@ -139,11 +130,11 @@ public class CommandImpl implements Command {
 	 *         invalid command
 	 */
 	private CommandType getCommandType(String commandWord) {
-		CommandType commandType = _cmdMap.get(commandWord);
+		CommandType commandType = _cmdMap.get(commandWord.toLowerCase());
 		if (commandType == null) {
 			return CommandType.INVALID;
 		}
-		return _cmdMap.get(commandWord);
+		return commandType;
 	}
 
 	/**
@@ -156,14 +147,27 @@ public class CommandImpl implements Command {
 	 *            Input from user
 	 * @return An Array of String each representing the parameters. The string
 	 *         is trimmed to ensure that there will be no leading or trailing
-	 *         whitespaces.
+	 *         white spaces.
 	 */
-	private String[] getParameters(String userInput) {
-		String[] parameter = userInput.split("-+");
-		for (int i = 0; i < parameter.length; i++) {
-			parameter[i] = parameter[i].trim();
+	private String[] splitToArguments(String userInput) {
+		//Removing primary command and argument
+		userInput=removeFirstWord(userInput);
+		userInput=userInput.replace(_primaryOperand, "").trim();
+		
+		//Splitting string into additional argument along with operands
+		String[] additionalArguments = userInput.split("--+|-+");
+		ArrayList<String> toReturn = new ArrayList<String>();
+		int length=additionalArguments.length;
+		for (int i = 0; i < additionalArguments.length; i++) {
+			if(!additionalArguments[i].equals("")){
+				toReturn.add(additionalArguments[i].trim());
+			}
+			else{
+				length--;
+			}
 		}
-		return parameter;
+		
+		return toReturn.toArray(new String[length]);
 	}
 
 	/**
@@ -174,7 +178,7 @@ public class CommandImpl implements Command {
 	 * @return The first word of the message
 	 */
 	private String getFirstWord(String message) {
-		return message.trim().split("\\s+")[0];
+		return message.trim().split("\\s+")[0].toLowerCase();
 	}
 
 	/**
