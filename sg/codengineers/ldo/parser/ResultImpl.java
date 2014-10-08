@@ -9,18 +9,25 @@ import sg.codengineers.ldo.model.Result;
 import sg.codengineers.ldo.model.Task;
 import sg.codengineers.ldo.model.Command.CommandType;
 
+/**
+ * This class specifies the implementation of the Result class as specified by
+ * the Result interface
+ * 
+ * @author Victor Hazali
+ * 
+ */
 public class ResultImpl implements Result {
 
-	private CommandType		_commandType;
-	private Time			_operationTime;
+	private CommandType	_commandType;
+	private Time		_operationTime;
 	private List<Task>	_tasks;
 
 	/* Constructors */
 	public ResultImpl(CommandType commandType, Time time,
-			List<Task> _taskList) {
+			List<Task> tasks) {
 		_commandType = commandType;
 		_operationTime = time;
-		_tasks = _taskList;
+		_tasks = tasks;
 	}
 
 	public ResultImpl(CommandType commandType, Time time, Task task) {
@@ -50,7 +57,6 @@ public class ResultImpl implements Result {
 	 * tasks completed.
 	 */
 	public Iterator<Task> getTasksIterator() {
-		// TODO Auto-generated method stub
 		return _tasks.iterator();
 	}
 }

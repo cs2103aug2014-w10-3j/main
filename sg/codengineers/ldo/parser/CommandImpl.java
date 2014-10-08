@@ -2,24 +2,33 @@ package sg.codengineers.ldo.parser;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import sg.codengineers.ldo.model.AdditionalArgument;
 import sg.codengineers.ldo.model.Command;
 
+/**
+ * This class specifies the implementation of Command as specified by the
+ * Command interface
+ * 
+ * @author Victor Hazali
+ * 
+ */
 public class CommandImpl implements Command {
 
 	/* Constants */
-	private static final int	PRIMARY_OPERAND_POSITION	= 0;
+	private static final int				PRIMARY_OPERAND_POSITION	= 0;
 
 	/* Static Variables */
-	private static TreeMap<String, CommandType>	_cmdMap;
-	private static boolean						_isInitialised;
+	private static Map<String, CommandType>	_cmdMap;
+	private static boolean					_isInitialised;
 
 	/* Member Variables */
-	private CommandType							_commandType;
-	private String								_primaryOperand;
-	private ArrayList<AdditionalArgument>		_additionalArguments;
+	private CommandType						_commandType;
+	private String							_primaryOperand;
+	private List<AdditionalArgument>		_additionalArguments;
 
 	/* Constructors */
 	public CommandImpl(String userInput) {
@@ -63,13 +72,11 @@ public class CommandImpl implements Command {
 	 * Initialises the command map if it has yet to be done.
 	 */
 	private void initialise() {
-		_cmdMap = new TreeMap<String, CommandType>();
-		_additionalArguments = new ArrayList<AdditionalArgument>();
-
-//		if (!_isInitialised) {
+		if (!_isInitialised) {
+			_cmdMap = new TreeMap<String, CommandType>();
 			populateCmdMap();
-//			_isInitialised = true;
-//		}
+			_isInitialised = true;
+		}
 	}
 
 	/**
@@ -93,7 +100,7 @@ public class CommandImpl implements Command {
 	 * @return A String containing the primary operand
 	 */
 	private String getPrimaryOperand(String[] parameters) {
-		if (_commandType == CommandType.SHOW) {
+		if (_commandType == CommandType.SHOW || _commandType == CommandType.INVALID) {
 			return null;
 		} else {
 			return parameters[PRIMARY_OPERAND_POSITION];
@@ -108,9 +115,10 @@ public class CommandImpl implements Command {
 	 *            and operands are extracted
 	 */
 	private void populateAdditionalArguments(String[] parameters) {
+		_additionalArguments = new ArrayList<AdditionalArgument>();
 		int length = parameters.length;
 		if (_commandType != CommandType.SHOW) {
-			for (int i = 0; i < length-1; i++) {
+			for (int i = 0; i < length - 1; i++) {
 				parameters[i] = parameters[1 + i];
 			}
 			length--;
@@ -130,6 +138,10 @@ public class CommandImpl implements Command {
 	 *         invalid command
 	 */
 	private CommandType getCommandType(String commandWord) {
+		CommandType commandType= _cmdMap.get(commandWord);
+		if(commandType==null){
+			return CommandType.INVALID;
+		}
 		return _cmdMap.get(commandWord);
 	}
 

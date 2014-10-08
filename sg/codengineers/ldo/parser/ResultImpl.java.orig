@@ -19,21 +19,21 @@ import sg.codengineers.ldo.model.Command.CommandType;
 public class ResultImpl implements Result {
 
 <<<<<<< HEAD
-	private CommandType	_commandType;
-	private Time		_operationTime;
-=======
 	private CommandType		_commandType;
 	private Time			_operationTime;
->>>>>>> 247c32feec31be90dada069b32fe717640c21471
+=======
+	private CommandType	_commandType;
+	private Time		_operationTime;
+>>>>>>> unitTest/victor
 	private List<Task>	_tasks;
 
 	/* Constructors */
 	public ResultImpl(CommandType commandType, Time time,
 <<<<<<< HEAD
-			List<Task> tasks) {
-=======
 			List<Task> _taskList) {
->>>>>>> 247c32feec31be90dada069b32fe717640c21471
+=======
+			List<Task> tasks) {
+>>>>>>> unitTest/victor
 		_commandType = commandType;
 		_operationTime = time;
 		_tasks = _taskList;
