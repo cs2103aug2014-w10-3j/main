@@ -35,4 +35,13 @@ public interface DBConnector {
 	 * @return
 	 */
 	public boolean update(String jsonData);
+	
+	/**
+	 * A method that retrieves all entries from the
+	 * database.
+	 * 
+	 * @return A list containing all the entries from
+	 * the database
+	 */
+	public List<String> read();
 }
