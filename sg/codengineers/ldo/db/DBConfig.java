@@ -17,4 +17,34 @@ package sg.codengineers.ldo.db;
 
 public class DBConfig {
 
+	/**
+	 * Initializes all the connections to the databases
+	 * in accordance to the configurations in the config
+	 * file
+	 * 
+	 * @return A mapping of the text representation of the
+	 * class name to the database connector that it needs
+	 */
+	public static Map<String, DBConnector> initDatabases() {
+		if (!isInitialized) {
+
+			/* 
+			 * Open a connection to the config file, skipping
+			 * the database abstraction layer. There is no way
+			 * around this since this is needed to initialize 
+			 * the layer.
+			 */
+			config = new TextDBConnector(FILENAME);
+			List<String> jsonConfigList = config.read();
+
+			for (String s : jsonConfigList) {
+				DBConfig config = DBConfig.fromJSON(s);
+				config.initDB();
+			}
+
+			isInitialized = true;
+		}
+
+		return classToConnector;
+	}
 }
