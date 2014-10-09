@@ -32,7 +32,6 @@ public interface DBConnector {
 	 * the toJSON implementation within the model
 	 * @return Returns a boolean value indicating the
 	 * success or failure of the method
-	 * @return
 	 */
 	public boolean update(String jsonData);
 	
