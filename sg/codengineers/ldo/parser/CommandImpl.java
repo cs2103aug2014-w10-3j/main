@@ -33,14 +33,7 @@ public class CommandImpl implements Command {
 	/* Constructors */
 	public CommandImpl(String userInput) {
 		initialise();
-		String commandWord = getFirstWord(userInput);
-		_commandType = getCommandType(commandWord);
-		if (_commandType != CommandType.SHOW
-				&& _commandType != CommandType.INVALID) {
-			_primaryOperand = getPrimaryOperand(removeFirstWord(userInput));
-			String[] additionalArguments = splitToArguments(userInput);
-			populateAdditionalArguments(additionalArguments);
-		}
+		assignMemberVariables(userInput);
 	}
 
 	/* Public Methods */
@@ -84,6 +77,24 @@ public class CommandImpl implements Command {
 			_cmdMap = new TreeMap<String, CommandType>();
 			populateCmdMap();
 			_isInitialised = true;
+		}
+	}
+
+	/**
+	 * Assigns values to all the member variables based on user input.
+	 * 
+	 * @param userInput
+	 *            Input string received from user
+	 */
+	private void assignMemberVariables(String userInput) {
+		String commandWord = getFirstWord(userInput);
+		_commandType = getCommandType(commandWord);
+
+		if (_commandType != CommandType.SHOW
+				&& _commandType != CommandType.INVALID) {
+			_primaryOperand = getPrimaryOperand(removeFirstWord(userInput));
+			String[] additionalArguments = splitToArguments(userInput);
+			populateAdditionalArguments(additionalArguments);
 		}
 	}
 
