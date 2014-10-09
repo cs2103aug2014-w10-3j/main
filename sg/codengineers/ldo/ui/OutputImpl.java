@@ -129,6 +129,7 @@ public class OutputImpl implements Output {
 	 * today, the NO_TASK_TODAY_MESSAGE will be shown instead
 	 */
 	private void displayTodaysTask() {
+		//TODO Auto-generated method stub
 		showToUser(NO_TASK_TODAY_MESSAGE);
 	}
 

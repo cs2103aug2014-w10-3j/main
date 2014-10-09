@@ -73,7 +73,7 @@ public class AdditionalArgumentImpl implements AdditionalArgument {
 		if (argumentType == null) {
 			return ArgumentType.INVALID;
 		}
-		return _argsMap.get(argument);
+		return argumentType;
 	}
 
 	/**
@@ -84,37 +84,37 @@ public class AdditionalArgumentImpl implements AdditionalArgument {
 		_argsMap = new TreeMap<String, ArgumentType>();
 
 		// Possible keywords for Help
-		_argsMap.put("--help", ArgumentType.HELP);
-		_argsMap.put("-h", ArgumentType.HELP);
+		_argsMap.put("help", ArgumentType.HELP);
+		_argsMap.put("h", ArgumentType.HELP);
 
 		// Possible keywords for Name
-		_argsMap.put("--name", ArgumentType.NAME);
-		_argsMap.put("-n", ArgumentType.NAME);
+		_argsMap.put("name", ArgumentType.NAME);
+		_argsMap.put("n", ArgumentType.NAME);
 
 		// Possible keywords for Deadline
-		_argsMap.put("-d", ArgumentType.DEADLINE);
-		_argsMap.put("--deadline", ArgumentType.DEADLINE);
+		_argsMap.put("d", ArgumentType.DEADLINE);
+		_argsMap.put("deadline", ArgumentType.DEADLINE);
 
 		// Possible keywords for Time
-		_argsMap.put("-t", ArgumentType.TIME);
-		_argsMap.put("--time", ArgumentType.TIME);
+		_argsMap.put("t", ArgumentType.TIME);
+		_argsMap.put("time", ArgumentType.TIME);
 
 		// Possible keywords for Tag
-		_argsMap.put("--tag", ArgumentType.TAG);
-		_argsMap.put("--done", ArgumentType.TAG);
-		_argsMap.put("--mark", ArgumentType.TAG);
+		_argsMap.put("tag", ArgumentType.TAG);
+		_argsMap.put("done", ArgumentType.TAG);
+		_argsMap.put("mark", ArgumentType.TAG);
 
 		// Possible keywords for Priority
-		_argsMap.put("--priority", ArgumentType.PRIORITY);
-		_argsMap.put("-p", ArgumentType.PRIORITY);
+		_argsMap.put("priority", ArgumentType.PRIORITY);
+		_argsMap.put("p", ArgumentType.PRIORITY);
 
 		// Possible keywords for Description
-		_argsMap.put("--description", ArgumentType.DESCRIPTION);
-		_argsMap.put("-desc", ArgumentType.DESCRIPTION);
-		_argsMap.put("--information", ArgumentType.DESCRIPTION);
+		_argsMap.put("description", ArgumentType.DESCRIPTION);
+		_argsMap.put("desc", ArgumentType.DESCRIPTION);
+		_argsMap.put("information", ArgumentType.DESCRIPTION);
 		_argsMap.put("info", ArgumentType.DESCRIPTION);
-		_argsMap.put("--note", ArgumentType.DESCRIPTION);
-		_argsMap.put("-a", ArgumentType.DESCRIPTION);
+		_argsMap.put("note", ArgumentType.DESCRIPTION);
+		_argsMap.put("a", ArgumentType.DESCRIPTION);
 	}
 
 }

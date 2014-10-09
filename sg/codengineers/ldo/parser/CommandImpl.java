@@ -45,6 +45,12 @@ public class CommandImpl implements Command {
 
 	/* Public Methods */
 
+	/**
+	 * gets the Command type of this command.
+	 * 
+	 * @return a CommandType object representing the command type of this
+	 *         Command object.
+	 */
 	public CommandType getCommandType() {
 		return _commandType;
 	}
