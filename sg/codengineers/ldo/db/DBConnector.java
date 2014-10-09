@@ -44,4 +44,13 @@ public interface DBConnector {
 	 * the database
 	 */
 	public List<String> read();
+	
+	/**
+	 * A method that deletes an entry from the database
+	 * 
+	 * @param id The unique identifier of the entry
+	 * @return Returns a boolean value indicating the
+	 * success or failure of the method
+	 */
+	public boolean delete(int id);
 }
