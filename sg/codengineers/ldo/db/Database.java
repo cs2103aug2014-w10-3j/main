@@ -1,7 +1,5 @@
 package sg.codengineers.ldo.db;
 
-import java.util.*;
-
 /**
  * This class is the database abstraction layer that sits on top of the data
  * layer. It manages how data is handled within the program, decides where
@@ -11,6 +9,9 @@ import java.util.*;
  *
  * @author Sean
  */
+
+import java.util.*;
+
 public class Database {
 
 }

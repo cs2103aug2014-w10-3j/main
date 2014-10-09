@@ -15,6 +15,8 @@ package sg.codengineers.ldo.db;
  * @author Sean
  */
 
+import java.util.*;
+
 public class DBConfig {
 
 	// Essential information for the configuration of the database
