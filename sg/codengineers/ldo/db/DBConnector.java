@@ -23,4 +23,16 @@ public interface DBConnector {
 	 */
 	public boolean create(String jsonData);
 
+	/**
+	 * An update method that allows each entry in the
+	 * database to be updated.
+	 * 
+	 * @param jsonData The data to be updated. It 
+	 * must already be converted to JSON format using
+	 * the toJSON implementation within the model
+	 * @return Returns a boolean value indicating the
+	 * success or failure of the method
+	 * @return
+	 */
+	public boolean update(String jsonData);
 }
