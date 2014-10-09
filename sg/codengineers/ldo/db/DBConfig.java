@@ -17,6 +17,14 @@ package sg.codengineers.ldo.db;
 
 public class DBConfig {
 
+	// Essential information for the configuration of the database
+	private static DBConnector config;
+	private static Map<String, DBConnector> classToConnector;
+	private static boolean isInitialized = false;
+	
+	// Filename of the config file
+	private static final String FILENAME = "DBConfig";
+
 	/**
 	 * Initializes all the connections to the databases
 	 * in accordance to the configurations in the config
