@@ -51,4 +51,18 @@ public class Database {
 			connector.read();
 		}
 	}
+	
+	/**
+	 * This allows the model to update an entry in the database
+	 * 
+	 * @param jsonData The data to be updated
+	 * @param className The name of the model in question
+	 */
+	public void update(String jsonData, String className) {
+		List<DBConnector> connectorList = classToConnector.get(className);
+
+		for (DBConnector connector : connectorList) {
+			connector.update(jsonData);
+		}
+	}
 }
