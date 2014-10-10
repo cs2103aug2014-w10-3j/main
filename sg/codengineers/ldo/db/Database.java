@@ -14,4 +14,13 @@ import java.util.*;
 
 public class Database {
 
+	private Map<String, List<DBConnector>> classToConnector; 
+
+	/**
+	 * Constructor This is where we choose which connector to use and
+	 * initialize them accordingly.
+	 */
+	public Database() {
+		classToConnector = DBConfig.initDatabases();
+	}
 }
