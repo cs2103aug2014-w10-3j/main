@@ -57,4 +57,14 @@ public class DBConfig {
 
 		return classToConnector;
 	}
+	
+	/*****************************
+	 * JSON methods
+	 *****************************/
+	
+	private static String toJSON(DBConfig dBConfig) {
+	}
+	
+	private static DBConfig fromJSON(String jSON) {
+	}
 }
