@@ -23,4 +23,19 @@ public class Database {
 	public Database() {
 		classToConnector = DBConfig.initDatabases();
 	}
+	
+	/**
+	 * This allows a class to create a new instance which represents
+	 * one entry in the database and save it to the database
+	 * 
+	 * @param jsonData The data to be saved
+	 * @param className The name of the model in question
+	 */
+	public void create(String jsonData, String className) {
+		List<DBConnector> connectorList = classToConnector.get(className);
+		
+		for (DBConnector connector : connectorList) {
+			connector.create(jsonData);
+		}
+	}
 }
