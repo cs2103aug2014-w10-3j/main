@@ -38,4 +38,17 @@ public class Database {
 			connector.create(jsonData);
 		}
 	}
+	
+	/**
+	 * This allows the model to get all entries in the database
+	 * 
+	 * @param className The name of the model in question
+	 */
+	public void read(String className) {
+		List<DBConnector> connectorList = classToConnector.get(className);
+		
+		for (DBConnector connector : connectorList) {
+			connector.read();
+		}
+	}
 }
