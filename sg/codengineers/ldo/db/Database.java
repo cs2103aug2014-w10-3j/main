@@ -65,4 +65,18 @@ public class Database {
 			connector.update(jsonData);
 		}
 	}
+	
+	/**
+	 * This allows entries in the database to be deleted
+	 * 
+	 * @param id The id of the entry to be deleted
+	 * @param className The name of the model in question
+	 */
+	public void delete(int id, String className) {
+		List<DBConnector> connectorList = classToConnector.get(className);
+
+		for (DBConnector connector : connectorList) {
+			connector.delete(id);
+		}
+	}
 }
