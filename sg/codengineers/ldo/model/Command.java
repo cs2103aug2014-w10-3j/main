@@ -32,6 +32,10 @@ public interface Command {
 	/**
 	 * Gets the primary operand of the command.
 	 * 
+	 * Note that, for the event of a show command, if it does not have a primary
+	 * operand (i.e. the command is simply show), the primary operand that will
+	 * be returned is an empty string (i.e. "")
+	 * 
 	 * @return A string containing the primary operand.
 	 */
 	public String getPrimaryOperand();

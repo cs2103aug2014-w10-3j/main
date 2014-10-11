@@ -124,8 +124,7 @@ public class CommandImpl implements Command {
 		String commandWord = getFirstWord(userInput);
 		_commandType = getCommandType(commandWord);
 
-		if (_commandType != CommandType.SHOW
-				&& _commandType != CommandType.INVALID) {
+		if (_commandType != CommandType.INVALID) {
 			_primaryOperand = getPrimaryOperand(removeFirstWord(userInput));
 			String[] additionalArguments = splitToArguments(userInput);
 			populateAdditionalArguments(additionalArguments);
@@ -153,7 +152,12 @@ public class CommandImpl implements Command {
 	 * @return A String containing the primary operand
 	 */
 	private String getPrimaryOperand(String userInput) {
-		return userInput.split("--|-", 2)[PRIMARY_OPERAND_POSITION];
+		String primaryOperand = userInput.split("--|-", 2)[PRIMARY_OPERAND_POSITION];
+		if (_commandType != CommandType.SHOW
+				&& primaryOperand.trim().equals("")) {
+			throw new IllegalArgumentException();
+		}
+		return primaryOperand;
 	}
 
 	/**

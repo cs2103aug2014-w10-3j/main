@@ -95,8 +95,15 @@ public class CommandImplTest {
 
 	@Test
 	public void testGetPrimaryOperandForShow() {
-		testClass = new CommandImpl("show 1");
-		assertEquals("get primary operand for show", null,
+		testClass = new CommandImpl("show all");
+		assertEquals("get primary operand for show", "all",
+				testClass.getPrimaryOperand());
+	}
+
+	@Test
+	public void testGetPrimaryOperandForShowBlank() {
+		testClass = new CommandImpl("show");
+		assertEquals("Get primary operand for show that has no operand", "",
 				testClass.getPrimaryOperand());
 	}
 
