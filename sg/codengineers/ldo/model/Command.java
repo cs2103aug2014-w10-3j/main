@@ -13,6 +13,14 @@ public interface Command {
 	public enum CommandType {
 		CREATE, RETRIEVE, UPDATE, DELETE, SHOW, INVALID
 	};
+
+	/**
+	 * Gets the original user input
+	 * 
+	 * @return a string object representing the initial user input
+	 */
+	public String getUserInput();
+
 	/**
 	 * Gets the command type of the command.
 	 * 

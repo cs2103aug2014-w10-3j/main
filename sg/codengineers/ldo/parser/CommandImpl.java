@@ -26,6 +26,7 @@ public class CommandImpl implements Command {
 	private static boolean					_isInitialised;
 
 	/* Member Variables */
+	private String							_userInput;
 	private CommandType						_commandType;
 	private String							_primaryOperand;
 	private List<AdditionalArgument>		_additionalArguments;
@@ -37,6 +38,15 @@ public class CommandImpl implements Command {
 	}
 
 	/* Public Methods */
+
+	/**
+	 * Gets the initial string which contains the user input
+	 * 
+	 * @return a String object representing the initial user input string
+	 */
+	public String getUserInput() {
+		return _userInput;
+	}
 
 	/**
 	 * gets the Command type of this command.
@@ -67,6 +77,29 @@ public class CommandImpl implements Command {
 		return _additionalArguments.iterator();
 	}
 
+	@Override
+	/**
+	 * Checks for equality with another object
+	 * 
+	 * It will return true if and only if 
+	 * The object is a command object and
+	 * The object has the same user input string
+	 */
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		}
+		if (o == this) {
+			return true;
+		}
+		if (!(o instanceof Command)) {
+			return false;
+		}
+		Command other = (Command) o;
+		return other.getUserInput().equalsIgnoreCase(_userInput);
+
+	}
+
 	/* Private Methods */
 
 	/**
@@ -87,6 +120,7 @@ public class CommandImpl implements Command {
 	 *            Input string received from user
 	 */
 	private void assignMemberVariables(String userInput) {
+		_userInput = userInput;
 		String commandWord = getFirstWord(userInput);
 		_commandType = getCommandType(commandWord);
 
