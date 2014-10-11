@@ -69,6 +69,19 @@ public class DBConfig {
 		String types = arrayToString(dBConfig.getType());		
 		return dBConfig.getClassName()+ " " + types;
 	}
+	
+	private static String arrayToString(String[] array) {
+		StringBuilder builder = new StringBuilder();
+		
+		for (String s : array) {
+			builder.append(s);
+			builder.append(",");
+		}
+		
+		// Remove the last comma. Index starts from 0
+		builder.deleteCharAt(builder.length() - 1);
+		return builder.toString();
+	}
 	}
 	
 	private static String[] getTypeFromEntry(String entry) {
