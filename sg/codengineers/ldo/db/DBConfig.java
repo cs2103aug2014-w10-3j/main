@@ -38,10 +38,21 @@ public class DBConfig {
 		this.type = type;
 	}
 	
+	/**
+	 * Getter method for class name of the configuration
+	 * 
+	 * @return The name of the class
+	 */
 	public String getClassName() {
 		return className;
 	}
 	
+	/**
+	 * Getter method for the array of types of database
+	 * that the class can have
+	 * 
+	 * @return An array of the database types
+	 */
 	public String[] getType() {
 		return type;
 	}
