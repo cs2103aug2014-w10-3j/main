@@ -51,7 +51,7 @@ public class DBConfig {
 			List<String> jsonConfigList = config.read();
 
 			for (String s : jsonConfigList) {
-				DBConfig config = DBConfig.fromJSON(s);
+				DBConfig config = DBConfig.fromString(s);
 				config.initDB();
 			}
 
