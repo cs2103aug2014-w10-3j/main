@@ -2,7 +2,6 @@ package sg.codengineers.ldo.parser;
 
 import static org.junit.Assert.*;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.junit.After;
@@ -109,18 +108,14 @@ public class CommandImplTest {
 	}
 
 	@Test
-	public void testGetFirstWord() throws NoSuchMethodException,
-			SecurityException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
+	public void testGetFirstWord() throws Exception {
 		Method getFirstWord = getMethodFromClass("getFirstWord", String.class);
 		assertEquals("Getting first word from string", "first",
 				getFirstWord.invoke(testClass, "first second third"));
 	}
 
 	@Test
-	public void testRemoveFirstWord() throws NoSuchMethodException,
-			SecurityException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
+	public void testRemoveFirstWord() throws Exception {
 		Method removeFirstWord = getMethodFromClass("removeFirstWord",
 				String.class);
 		assertEquals("Removing first word from string", "second third",
@@ -128,9 +123,7 @@ public class CommandImplTest {
 	}
 
 	@Test
-	public void testGetParameterWithNothing() throws NoSuchMethodException,
-			NullPointerException, SecurityException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
+	public void testGetParameterWithNothing() throws Exception {
 		testClass = new CommandImpl("add test");
 		Method splitToArguments = getMethodFromClass("splitToArguments",
 				String.class);
@@ -143,9 +136,7 @@ public class CommandImplTest {
 	}
 
 	@Test
-	public void testGetParameterWithOneWord() throws NoSuchMethodException,
-			SecurityException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
+	public void testGetParameterWithOneWord() throws Exception {
 		testClass = new CommandImpl("add hello --tag test");
 		Method splitToArguments = getMethodFromClass("splitToArguments",
 				String.class);
@@ -157,10 +148,7 @@ public class CommandImplTest {
 	}
 
 	@Test
-	public void testGetParameterWithMultipleWords()
-			throws NoSuchMethodException, NullPointerException,
-			SecurityException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
+	public void testGetParameterWithMultipleWords() throws Exception {
 		testClass = new CommandImpl("add test multiple --tag important");
 		Method splitToArguments = getMethodFromClass("splitToArguments",
 				String.class);
@@ -173,9 +161,7 @@ public class CommandImplTest {
 	}
 
 	@Test
-	public void testGetParametersWithSingleDash() throws NoSuchMethodException,
-			NullPointerException, SecurityException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
+	public void testGetParametersWithSingleDash() throws Exception {
 		testClass = new CommandImpl("add test -a single");
 		Method splitToArguments = getMethodFromClass("splitToArguments",
 				String.class);
@@ -188,9 +174,7 @@ public class CommandImplTest {
 	}
 
 	@Test
-	public void testGetParametersWithTwoDashes() throws IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException,
-			NoSuchMethodException, NullPointerException, SecurityException {
+	public void testGetParametersWithTwoDashes() throws Exception {
 		testClass = new CommandImpl("add test -a multiple dashes --tag test");
 		Method splitToArguments = getMethodFromClass("splitToArguments",
 				String.class);
