@@ -59,12 +59,12 @@ public class DBConfig {
 	}
 	
 	/*****************************
-	 * JSON methods
+	 * Convert to string
 	 *****************************/
 	
-	private static String toJSON(DBConfig dBConfig) {
+	public static String toString(DBConfig dBConfig) {
 	}
 	
-	private static DBConfig fromJSON(String jSON) {
+	private static String[] getTypeFromEntry(String entry) {
 	}
 }
