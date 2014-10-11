@@ -37,6 +37,14 @@ public class DBConfig {
 		this.className = className;
 		this.type = type;
 	}
+	
+	public String getClassName() {
+		return className;
+	}
+	
+	public String[] getType() {
+		return type;
+	}
 
 	/**
 	 * Initializes all the connections to the databases
