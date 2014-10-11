@@ -75,9 +75,9 @@ public class DBConfig {
 			 * the layer.
 			 */
 			config = new TextDBConnector(FILENAME);
-			List<String> jsonConfigList = config.read();
+			List<String> configList = config.read();
 
-			for (String s : jsonConfigList) {
+			for (String s : configList) {
 				DBConfig config = DBConfig.fromString(s);
 				config.initDB();
 			}
