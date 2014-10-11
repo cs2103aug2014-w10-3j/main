@@ -29,6 +29,14 @@ public class DBConfig {
 	
 	private static final int FIRST_WORD = 0;
 	private static final int TYPE_ARRAY = 1;
+	
+	private String className;
+	private String[] type;
+
+	public DBConfig(String className, String[] type) {
+		this.className = className;
+		this.type = type;
+	}
 
 	/**
 	 * Initializes all the connections to the databases
