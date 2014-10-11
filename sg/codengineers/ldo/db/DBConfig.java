@@ -56,6 +56,22 @@ public class DBConfig {
 	public String[] getType() {
 		return type;
 	}
+	
+	/**
+	 * Initialize the different types of database connectors
+	 * that a class can have
+	 */
+	private void initDB() {
+		List<DBConnector> connectorList = new ArrayList<DBConnector>();
+
+		for (String s : type) {
+			if (s == "textfile") {
+				connectorList.add(new TextDBConnector(className));
+			}
+		}
+		
+		classToConnector.put(className, connectorList);
+	}
 
 	/**
 	 * Initializes all the connections to the databases
