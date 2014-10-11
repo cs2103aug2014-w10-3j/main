@@ -65,7 +65,7 @@ public class DBConfig {
 	 * @return A mapping of the text representation of the
 	 * class name to the database connector that it needs
 	 */
-	public static Map<String, DBConnector> initDatabases() {
+	public static Map<String, List<DBConnector>> initDatabases() {
 		if (!isInitialized) {
 
 			/* 
