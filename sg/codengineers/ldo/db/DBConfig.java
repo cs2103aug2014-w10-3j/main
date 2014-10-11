@@ -92,6 +92,12 @@ public class DBConfig {
 			 */
 			config = new TextDBConnector(FILENAME);
 			List<String> configList = config.read();
+			
+			// Use the default settings if there isn't any
+			// existing settings
+			if (configList.isEmpty()) {
+				configList = addDefaultSettings();
+			}
 
 			for (String s : configList) {
 				DBConfig config = DBConfig.fromString(s);
@@ -102,6 +108,10 @@ public class DBConfig {
 		}
 
 		return classToConnector;
+	}
+	
+	private static List<String> addDefaultSettings() {
+		
 	}
 	
 	/*****************************
