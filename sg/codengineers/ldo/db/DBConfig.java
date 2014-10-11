@@ -70,6 +70,12 @@ public class DBConfig {
 		return dBConfig.getClassName()+ " " + types;
 	}
 	
+	public static DBConfig fromString(String entry) {
+		String className = getClassFromEntry(entry);
+		String[] typeArray = getTypeFromEntry(entry);
+		return new DBConfig(className, typeArray);
+	}
+	
 	private static String arrayToString(String[] array) {
 		StringBuilder builder = new StringBuilder();
 		
