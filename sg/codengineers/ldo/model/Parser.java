@@ -18,5 +18,5 @@ public interface Parser {
 	 *             Throws an IllegalArgumentException when user input is not a
 	 *             valid command.
 	 */
-	public Command Parse(String userInput) throws Exception;
+	public Command parse(String userInput) throws Exception;
 }
