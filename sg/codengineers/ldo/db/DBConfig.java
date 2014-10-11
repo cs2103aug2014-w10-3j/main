@@ -21,7 +21,7 @@ public class DBConfig {
 
 	// Essential information for the configuration of the database
 	private static DBConnector config;
-	private static Map<String, DBConnector> classToConnector;
+	private static Map<String, List<DBConnector>> classToConnector;
 	private static boolean isInitialized = false;
 	
 	// Filename of the config file
