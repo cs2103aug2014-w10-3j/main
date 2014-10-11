@@ -15,25 +15,25 @@ public interface DBConnector {
 	 * A create method to enter new data into the
 	 * database.
 	 * 
-	 * @param jsonData The data to be entered. It 
-	 * must already be converted to JSON format using
-	 * the toJSON implementation within the model
+	 * @param Data The data to be entered. It 
+	 * must already be converted to string format using
+	 * the toString implementation within the model
 	 * @return Returns a boolean value indicating the
 	 * success or failure of the method
 	 */
-	public boolean create(String jsonData);
+	public boolean create(String Data);
 
 	/**
 	 * An update method that allows each entry in the
 	 * database to be updated.
 	 * 
-	 * @param jsonData The data to be updated. It 
-	 * must already be converted to JSON format using
-	 * the toJSON implementation within the model
+	 * @param Data The data to be updated. It 
+	 * must already be converted to string format using
+	 * the toString implementation within the model
 	 * @return Returns a boolean value indicating the
 	 * success or failure of the method
 	 */
-	public boolean update(String jsonData);
+	public boolean update(String Data);
 	
 	/**
 	 * A method that retrieves all entries from the
