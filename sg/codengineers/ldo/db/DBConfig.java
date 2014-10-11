@@ -66,6 +66,9 @@ public class DBConfig {
 	 *****************************/
 	
 	public static String toString(DBConfig dBConfig) {
+		String types = arrayToString(dBConfig.getType());		
+		return dBConfig.getClassName()+ " " + types;
+	}
 	}
 	
 	private static String[] getTypeFromEntry(String entry) {
