@@ -26,6 +26,9 @@ public class DBConfig {
 	
 	// Filename of the config file
 	private static final String FILENAME = "DBConfig";
+	
+	private static final int FIRST_WORD = 0;
+	private static final int TYPE_ARRAY = 1;
 
 	/**
 	 * Initializes all the connections to the databases
