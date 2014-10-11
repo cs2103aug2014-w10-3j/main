@@ -47,5 +47,5 @@ public interface Command {
 	 * @return An Iterator that is able to iterate through all the additional
 	 *         arguments
 	 */
-	public Iterator<AdditionalArgument> getIterator();
+	public Iterator<AdditionalArgument> getAdditionalArguments();
 }

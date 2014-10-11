@@ -73,7 +73,7 @@ public class CommandImpl implements Command {
 	 * 
 	 * @return an iterator containing all the additional arguments
 	 */
-	public Iterator<AdditionalArgument> getIterator() {
+	public Iterator<AdditionalArgument> getAdditionalArguments() {
 		return _additionalArguments.iterator();
 	}
 

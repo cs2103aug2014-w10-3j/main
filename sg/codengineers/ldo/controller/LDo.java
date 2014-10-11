@@ -43,15 +43,15 @@ public class LDo {
 		CommandType commandType = command.getCommandType();
 		switch (commandType){
 			case CREATE :
-				return logic.createTask(command.getPrimaryOperand(), command.getIterator());
+				return logic.createTask(command.getPrimaryOperand(), command.getAdditionalArguments());
 			case DELETE :
-				return logic.deleteTask(command.getPrimaryOperand(), command.getIterator());
+				return logic.deleteTask(command.getPrimaryOperand(), command.getAdditionalArguments());
 			case UPDATE :
-				return logic.updateTask(command.getPrimaryOperand(), command.getIterator());
+				return logic.updateTask(command.getPrimaryOperand(), command.getAdditionalArguments());
 			case RETRIEVE :
-				return logic.retrieveTask(command.getPrimaryOperand(), command.getIterator());
+				return logic.retrieveTask(command.getPrimaryOperand(), command.getAdditionalArguments());
 			case SHOW :
-				return logic.showTasks(command.getIterator());
+				return logic.showTasks(command.getAdditionalArguments());
 			default :
 				throw new Exception("Invalid command.");
 		}
