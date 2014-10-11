@@ -88,8 +88,13 @@ public class DBConfig {
 		builder.deleteCharAt(builder.length() - 1);
 		return builder.toString();
 	}
+	
+	private static String getClassFromEntry(String entry) {
+		return entry.trim().split(" ", 2)[FIRST_WORD];
 	}
 	
 	private static String[] getTypeFromEntry(String entry) {
+		String types = entry.trim().split(" ", 2)[TYPE_ARRAY];
+		return types.split(",");
 	}
 }
