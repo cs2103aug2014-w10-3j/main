@@ -111,7 +111,12 @@ public class DBConfig {
 	}
 	
 	private static List<String> addDefaultSettings() {
+		String defaultSettings = "Text textfile";
+		config.create(defaultSettings);
 		
+		List<String> settings = new ArrayList<String>();
+		settings.add(defaultSettings);
+		return settings;
 	}
 	
 	/*****************************
