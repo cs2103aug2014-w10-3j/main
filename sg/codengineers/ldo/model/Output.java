@@ -13,8 +13,11 @@ public interface Output {
 	 * 
 	 * @param result
 	 *            Result from the execution of command
+	 * @throws Exception
+	 *             Throws an Illegal Argument Exception when command type of
+	 *             result is invalid
 	 */
-	public void displayResult(Result result);
+	public void displayResult(Result result) throws Exception;
 
 	/**
 	 * Displays an error message to the user

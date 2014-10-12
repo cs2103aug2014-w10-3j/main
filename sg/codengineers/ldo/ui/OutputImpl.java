@@ -2,7 +2,6 @@ package sg.codengineers.ldo.ui;
 
 import java.util.Iterator;
 
-import sg.codengineers.ldo.model.Command;
 import sg.codengineers.ldo.model.Command.CommandType;
 import sg.codengineers.ldo.model.Output;
 import sg.codengineers.ldo.model.Result;
@@ -32,15 +31,17 @@ public class OutputImpl implements Output {
 	private Result				_result;
 	private Iterator<Task>		_taskItr;
 
-	@Override
 	/**
 	 * Displays the result to user
 	 * 
 	 * @param result
-	 * 			Result from the executed command
+	 *            Result from the executed command
+	 * @throws Exception
+	 *             Throws an IllegalArgumentException when the commandType of
+	 *             the result is INVALID
 	 */
-	public void displayResult(Result result) {
-		// TODO Auto-generated method stub
+	@Override
+	public void displayResult(Result result) throws Exception {
 		_result = result;
 		_taskItr = result.getTasksIterator();
 		CommandType commandType = _result.getCommandType();
@@ -54,14 +55,12 @@ public class OutputImpl implements Output {
 			case DELETE :
 				feedbackForDelete();
 				break;
-			case RETRIEVE :
-				feedbackForRetrieve();
-				break;
 			case SHOW :
 				feedbackForShow();
 				break;
 			default:
-				stub();
+				throw new IllegalArgumentException(
+						"Command Type Invalid");
 		}
 	}
 
@@ -71,6 +70,8 @@ public class OutputImpl implements Output {
 	}
 
 	private void feedbackForUpdate() {
+		Task completedTask = _taskItr.next();
+		showToUser(String.format(UPDATED_MESSAGE,completedTask.getName()));
 		// TODO Auto-generated method stub
 		stub();
 	}
@@ -78,13 +79,9 @@ public class OutputImpl implements Output {
 	private void feedbackForDelete() {
 		Task completedTask = _taskItr.next();
 		stub();
-//		showToUser(String.format(DELETED_MESSAGE, completedTask.getName()));
+		// showToUser(String.format(DELETED_MESSAGE, completedTask.getName()));
 	}
 
-	private void feedbackForRetrieve() {
-		// TODO Auto-generated method stub
-		stub();
-	}
 
 	private void feedbackForShow() {
 		// TODO Auto-generated method stub
@@ -129,7 +126,7 @@ public class OutputImpl implements Output {
 	 * today, the NO_TASK_TODAY_MESSAGE will be shown instead
 	 */
 	private void displayTodaysTask() {
-		//TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 		showToUser(NO_TASK_TODAY_MESSAGE);
 	}
 

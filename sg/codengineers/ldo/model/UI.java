@@ -10,7 +10,7 @@ public interface UI {
 
 	public String readFromUser();
 
-	public void showToUser(Result result);
+	public void showToUser(Result result) throws Exception;
 
 	public void showToUser(String message);
 

@@ -17,7 +17,7 @@ public class UIImpl implements UI {
 	}
 
 	@Override
-	public void showToUser(Result result) {
+	public void showToUser(Result result) throws Exception {
 		_output = new OutputImpl();
 		_output.displayResult(result);
 	}
