@@ -10,5 +10,19 @@ package sg.codengineers.ldo.db;
  */
 
 public class TextDBConnector implements DBConnector {
+
+	private String filename;
+	private File file;
+	private List<String> dataList;
+
+	/**
+	 * Constructor
+	 * @param filename The name of the file to save the data to
+	 */
+	public TextDBConnector(String filename) {
+		this.filename = filename;
+		initFile();
+		dataList = read();
+	}
 	
 }
