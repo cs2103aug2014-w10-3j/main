@@ -18,10 +18,8 @@ public interface DBConnector {
 	 * @param data The data to be entered. It 
 	 * must already be converted to string format using
 	 * the toString implementation within the model
-	 * @return Returns a boolean value indicating the
-	 * success or failure of the method
 	 */
-	public boolean create(String data);
+	public void create(String data);
 
 	/**
 	 * An update method that allows each entry in the
@@ -30,10 +28,8 @@ public interface DBConnector {
 	 * @param data The data to be updated. It 
 	 * must already be converted to string format using
 	 * the toString implementation within the model
-	 * @return Returns a boolean value indicating the
-	 * success or failure of the method
 	 */
-	public boolean update(String data);
+	public void update(String data);
 	
 	/**
 	 * A method that retrieves all entries from the
@@ -48,8 +44,6 @@ public interface DBConnector {
 	 * A method that deletes an entry from the database
 	 * 
 	 * @param id The unique identifier of the entry
-	 * @return Returns a boolean value indicating the
-	 * success or failure of the method
 	 */
-	public boolean delete(int id);
+	public void delete(int id);
 }
