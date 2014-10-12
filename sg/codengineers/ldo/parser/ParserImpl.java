@@ -10,14 +10,17 @@ import sg.codengineers.ldo.model.Command.CommandType;
 
 public class ParserImpl implements Parser {
 
-	private static String	CODE_FAULT		= "%1s in %2s component is not behaving according to how it should be";
-	private static String	BLANK_INPUT		= "Blank input not acceptable";
-	private static String	INVALID_COMMAND	= "Invalid command type entered";
-	private static String	HELP_EXPECTED	= "Help argument expected";
-	private static String	HELP_PLACEMENT	= "Help argument misplaced";
-	private static String	ARG_AFT_HELP	= "There should not be arguments after help";
-	private static String	NUMBER_EXPECTED	= "Primary operand should contain numbers!";
-	
+	private static String	CODE_FAULT			= "%1s in %2s component is not behaving according to how it should be";
+	private static String	BLANK_INPUT			= "Blank input not acceptable";
+	private static String	INVALID_COMMAND		= "Invalid command type entered";
+	private static String	HELP_EXPECTED		= "Help argument expected";
+	private static String	HELP_PLACEMENT		= "Help argument misplaced";
+	private static String	ARG_AFT_HELP		= "There should not be arguments after help";
+	private static String	NUMBER_EXPECTED		= "Primary operand should contain numbers!";
+	private static String	INVALID_ARGUMENT	= "Invalid additional argument entered";
+	private static String	INVALID_OPERAND		= "Operand should not be present after help";
+	private static String	OPERAND_EXPECTED	= "Operand should follow additional argument %1s";
+
 	private String			_userInput;
 	private Command			_resultingCommand;
 	private boolean			_isEmptyPriOp;
@@ -59,38 +62,36 @@ public class ParserImpl implements Parser {
 			throw new Exception(String.format(CODE_FAULT, "getPrimaryOperand",
 					"CommandImpl"));
 		}
-		
+
 		if (priOp.trim().equals("")) {
 			_isEmptyPriOp = true;
 		}
 		else {
 			_isEmptyPriOp = false;
 		}
-		
+
 		if (_isEmptyPriOp) {
-			if(!hasHelpArgument()){
+			if (!hasHelpArgument()) {
 				throw new IllegalArgumentException(HELP_EXPECTED);
 			}
-			/*
-			* TODO in case we are not allowing
-			* <commandType> --help --<add arg> <operand>
-			
-			else{
-				if(hasMoreArguments()){
-					throw new IllegalArgumentException(ARG_AFT_HELP);
-				}
-			}
-			
-			*/
+		/*
+		 * TODO in case we are not allowing <commandType> --help --<add arg>
+		 * <operand> 
+		else { 
+			if (hasMoreArguments()) { 
+				throw newIllegalArgumentException(ARG_AFT_HELP); 
+			} 
 		}
-		
-		if(hasHelpArgument()){
+		*/
+		}
+
+		if (hasHelpArgument()) {
 			throw new IllegalArgumentException(HELP_PLACEMENT);
 		}
-		
-		if(_resultingCommand.getCommandType()!=CommandType.CREATE){
-			for(char c: priOp.toCharArray()){
-				if(!Character.isDigit(c)){
+
+		if (_resultingCommand.getCommandType() != CommandType.CREATE) {
+			for (char c : priOp.toCharArray()) {
+				if (!Character.isDigit(c)) {
 					throw new IllegalArgumentException(NUMBER_EXPECTED);
 				}
 			}
@@ -115,13 +116,39 @@ public class ParserImpl implements Parser {
 		return true;
 	}
 
-	private void validateAdditionalArguments() {
-
+	private void validateAdditionalArguments() throws Exception {
+		Iterator<AdditionalArgument> addArgs = _resultingCommand
+				.getAdditionalArguments();
+		while (addArgs.hasNext()) {
+			validateArgument(addArgs.next());
+		}
 	}
 
-	private void validateArgument() throws Exception {
-		if (_resultingCommand.getCommandType() == CommandType.INVALID) {
-			throw new IllegalArgumentException(INVALID_COMMAND);
+	private void validateArgument(AdditionalArgument arg) throws Exception {
+		if (arg == null) {
+			throw new Exception(String.format(CODE_FAULT,
+					"getAdditionalArguments", "commandImpl"));
+		}
+		ArgumentType argType = arg.getArgumentType();
+		String operand = arg.getOperand();
+		if (argType == null) {
+			throw new Exception(String.format(CODE_FAULT,
+					"getAdditionalArguments", "commandImpl"));
+		}
+		if (argType == ArgumentType.INVALID) {
+			throw new Exception(INVALID_ARGUMENT);
+		}
+		if (argType == ArgumentType.HELP) {
+			if (!operand.isEmpty() || operand != null) {	// TODO: Which should
+															// it be? null or
+															// empty
+				throw new Exception(INVALID_OPERAND);
+			}
+		}
+		else {
+			if (operand.isEmpty()) {
+				throw new Exception(String.format(OPERAND_EXPECTED, argType));
+			}
 		}
 	}
 
