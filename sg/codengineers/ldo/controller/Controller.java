@@ -40,24 +40,28 @@ public class Controller {
 	}
 
 	public Result executeCommand() throws Exception {
-		CommandType commandType = command.getCommandType();
-		switch (commandType) {
-		case CREATE:
-			return logic.createTask(command.getPrimaryOperand(),
-					command.getIterator());
-		case DELETE:
-			return logic.deleteTask(command.getPrimaryOperand(),
-					command.getIterator());
-		case UPDATE:
-			return logic.updateTask(command.getPrimaryOperand(),
-					command.getIterator());
-		case RETRIEVE:
-			return logic.retrieveTask(command.getPrimaryOperand(),
-					command.getIterator());
-		case SHOW:
-			return logic.showTasks(command.getIterator());
-		default:
-			throw new Exception("Invalid command.");
+		try{
+			CommandType commandType = command.getCommandType();
+			switch (commandType) {
+				case CREATE:
+					return logic.createTask(command.getPrimaryOperand(),
+							command.getIterator());
+				case DELETE:
+					return logic.deleteTask(command.getPrimaryOperand(),
+							command.getIterator());
+				case UPDATE:
+					return logic.updateTask(command.getPrimaryOperand(),
+							command.getIterator());
+				case RETRIEVE:
+					return logic.retrieveTask(command.getPrimaryOperand(),
+							command.getIterator());
+				case SHOW:
+					return logic.showTasks(command.getIterator());
+				default:
+					throw new Exception("Invalid command.");
+			}
+		} catch (Exception e){
+			output.displayError(e.getMessage(), e);
 		}
 	}
 }
