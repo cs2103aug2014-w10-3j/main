@@ -27,5 +27,22 @@ public class TextDBConnector implements DBConnector {
 		initFile();
 		dataList = read();
 	}
+
+	/**
+	 * Initializes the file to make sure it exist before any IO
+	 * operations are performed on it. Create a new file with the
+	 * supplied filename if the file does not already exist
+	 */
+	private void initFile() {
+		try {
+			file = new File(filename);
+
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 }
