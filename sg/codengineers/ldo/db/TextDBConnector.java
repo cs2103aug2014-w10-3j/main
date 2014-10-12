@@ -78,6 +78,29 @@ public class TextDBConnector implements DBConnector {
 	}
 
 	@Override
+	public List<String> read(){
+		try {			
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			String line;
+			
+			// Defensive check
+			if (dataList == null) {
+				dataList = new ArrayList<String>();
+			}
+			
+			while ((line = br.readLine()) != null) {
+				dataList.add(line);
+			}
+
+			br.close();
+			return dataList;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
 	public void delete(int id) {
 
 	}
