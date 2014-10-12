@@ -44,5 +44,10 @@ public class TextDBConnector implements DBConnector {
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public void create(String data) {
+		write(data);
+	}
 	
 }
