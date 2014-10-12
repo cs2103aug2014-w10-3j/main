@@ -30,6 +30,8 @@ public class DBConfig {
 	private static final int FIRST_WORD = 0;
 	private static final int TYPE_ARRAY = 1;
 	
+	private static final String DEFAULT_SETTING = "Text textfile";
+	
 	private String className;
 	private String[] type;
 
@@ -111,11 +113,10 @@ public class DBConfig {
 	}
 	
 	private static List<String> addDefaultSettings() {
-		String defaultSettings = "Text textfile";
-		config.create(defaultSettings);
+		config.create(DEFAULT_SETTING);
 		
 		List<String> settings = new ArrayList<String>();
-		settings.add(defaultSettings);
+		settings.add(DEFAULT_SETTING);
 		return settings;
 	}
 	
