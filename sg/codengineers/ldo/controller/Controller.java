@@ -11,8 +11,6 @@ import sg.codengineers.ldo.ui.InputImpl;
 import sg.codengineers.ldo.ui.OutputImpl;
 
 public class Controller {
-	// parser
-	Command command;
 	// logic
 	Logic logic;
 	// ui
@@ -27,10 +25,17 @@ public class Controller {
 
 	public void run() {
 		try {
+			Command welcomeCommand, command;
+			Result result;
+			
+			welcomeCommand = new CommandImpl("show welcome");
+			result = executeCommand(welcomeCommand);
+			output.displayResult(result);
+			
 			while (true) {
 				String userInput = input.readFromUser();
 				command = new CommandImpl(userInput);
-				Result result = executeCommand();
+				result = executeCommand(command);
 				output.displayResult(result);
 			}
 		} catch (Exception e) {
@@ -39,7 +44,7 @@ public class Controller {
 		}
 	}
 
-	public Result executeCommand() throws Exception {
+	public Result executeCommand(Command command) throws Exception {
 		CommandType commandType = command.getCommandType();
 		switch (commandType) {
 			case CREATE:
