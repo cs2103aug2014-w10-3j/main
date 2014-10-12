@@ -50,6 +50,11 @@ public class TextDBConnector implements DBConnector {
 		write(data);
 	}
 
+	@Override
+	public void update(String jsonData) {
+		
+	}
+
 	public void write(String data) {
 		try {
 	
