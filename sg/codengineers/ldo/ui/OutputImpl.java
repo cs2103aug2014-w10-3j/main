@@ -18,14 +18,16 @@ public class OutputImpl implements Output {
 	/* Constants */
 
 	/* Message Strings */
-	private static final String	CREATED_MESSAGE			= "Added %1s\n";
-	private static final String	UPDATED_MESSAGE			= "Updated %1s with %2s\n";
-	private static final String	DELETED_MESSAGE			= "Deleted %1s\n";
-	private static final String	STUB_MESSAGE			= "This module is still under development.\n";
+	private static final String	CREATED_MESSAGE	= "Added %1s\n";
+	private static final String	UPDATED_MESSAGE	= "Updated %1s\n";
+	private static final String	DELETED_MESSAGE	= "Deleted %1s\n";
+	private static final String	STUB_MESSAGE	= "This module is still under development.\n";
+	private static final String	TASK			= "%1d. %1s ID:%2d\n";
 
 	/* Welcome messages */
-	private static final String	PROGRAM_NAME			= "L'Do";
-	private static final String	NO_TASK_TODAY_MESSAGE	= "There are no tasks for today!\n";
+	private static final String	PROGRAM_NAME	= "L'Do";
+	private static final String	NO_TASK_TODAY	= "There are no tasks for today!\n";
+	private static final String	TODAYS_TASK		= "Here are your tasks for today:\n";
 
 	/* Member Variables */
 	private Result				_result;
@@ -71,27 +73,37 @@ public class OutputImpl implements Output {
 
 	private void feedbackForUpdate() {
 		Task completedTask = _taskItr.next();
-		showToUser(String.format(UPDATED_MESSAGE,completedTask.getName()));
-		// TODO Auto-generated method stub
-		stub();
+		showToUser(String.format(UPDATED_MESSAGE, completedTask.getName()));
 	}
 
 	private void feedbackForDelete() {
 		Task completedTask = _taskItr.next();
-		stub();
-		// showToUser(String.format(DELETED_MESSAGE, completedTask.getName()));
+		showToUser(String.format(DELETED_MESSAGE, completedTask.getName()));
 	}
 
-
+	/**
+	 * Method will display all the tasks as requested by user. The format for
+	 * display will be as such:
+	 * 
+	 * Showing all tasks 1. <Task Name> <Task's Unique ID> 2. <Task Name>
+	 * <Task's Unique ID> 3. <Task Name> <Task's Unique ID>
+	 */
 	private void feedbackForShow() {
-		// TODO Auto-generated method stub
-		stub();
+		int counter = 1;
+		showToUser("Showing ");	// TODO Include what type it should be showing
+		while (_taskItr.hasNext()) {
+			Task toPrint = _taskItr.next();
+			showToUser(String.format(TASK, counter, toPrint.getName(),
+					toPrint.getId()));
+		}
 	}
 
 	@Override
-	public void displayError(String message, Exception e) {
-		// TODO Auto-generated method stub
-		stub();
+	public void displayException(Exception e) {
+		if (e.getMessage() != null) {
+			showToUser(e.getMessage() + "\n");
+		}
+		e.printStackTrace();
 	}
 
 	@Override
@@ -127,7 +139,14 @@ public class OutputImpl implements Output {
 	 */
 	private void displayTodaysTask() {
 		// TODO Auto-generated method stub
-		showToUser(NO_TASK_TODAY_MESSAGE);
+		boolean hasTasksToday=false;
+		if(hasTasksToday){
+			showToUser(TODAYS_TASK);
+			//Iterate over task list and print.
+		}
+		else{
+			showToUser(NO_TASK_TODAY);	
+		}
 	}
 
 	/**
