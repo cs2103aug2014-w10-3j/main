@@ -76,4 +76,9 @@ public class TextDBConnector implements DBConnector {
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public void delete(int id) {
+
+	}
 }
