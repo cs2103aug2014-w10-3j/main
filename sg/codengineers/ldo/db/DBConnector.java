@@ -15,25 +15,25 @@ public interface DBConnector {
 	 * A create method to enter new data into the
 	 * database.
 	 * 
-	 * @param Data The data to be entered. It 
+	 * @param data The data to be entered. It 
 	 * must already be converted to string format using
 	 * the toString implementation within the model
 	 * @return Returns a boolean value indicating the
 	 * success or failure of the method
 	 */
-	public boolean create(String Data);
+	public boolean create(String data);
 
 	/**
 	 * An update method that allows each entry in the
 	 * database to be updated.
 	 * 
-	 * @param Data The data to be updated. It 
+	 * @param data The data to be updated. It 
 	 * must already be converted to string format using
 	 * the toString implementation within the model
 	 * @return Returns a boolean value indicating the
 	 * success or failure of the method
 	 */
-	public boolean update(String Data);
+	public boolean update(String data);
 	
 	/**
 	 * A method that retrieves all entries from the

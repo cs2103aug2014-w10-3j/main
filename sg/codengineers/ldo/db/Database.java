@@ -28,14 +28,14 @@ public class Database {
 	 * This allows a class to create a new instance which represents
 	 * one entry in the database and save it to the database
 	 * 
-	 * @param jsonData The data to be saved
+	 * @param data The data to be saved
 	 * @param className The name of the model in question
 	 */
-	public void create(String jsonData, String className) {
+	public void create(String data, String className) {
 		List<DBConnector> connectorList = classToConnector.get(className);
 		
 		for (DBConnector connector : connectorList) {
-			connector.create(jsonData);
+			connector.create(data);
 		}
 	}
 	
@@ -55,14 +55,14 @@ public class Database {
 	/**
 	 * This allows the model to update an entry in the database
 	 * 
-	 * @param jsonData The data to be updated
+	 * @param data The data to be updated
 	 * @param className The name of the model in question
 	 */
-	public void update(String jsonData, String className) {
+	public void update(String data, String className) {
 		List<DBConnector> connectorList = classToConnector.get(className);
 
 		for (DBConnector connector : connectorList) {
-			connector.update(jsonData);
+			connector.update(data);
 		}
 	}
 	
