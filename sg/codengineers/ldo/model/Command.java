@@ -11,7 +11,7 @@ import java.util.Iterator;
  */
 public interface Command {
 	public enum CommandType {
-		CREATE, RETRIEVE, UPDATE, DELETE, SHOW, INVALID
+		CREATE, UPDATE, DELETE, SHOW, INVALID
 	};
 
 	/**

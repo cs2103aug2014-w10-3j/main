@@ -31,13 +31,6 @@ public class CommandImplTest {
 	}
 
 	@Test
-	public void testGetCommandTypeForRetrieve() {
-		testClass = new CommandImpl("retrieve 1");
-		assertEquals("get command type for retrieve", CommandType.RETRIEVE,
-				testClass.getCommandType());
-	}
-
-	@Test
 	public void testGetCommandTypeForUpdate() {
 		testClass = new CommandImpl("update 1");
 		assertEquals("get command type for test", CommandType.UPDATE,

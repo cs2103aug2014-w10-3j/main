@@ -137,45 +137,9 @@ public class CommandImpl implements Command {
 	 */
 	private void populateCmdMap() {
 		_cmdMap.put("add", CommandType.CREATE);
-		_cmdMap.put("retrieve", CommandType.RETRIEVE);
 		_cmdMap.put("update", CommandType.UPDATE);
 		_cmdMap.put("delete", CommandType.DELETE);
 		_cmdMap.put("show", CommandType.SHOW);
-	}
-
-	/**
-	 * Gets the primary operand of this command from the array of parameters
-	 * from the user
-	 * 
-	 * @param parameters
-	 *            Parameters input by user
-	 * @return A String containing the primary operand
-	 */
-	private String getPrimaryOperand(String userInput) {
-		String primaryOperand = userInput.split("--|-", 2)[PRIMARY_OPERAND_POSITION];
-		if (_commandType != CommandType.SHOW
-				&& primaryOperand.trim().equals("")) {
-			throw new IllegalArgumentException();
-		}
-		return primaryOperand;
-	}
-
-	/**
-	 * Populates the list of additional arguments for this command
-	 * 
-	 * @param additionalArguments
-	 *            Parameters input by user from which the additional arguments
-	 *            and operands are extracted
-	 */
-	private void populateAdditionalArguments(String[] additionalArguments) {
-		_additionalArguments = new ArrayList<AdditionalArgument>();
-		String[] argument = new String[2];
-		int length = additionalArguments.length;
-		for (int i = 0; i < length; i++) {
-			argument = additionalArguments[i].split(" ", 2);
-			_additionalArguments.add(new AdditionalArgumentImpl(argument[0],
-					argument[1]));
-		}
 	}
 
 	/**
@@ -192,6 +156,19 @@ public class CommandImpl implements Command {
 			return CommandType.INVALID;
 		}
 		return commandType;
+	}
+
+	/**
+	 * Gets the primary operand of this command from the array of parameters
+	 * from the user
+	 * 
+	 * @param parameters
+	 *            Parameters input by user
+	 * @return A String containing the primary operand
+	 */
+	private String getPrimaryOperand(String userInput) {
+		String primaryOperand = userInput.split("--|-", 2)[PRIMARY_OPERAND_POSITION];
+		return primaryOperand.trim();
 	}
 
 	/**
@@ -225,6 +202,24 @@ public class CommandImpl implements Command {
 		}
 
 		return toReturn.toArray(new String[length]);
+	}
+
+	/**
+	 * Populates the list of additional arguments for this command
+	 * 
+	 * @param additionalArguments
+	 *            Parameters input by user from which the additional arguments
+	 *            and operands are extracted
+	 */
+	private void populateAdditionalArguments(String[] additionalArguments) {
+		_additionalArguments = new ArrayList<AdditionalArgument>();
+		String[] argument = new String[2];
+		int length = additionalArguments.length;
+		for (int i = 0; i < length; i++) {
+			argument = additionalArguments[i].split(" ", 2);
+			_additionalArguments.add(new AdditionalArgumentImpl(argument[0],
+					argument[1]));
+		}
 	}
 
 	/**
