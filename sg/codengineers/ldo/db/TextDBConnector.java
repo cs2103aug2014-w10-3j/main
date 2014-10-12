@@ -49,5 +49,26 @@ public class TextDBConnector implements DBConnector {
 	public void create(String data) {
 		write(data);
 	}
+
+	public void write(String data) {
+		try {
 	
+			BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
+			bw.write(data);
+			
+			// A new line represents the separation of data
+			bw.newLine();
+			bw.close();
+			
+			// Defensive code
+			if (dataList == null || dataList.isEmpty()) {
+				dataList = read();
+			}
+			
+			// The dataList would exist by now
+			dataList.add(data);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }
