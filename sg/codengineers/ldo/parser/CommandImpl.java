@@ -74,12 +74,7 @@ public class CommandImpl implements Command {
 	 * @return an iterator containing all the additional arguments
 	 */
 	public Iterator<AdditionalArgument> getAdditionalArguments() {
-		if (_additionalArguments !=null) {
-			return _additionalArguments.iterator();
-		}
-		else {
-			return null;
-		}
+		return _additionalArguments.iterator();
 	}
 
 	@Override
@@ -193,7 +188,7 @@ public class CommandImpl implements Command {
 	private String[] splitToArguments(String userInput) {
 		// Removing primary command and argument
 		userInput = removeFirstWord(userInput);
-		userInput = userInput.replace(_primaryOperand, "").trim();
+		userInput = userInput.replaceFirst(_primaryOperand, "").trim();
 
 		// Splitting string into additional argument along with operands
 		String[] additionalArguments = userInput.split("--+|-+");
@@ -248,6 +243,6 @@ public class CommandImpl implements Command {
 	 * @return The rest of the message after removing the first word
 	 */
 	private String removeFirstWord(String message) {
-		return message.replace(getFirstWord(message), "").trim();
+		return message.replaceFirst(getFirstWord(message), "").trim();
 	}
 }
