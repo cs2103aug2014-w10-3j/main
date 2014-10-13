@@ -62,8 +62,6 @@ public class Controller {
 			case RETRIEVE:
 				return logic.retrieveTask(command.getPrimaryOperand(),
 						command.getAdditionalArguments());
-			case SHOW:
-				return logic.showTasks(command.getAdditionalArguments());
 			default:
 				throw new Exception("Invalid command.");
 		}
