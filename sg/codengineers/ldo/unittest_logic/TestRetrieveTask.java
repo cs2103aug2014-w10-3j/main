@@ -3,21 +3,22 @@ package sg.codengineers.ldo.unittest_logic;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import junit.framework.TestCase;
-import sg.codengineers.ldo.model.*;
-import sg.codengineers.ldo.parser.AdditionalArgumentImpl;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestCreateTask extends TestCase {
+import sg.codengineers.ldo.model.AdditionalArgument;
+import sg.codengineers.ldo.model.Task;
+import sg.codengineers.ldo.parser.AdditionalArgumentImpl;
+
+public class TestRetrieveTask extends TestCase{
 	
 	public final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
 	
@@ -34,7 +35,7 @@ public class TestCreateTask extends TestCase {
 	public final String TEST_DESCRIPTION = "TESTDESCRIPTION";
 	public ArrayList<AdditionalArgument> aaList1,aaList2;
 
-	public TestCreateTask() throws Exception{
+	public TestRetrieveTask() throws Exception{
 		super();
 	}
 
