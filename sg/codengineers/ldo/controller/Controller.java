@@ -33,14 +33,17 @@ public class Controller {
 			output.displayResult(result);
 			
 			while (true) {
-				String userInput = input.readFromUser();
-				command = new CommandImpl(userInput);
-				result = executeCommand(command);
-				output.displayResult(result);
+				try{
+					String userInput = input.readFromUser();
+					command = new CommandImpl(userInput);
+					result = executeCommand(command);
+					output.displayResult(result);
+				} catch (Exception e) {
+					output.displayException(e);
+				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			output.displayError(e.getMessage(), e);
+			output.displayException(e);
 		}
 	}
 
