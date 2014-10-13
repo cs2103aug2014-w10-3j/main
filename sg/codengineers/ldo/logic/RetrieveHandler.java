@@ -67,13 +67,13 @@ public class RetrieveHandler extends Handler {
 	}
 	
 	private Result constructResult(Task task){
-		return new ResultImpl(CommandType.SHOW, 
+		return new ResultImpl(CommandType.RETRIEVE, 
 				new Time(System.currentTimeMillis()), 
 				task);	
 	}
 	
 	private Result constructResult(List<Task> list){
-		return 	new ResultImpl(CommandType.SHOW, 
+		return 	new ResultImpl(CommandType.RETRIEVE, 
 				new Time(System.currentTimeMillis()), 
 				list);
 	}

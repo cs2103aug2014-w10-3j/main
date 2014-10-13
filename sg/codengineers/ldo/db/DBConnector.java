@@ -1,6 +1,14 @@
 package sg.codengineers.ldo.db;
 
-import java.util.Date;
+/**
+ * This class is the connector between the text file and
+ * the database abstraction layer.
+ *
+ * @author Sean
+ */
+
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.*;
 import java.io.*;
 
@@ -12,11 +20,20 @@ public class DBConnector {
 	private String filename;
 	private File file;
 
+	/**
+	 * Constructor
+	 * @param filename The name of the file to save the data to
+	 */
 	public DBConnector(String filename) {
 		this.filename = filename;
 		initFile();
 	}
 
+	/**
+	 * Initializes the file to make sure it exist before any IO
+	 * operations are performed on it. Create a new file with the
+	 * supplied filename if the file does not already exist
+	 */
 	private void initFile() {
 		try {
 			file = new File(filename);
@@ -46,24 +63,31 @@ public class DBConnector {
 	}
 
 	private Task parseLine(String line) {
-		String[] lineArr = line.trim().split(" ");
+		String[] lineArr = line.trim().split(";");
 		Task t = new TaskImpl(Integer.parseInt(lineArr[0]), lineArr[1]);
 		t.setDescription(lineArr[2]);
-		//t.setTimeStart(new Date(lineArr[3]));
+		try {
+			DateFormat df = DateFormat.getDateTimeInstance();
+			t.setTimeStart(df.parse(lineArr[3]));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		return t;
 	}
 
 	public void write(Task task) {
 		try {
-			String line = task.getId() + " ";
-			line += line + task.getName() + " ";
-			line += line + task.getDescription() + " ";
-			line += line + task.getStartTime() + " ";
-			line += line + task.getEndTime() + " ";
-			line += line + task.getTag();
+			DateFormat df = DateFormat.getDateTimeInstance();
+			String line = task.getId() + ";";
+			line += task.getName() + ";";
+			line += task.getDescription() + ";";
+			line += df.format(task.getStartTime()) + ";";
+			line += df.format(task.getEndTime()) + ";";
+			line += task.getTag();
 
 			BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
 			bw.write(line);
+			bw.newLine();
 			bw.close();
 		} catch (IOException e) {
 			e.printStackTrace();
