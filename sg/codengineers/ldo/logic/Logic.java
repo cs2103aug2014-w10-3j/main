@@ -21,7 +21,16 @@ public class Logic {
 	private UpdateHandler updateHandler;
 	private DeleteHandler deleteHandler;
 	
-	public Logic(){
+	private static Logic instance = null;
+	
+	public static Logic getLogic(){
+		if(instance == null){
+			instance = new Logic();
+		}
+		return instance;
+	}
+	
+	private Logic(){
 		this._dbConnector = new DBConnector("LDoDatabase.txt");
 		initialize();
 	}
