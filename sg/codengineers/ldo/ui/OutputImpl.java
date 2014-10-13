@@ -139,13 +139,13 @@ public class OutputImpl implements Output {
 	 */
 	private void displayTodaysTask() {
 		// TODO Auto-generated method stub
-		boolean hasTasksToday=false;
-		if(hasTasksToday){
+		boolean hasTasksToday = false;
+		if (hasTasksToday) {
 			showToUser(TODAYS_TASK);
-			//Iterate over task list and print.
+			// Iterate over task list and print.
 		}
-		else{
-			showToUser(NO_TASK_TODAY);	
+		else {
+			showToUser(NO_TASK_TODAY);
 		}
 	}
 

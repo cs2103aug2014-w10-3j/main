@@ -16,21 +16,30 @@ public interface Result {
 	/**
 	 * Gets the command type of the result
 	 * 
-	 * @return A CommandType class representing the command type of the result
+	 * @return A CommandType object representing the command type of the result
 	 */
 	public CommandType getCommandType();
 
 	/**
+	 * Gets the primary operand of the result
+	 * 
+	 * @return A String object representing the primary operand of the command
+	 *         by user
+	 */
+	public String getPrimaryOperand();
+
+	/**
 	 * Gets the time stamp of the completion of the operation
 	 * 
-	 * @return A Time class representing the time of completion of the operation
+	 * @return A Time object representing the time of completion of the
+	 *         operation
 	 */
 	public Time getOperationTime();
 
 	/**
 	 * Gets an iterator of the tasks involved in the operation
 	 * 
-	 * @return An Iterator class containing all the tasks involved in the
+	 * @return An Iterator<Task> object containing all the tasks involved in the
 	 *         operation
 	 */
 	public Iterator<Task> getTasksIterator();
