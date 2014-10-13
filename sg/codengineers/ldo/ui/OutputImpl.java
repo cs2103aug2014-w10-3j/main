@@ -47,22 +47,27 @@ public class OutputImpl implements Output {
 		_result = result;
 		_taskItr = result.getTasksIterator();
 		CommandType commandType = _result.getCommandType();
-		switch (commandType) {
-			case CREATE :
-				feedbackForCreate();
-				break;
-			case UPDATE :
-				feedbackForUpdate();
-				break;
-			case DELETE :
-				feedbackForDelete();
-				break;
-			case RETRIEVE :
-				feedbackForShow();
-				break;
-			default:
-				throw new IllegalArgumentException(
-						"Command Type Invalid");
+		if(!_result.getMessage().isEmpty()) {
+			stub();
+		}
+		else {
+			switch (commandType) {
+				case CREATE :
+					feedbackForCreate();
+					break;
+				case UPDATE :
+					feedbackForUpdate();
+					break;
+				case DELETE :
+					feedbackForDelete();
+					break;
+				case RETRIEVE :
+					feedbackForShow();
+					break;
+				default:
+					throw new IllegalArgumentException(
+							"Command Type Invalid");
+			}
 		}
 	}
 
@@ -90,11 +95,12 @@ public class OutputImpl implements Output {
 	 */
 	private void feedbackForShow() {
 		int counter = 1;
-		showToUser("Showing ");	// TODO Include what type it should be showing
+		showToUser("Showing "+_result.getPrimaryOperand());
 		while (_taskItr.hasNext()) {
 			Task toPrint = _taskItr.next();
-			showToUser(String.format(TASK, counter, toPrint.getName(),
-					toPrint.getId()));
+			showToUser(String.format(TASK, counter, toPrint.getName()/*,
+					toPrint.getId() //TODO */));
+			counter++;
 		}
 	}
 
@@ -119,18 +125,10 @@ public class OutputImpl implements Output {
 	 * <Program Name>
 	 * <NO_TASK_TODAY_MESSAGE>
 	 */
-	public void displayWelcome() {
+	public void displayWelcome(Result result) {
+		_result = result;
 		showToUser(PROGRAM_NAME + "\n");
-		readExistingTasks();
 		displayTodaysTask();
-	}
-
-	/**
-	 * Reads the existing tasks from the current file
-	 */
-	private void readExistingTasks() {
-		// TODO Auto-generated method stub
-		stub();
 	}
 
 	/**
@@ -138,11 +136,20 @@ public class OutputImpl implements Output {
 	 * today, the NO_TASK_TODAY_MESSAGE will be shown instead
 	 */
 	private void displayTodaysTask() {
-		// TODO Auto-generated method stub
 		boolean hasTasksToday = false;
+		Iterator<Task> taskList = _result.getTasksIterator();
+		if (taskList!=null && taskList.hasNext()) {
+			hasTasksToday = true;
+		}
 		if (hasTasksToday) {
 			showToUser(TODAYS_TASK);
-			// Iterate over task list and print.
+			int counter =1;
+			while (taskList.hasNext()) {
+				Task toPrint = taskList.next();
+				showToUser(String.format(TASK, counter, toPrint.getName()/*,
+						toPrint.getId()//TODO*/));
+				counter++;
+			}
 		}
 		else {
 			showToUser(NO_TASK_TODAY);

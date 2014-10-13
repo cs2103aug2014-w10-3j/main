@@ -50,6 +50,8 @@ public interface UI {
 	 * <Program Name>
 	 * <NO_TASK_TODAY_MESSAGE>
 	 * 
+	 * @param result
+	 *            The list of task due today
 	 */
-	public void showWelcomeMessage();
+	public void showWelcomeMessage(Result result);
 }

@@ -34,6 +34,9 @@ public interface Output {
 
 	/**
 	 * Displays the welcome message to the user
+	 * 
+	 * @param result
+	 *            The list of task due today.
 	 */
-	public void displayWelcome();
+	public void displayWelcome(Result result);
 }
