@@ -74,7 +74,12 @@ public class CommandImpl implements Command {
 	 * @return an iterator containing all the additional arguments
 	 */
 	public Iterator<AdditionalArgument> getAdditionalArguments() {
-		return _additionalArguments.iterator();
+		if (_additionalArguments !=null) {
+			return _additionalArguments.iterator();
+		}
+		else {
+			return null;
+		}
 	}
 
 	@Override
