@@ -20,6 +20,7 @@ public class ResultImpl implements Result {
 
 	private CommandType	_commandType;
 	private String		_primaryOperand;
+	private String		_message;
 	private Time		_operationTime;
 	private List<Task>	_tasks;
 
@@ -41,6 +42,14 @@ public class ResultImpl implements Result {
 		_tasks.add(task);
 	}
 
+	public ResultImpl(CommandType commandType, String message, Time time) {
+		_commandType = commandType;
+		_primaryOperand = "";
+		_message = message;
+		_operationTime = time;
+		_tasks = new ArrayList<Task>();
+	}
+
 	/* Public Methods */
 	@Override
 	public CommandType getCommandType() {
@@ -50,6 +59,11 @@ public class ResultImpl implements Result {
 	@Override
 	public String getPrimaryOperand() {
 		return _primaryOperand;
+	}
+
+	@Override
+	public String getMessage() {
+		return _message;
 	}
 
 	@Override

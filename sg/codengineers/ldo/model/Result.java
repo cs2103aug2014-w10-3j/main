@@ -29,6 +29,15 @@ public interface Result {
 	public String getPrimaryOperand();
 
 	/**
+	 * Gets the message tagged to the Result class. This message is used for
+	 * --help calls
+	 * 
+	 * @return A String object containing all the help information for the
+	 *         commandType
+	 */
+	public String getMessage();
+
+	/**
 	 * Gets the time stamp of the completion of the operation
 	 * 
 	 * @return A Time object representing the time of completion of the
