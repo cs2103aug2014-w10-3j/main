@@ -26,6 +26,7 @@ public class CommandImpl implements Command {
 	private static boolean					_isInitialised;
 
 	/* Member Variables */
+	private String							_userInput;
 	private CommandType						_commandType;
 	private String							_primaryOperand;
 	private List<AdditionalArgument>		_additionalArguments;
@@ -37,6 +38,15 @@ public class CommandImpl implements Command {
 	}
 
 	/* Public Methods */
+
+	/**
+	 * Gets the initial string which contains the user input
+	 * 
+	 * @return a String object representing the initial user input string
+	 */
+	public String getUserInput() {
+		return _userInput;
+	}
 
 	/**
 	 * gets the Command type of this command.
@@ -63,8 +73,31 @@ public class CommandImpl implements Command {
 	 * 
 	 * @return an iterator containing all the additional arguments
 	 */
-	public Iterator<AdditionalArgument> getIterator() {
+	public Iterator<AdditionalArgument> getAdditionalArguments() {
 		return _additionalArguments.iterator();
+	}
+
+	@Override
+	/**
+	 * Checks for equality with another object
+	 * 
+	 * It will return true if and only if 
+	 * The object is a command object and
+	 * The object has the same user input string
+	 */
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		}
+		if (o == this) {
+			return true;
+		}
+		if (!(o instanceof Command)) {
+			return false;
+		}
+		Command other = (Command) o;
+		return other.getUserInput().equalsIgnoreCase(_userInput);
+
 	}
 
 	/* Private Methods */
@@ -87,11 +120,11 @@ public class CommandImpl implements Command {
 	 *            Input string received from user
 	 */
 	private void assignMemberVariables(String userInput) {
+		_userInput = userInput;
 		String commandWord = getFirstWord(userInput);
 		_commandType = getCommandType(commandWord);
 
-		if (_commandType != CommandType.SHOW
-				&& _commandType != CommandType.INVALID) {
+		if (_commandType != CommandType.INVALID) {
 			_primaryOperand = getPrimaryOperand(removeFirstWord(userInput));
 			String[] additionalArguments = splitToArguments(userInput);
 			populateAdditionalArguments(additionalArguments);
@@ -104,10 +137,27 @@ public class CommandImpl implements Command {
 	 */
 	private void populateCmdMap() {
 		_cmdMap.put("add", CommandType.CREATE);
-		_cmdMap.put("retrieve", CommandType.RETRIEVE);
 		_cmdMap.put("update", CommandType.UPDATE);
 		_cmdMap.put("delete", CommandType.DELETE);
-		_cmdMap.put("show", CommandType.SHOW);
+		_cmdMap.put("show", CommandType.RETRIEVE);
+		_cmdMap.put("retrieve", CommandType.RETRIEVE);
+		_cmdMap.put("view", CommandType.RETRIEVE);
+	}
+
+	/**
+	 * Gets the CommandType of the command based on user input
+	 * 
+	 * @param commandWord
+	 *            command word input by user
+	 * @return The equivalent CommandType, or INVALID if user has entered an
+	 *         invalid command
+	 */
+	private CommandType getCommandType(String commandWord) {
+		CommandType commandType = _cmdMap.get(commandWord.toLowerCase());
+		if (commandType == null) {
+			return CommandType.INVALID;
+		}
+		return commandType;
 	}
 
 	/**
@@ -119,7 +169,41 @@ public class CommandImpl implements Command {
 	 * @return A String containing the primary operand
 	 */
 	private String getPrimaryOperand(String userInput) {
-		return userInput.split("--|-", 2)[PRIMARY_OPERAND_POSITION];
+		String primaryOperand = userInput.split("--|-", 2)[PRIMARY_OPERAND_POSITION];
+		return primaryOperand.trim();
+	}
+
+	/**
+	 * Gets the parameters input by user. This parameters encompasses all values
+	 * namely the primary operand and additional arguments, except for the
+	 * command type. The method will split the user input by detecting dashes,
+	 * which is used to indicate a keyword for an additional argument from user
+	 * 
+	 * @param userInput
+	 *            Input from user
+	 * @return An Array of String each representing the parameters. The string
+	 *         is trimmed to ensure that there will be no leading or trailing
+	 *         white spaces.
+	 */
+	private String[] splitToArguments(String userInput) {
+		// Removing primary command and argument
+		userInput = removeFirstWord(userInput);
+		userInput = userInput.replaceFirst(_primaryOperand, "").trim();
+
+		// Splitting string into additional argument along with operands
+		String[] additionalArguments = userInput.split("--+|-+");
+		ArrayList<String> toReturn = new ArrayList<String>();
+		int length = additionalArguments.length;
+		for (int i = 0; i < additionalArguments.length; i++) {
+			if (!additionalArguments[i].equals("")) {
+				toReturn.add(additionalArguments[i].trim());
+			}
+			else {
+				length--;
+			}
+		}
+
+		return toReturn.toArray(new String[length]);
 	}
 
 	/**
@@ -141,55 +225,6 @@ public class CommandImpl implements Command {
 	}
 
 	/**
-	 * Gets the CommandType of the command based on user input
-	 * 
-	 * @param commandWord
-	 *            command word input by user
-	 * @return The equivalent CommandType, or INVALID if user has entered an
-	 *         invalid command
-	 */
-	private CommandType getCommandType(String commandWord) {
-		CommandType commandType = _cmdMap.get(commandWord.toLowerCase());
-		if (commandType == null) {
-			return CommandType.INVALID;
-		}
-		return commandType;
-	}
-
-	/**
-	 * Gets the parameters input by user. This parameters encompasses all values
-	 * namely the primary operand and additional arguments, except for the
-	 * command type. The method will split the user input by detecting dashes,
-	 * which is used to indicate a keyword for an additional argument from user
-	 * 
-	 * @param userInput
-	 *            Input from user
-	 * @return An Array of String each representing the parameters. The string
-	 *         is trimmed to ensure that there will be no leading or trailing
-	 *         white spaces.
-	 */
-	private String[] splitToArguments(String userInput) {
-		// Removing primary command and argument
-		userInput = removeFirstWord(userInput);
-		userInput = userInput.replace(_primaryOperand, "").trim();
-
-		// Splitting string into additional argument along with operands
-		String[] additionalArguments = userInput.split("--+|-+");
-		ArrayList<String> toReturn = new ArrayList<String>();
-		int length = additionalArguments.length;
-		for (int i = 0; i < additionalArguments.length; i++) {
-			if (!additionalArguments[i].equals("")) {
-				toReturn.add(additionalArguments[i].trim());
-			}
-			else {
-				length--;
-			}
-		}
-
-		return toReturn.toArray(new String[length]);
-	}
-
-	/**
 	 * Gets the first word from a String of message
 	 * 
 	 * @param message
@@ -208,6 +243,6 @@ public class CommandImpl implements Command {
 	 * @return The rest of the message after removing the first word
 	 */
 	private String removeFirstWord(String message) {
-		return message.replace(getFirstWord(message), "").trim();
+		return message.replaceFirst(getFirstWord(message), "").trim();
 	}
 }

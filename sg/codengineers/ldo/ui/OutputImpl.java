@@ -2,7 +2,6 @@ package sg.codengineers.ldo.ui;
 
 import java.util.Iterator;
 
-import sg.codengineers.ldo.model.Command;
 import sg.codengineers.ldo.model.Command.CommandType;
 import sg.codengineers.ldo.model.Output;
 import sg.codengineers.ldo.model.Result;
@@ -19,49 +18,56 @@ public class OutputImpl implements Output {
 	/* Constants */
 
 	/* Message Strings */
-	private static final String	CREATED_MESSAGE			= "Added %1s\n";
-	private static final String	UPDATED_MESSAGE			= "Updated %1s with %2s\n";
-	private static final String	DELETED_MESSAGE			= "Deleted %1s\n";
-	private static final String	STUB_MESSAGE			= "This module is still under development.\n";
+	private static final String	CREATED_MESSAGE	= "Added %1s\n";
+	private static final String	UPDATED_MESSAGE	= "Updated %1s\n";
+	private static final String	DELETED_MESSAGE	= "Deleted %1s\n";
+	private static final String	STUB_MESSAGE	= "This module is still under development.\n";
+	private static final String	TASK			= "%1d. %1s ID:%2d\n";
 
 	/* Welcome messages */
-	private static final String	PROGRAM_NAME			= "L'Do";
-	private static final String	NO_TASK_TODAY_MESSAGE	= "There are no tasks for today!\n";
+	private static final String	PROGRAM_NAME	= "L'Do";
+	private static final String	NO_TASK_TODAY	= "There are no tasks for today!\n";
+	private static final String	TODAYS_TASK		= "Here are your tasks for today:\n";
 
 	/* Member Variables */
 	private Result				_result;
 	private Iterator<Task>		_taskItr;
 
-	@Override
 	/**
 	 * Displays the result to user
 	 * 
 	 * @param result
-	 * 			Result from the executed command
+	 *            Result from the executed command
+	 * @throws Exception
+	 *             Throws an IllegalArgumentException when the commandType of
+	 *             the result is INVALID
 	 */
-	public void displayResult(Result result) {
-		// TODO Auto-generated method stub
+	@Override
+	public void displayResult(Result result) throws Exception {
 		_result = result;
 		_taskItr = result.getTasksIterator();
 		CommandType commandType = _result.getCommandType();
-		switch (commandType) {
-			case CREATE :
-				feedbackForCreate();
-				break;
-			case UPDATE :
-				feedbackForUpdate();
-				break;
-			case DELETE :
-				feedbackForDelete();
-				break;
-			case RETRIEVE :
-				feedbackForRetrieve();
-				break;
-			case SHOW :
-				feedbackForShow();
-				break;
-			default:
-				stub();
+		if(!_result.getMessage().isEmpty()) {
+			stub();
+		}
+		else {
+			switch (commandType) {
+				case CREATE :
+					feedbackForCreate();
+					break;
+				case UPDATE :
+					feedbackForUpdate();
+					break;
+				case DELETE :
+					feedbackForDelete();
+					break;
+				case RETRIEVE :
+					feedbackForShow();
+					break;
+				default:
+					throw new IllegalArgumentException(
+							"Command Type Invalid");
+			}
 		}
 	}
 
@@ -71,30 +77,39 @@ public class OutputImpl implements Output {
 	}
 
 	private void feedbackForUpdate() {
-		// TODO Auto-generated method stub
-		stub();
+		Task completedTask = _taskItr.next();
+		showToUser(String.format(UPDATED_MESSAGE, completedTask.getName()));
 	}
 
 	private void feedbackForDelete() {
 		Task completedTask = _taskItr.next();
-		stub();
-//		showToUser(String.format(DELETED_MESSAGE, completedTask.getName()));
+		showToUser(String.format(DELETED_MESSAGE, completedTask.getName()));
 	}
 
-	private void feedbackForRetrieve() {
-		// TODO Auto-generated method stub
-		stub();
-	}
-
+	/**
+	 * Method will display all the tasks as requested by user. The format for
+	 * display will be as such:
+	 * 
+	 * Showing all tasks 1. <Task Name> <Task's Unique ID> 2. <Task Name>
+	 * <Task's Unique ID> 3. <Task Name> <Task's Unique ID>
+	 */
 	private void feedbackForShow() {
-		// TODO Auto-generated method stub
-		stub();
+		int counter = 1;
+		showToUser("Showing "+_result.getPrimaryOperand());
+		while (_taskItr.hasNext()) {
+			Task toPrint = _taskItr.next();
+			showToUser(String.format(TASK, counter, toPrint.getName()/*,
+					toPrint.getId() //TODO */));
+			counter++;
+		}
 	}
 
 	@Override
-	public void displayError(String message, Exception e) {
-		// TODO Auto-generated method stub
-		stub();
+	public void displayException(Exception e) {
+		if (e.getMessage() != null) {
+			showToUser(e.getMessage() + "\n");
+		}
+		e.printStackTrace();
 	}
 
 	@Override
@@ -110,18 +125,10 @@ public class OutputImpl implements Output {
 	 * <Program Name>
 	 * <NO_TASK_TODAY_MESSAGE>
 	 */
-	public void displayWelcome() {
+	public void displayWelcome(Result result) {
+		_result = result;
 		showToUser(PROGRAM_NAME + "\n");
-		readExistingTasks();
 		displayTodaysTask();
-	}
-
-	/**
-	 * Reads the existing tasks from the current file
-	 */
-	private void readExistingTasks() {
-		// TODO Auto-generated method stub
-		stub();
 	}
 
 	/**
@@ -129,8 +136,24 @@ public class OutputImpl implements Output {
 	 * today, the NO_TASK_TODAY_MESSAGE will be shown instead
 	 */
 	private void displayTodaysTask() {
-		//TODO Auto-generated method stub
-		showToUser(NO_TASK_TODAY_MESSAGE);
+		boolean hasTasksToday = false;
+		Iterator<Task> taskList = _result.getTasksIterator();
+		if (taskList!=null && taskList.hasNext()) {
+			hasTasksToday = true;
+		}
+		if (hasTasksToday) {
+			showToUser(TODAYS_TASK);
+			int counter =1;
+			while (taskList.hasNext()) {
+				Task toPrint = taskList.next();
+				showToUser(String.format(TASK, counter, toPrint.getName()/*,
+						toPrint.getId()//TODO*/));
+				counter++;
+			}
+		}
+		else {
+			showToUser(NO_TASK_TODAY);
+		}
 	}
 
 	/**

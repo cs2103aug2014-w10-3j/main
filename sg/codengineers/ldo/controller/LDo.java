@@ -6,7 +6,7 @@ public class LDo {
 	public LDo(){
 		controller = new Controller();
 	}
-	
+
 	public void run(){
 		controller.run();
 	}

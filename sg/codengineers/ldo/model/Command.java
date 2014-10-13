@@ -11,8 +11,16 @@ import java.util.Iterator;
  */
 public interface Command {
 	public enum CommandType {
-		CREATE, RETRIEVE, UPDATE, DELETE, SHOW, INVALID
+		CREATE, UPDATE, DELETE, RETRIEVE, INVALID
 	};
+
+	/**
+	 * Gets the original user input
+	 * 
+	 * @return a string object representing the initial user input
+	 */
+	public String getUserInput();
+
 	/**
 	 * Gets the command type of the command.
 	 * 
@@ -23,6 +31,10 @@ public interface Command {
 
 	/**
 	 * Gets the primary operand of the command.
+	 * 
+	 * Note that, for the event of a show command, if it does not have a primary
+	 * operand (i.e. the command is simply show), the primary operand that will
+	 * be returned is an empty string (i.e. "")
 	 * 
 	 * @return A string containing the primary operand.
 	 */
@@ -35,5 +47,5 @@ public interface Command {
 	 * @return An Iterator that is able to iterate through all the additional
 	 *         arguments
 	 */
-	public Iterator<AdditionalArgument> getIterator();
+	public Iterator<AdditionalArgument> getAdditionalArguments();
 }
