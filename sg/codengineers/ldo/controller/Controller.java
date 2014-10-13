@@ -12,13 +12,13 @@ import sg.codengineers.ldo.ui.OutputImpl;
 
 public class Controller {
 	// logic
-	Logic logic;
+	private Logic logic;
 	// ui
-	Input input;
-	Output output;
+	private Input input;
+	private Output output;
 
 	public Controller() {
-		logic = new Logic();
+		logic = Logic.getLogic();
 		input = new InputImpl();
 		output = new OutputImpl();
 	}
