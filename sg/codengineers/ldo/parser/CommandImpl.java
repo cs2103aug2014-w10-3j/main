@@ -145,6 +145,8 @@ public class CommandImpl implements Command {
 		_cmdMap.put("update", CommandType.UPDATE);
 		_cmdMap.put("delete", CommandType.DELETE);
 		_cmdMap.put("show", CommandType.RETRIEVE);
+		_cmdMap.put("retrieve", CommandType.RETRIEVE);
+		_cmdMap.put("view", CommandType.RETRIEVE);
 	}
 
 	/**
