@@ -13,7 +13,10 @@ import sg.codengineers.ldo.model.Task;
 import sg.codengineers.ldo.logic.Filter;
 
 public abstract class Handler {
-	public SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+	
+	public static boolean DEBUG_MODE = true;
+	public static SimpleDateFormat FORMATTER = new SimpleDateFormat("dd/MM/yyyy");
+	
 	protected List<Task> _taskList;
 	
 	/**
@@ -37,15 +40,15 @@ public abstract class Handler {
 				task.setName(operand);
 				break;
 			case DEADLINE:
-				task.setDeadline(dateFormatter.parse(operand));
+				task.setDeadline(FORMATTER.parse(operand));
 				break;
 			case TIME:
 				String[] sOperand = operand.split("\\s+");
 				if(sOperand.length != 2){
 					break;
 				} else {
-					task.setTimeStart(dateFormatter.parse(sOperand[0]));
-					task.setTimeEnd(dateFormatter.parse(sOperand[1]));
+					task.setTimeStart(FORMATTER.parse(sOperand[0]));
+					task.setTimeEnd(FORMATTER.parse(sOperand[1]));
 				}
 				break;
 			case PRIORITY:
@@ -80,7 +83,7 @@ public abstract class Handler {
 				});
 				break;
 			case DEADLINE:
-				final Date deadline = dateFormatter.parse(operand);
+				final Date deadline = FORMATTER.parse(operand);
 				newList = filter(newList, new Filter<Task>(){
 					@Override
 					public boolean call(Task task){
@@ -95,8 +98,8 @@ public abstract class Handler {
 				if(sOperand.length != 2){
 					throw new IllegalArgumentException("Please specify both start date and end date");
 				} else {
-					final Date startDate = dateFormatter.parse(sOperand[0]);
-					final Date endDate = dateFormatter.parse(sOperand[1]);
+					final Date startDate = FORMATTER.parse(sOperand[0]);
+					final Date endDate = FORMATTER.parse(sOperand[1]);
 					newList = filter(newList, new Filter<Task>(){
 						@Override
 						public boolean call(Task task){
