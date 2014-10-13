@@ -19,19 +19,23 @@ import sg.codengineers.ldo.model.Command.CommandType;
 public class ResultImpl implements Result {
 
 	private CommandType	_commandType;
+	private String		_primaryOperand;
 	private Time		_operationTime;
 	private List<Task>	_tasks;
 
 	/* Constructors */
-	public ResultImpl(CommandType commandType, Time time,
-			List<Task> tasks) {
+	public ResultImpl(CommandType commandType, String primaryOperand,
+			Time time, List<Task> tasks) {
 		_commandType = commandType;
+		_primaryOperand = primaryOperand;
 		_operationTime = time;
 		_tasks = tasks;
 	}
 
-	public ResultImpl(CommandType commandType, Time time, Task task) {
+	public ResultImpl(CommandType commandType, String primaryOperand,
+			Time time, Task task) {
 		_commandType = commandType;
+		_primaryOperand = primaryOperand;
 		_operationTime = time;
 		_tasks = new ArrayList<Task>();
 		_tasks.add(task);
@@ -41,6 +45,11 @@ public class ResultImpl implements Result {
 	@Override
 	public CommandType getCommandType() {
 		return _commandType;
+	}
+
+	@Override
+	public String getPrimaryOperand() {
+		return _primaryOperand;
 	}
 
 	@Override

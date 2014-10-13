@@ -1,9 +1,9 @@
 package sg.codengineers.ldo.parser;
 
-import static org.junit.Assert.*;
-
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+
+import static org.junit.Assert.*;
 
 import org.junit.After;
 import org.junit.Before;
@@ -24,17 +24,28 @@ public class CommandImplTest {
 	public void cleanUp() {
 	}
 
+	/**
+	 * Tests for correct userInput.
+	 * The following test is used to ensure that the user input is properly
+	 * stored into the command Class
+	 */
+	@Test
+	public void testGetUserInput() throws Exception {
+		testClass = new CommandImpl("add test");
+		assertEquals("Checking getUserInput", "add test",
+				testClass.getUserInput());
+	}
+
+	/**
+	 * Tests for correct CommandType.
+	 * The following tests are used to test if the correct CommandType is
+	 * generated based on the available primary commands.
+	 */
+
 	@Test
 	public void testGetCommandTypeForAdd() {
 		testClass = new CommandImpl("add test");
 		assertEquals("get command type for add", CommandType.CREATE,
-				testClass.getCommandType());
-	}
-
-	@Test
-	public void testGetCommandTypeForRetrieve() {
-		testClass = new CommandImpl("retrieve 1");
-		assertEquals("get command type for retrieve", CommandType.RETRIEVE,
 				testClass.getCommandType());
 	}
 
@@ -53,9 +64,23 @@ public class CommandImplTest {
 	}
 
 	@Test
+	public void testGetCommandTypeForRetrieve() {
+		testClass = new CommandImpl("retrieve 1");
+		assertEquals("get command type for retrieve", CommandType.RETRIEVE,
+				testClass.getCommandType());
+	}
+
+	@Test
+	public void testGetCommandTypeForView() {
+		testClass = new CommandImpl("view 1");
+		assertEquals("get command type for view", CommandType.RETRIEVE,
+				testClass.getCommandType());
+	}
+
+	@Test
 	public void testGetCommandTypeForShow() {
 		testClass = new CommandImpl("show 1");
-		assertEquals("get command type for show", CommandType.SHOW,
+		assertEquals("get command type for show", CommandType.RETRIEVE,
 				testClass.getCommandType());
 	}
 
@@ -66,6 +91,11 @@ public class CommandImplTest {
 				testClass.getCommandType());
 	}
 
+	/**
+	 * Tests for correct primary operands.
+	 * The following tests are used to ensure that the appropriate strings are
+	 * allocated to the _primaryOperand field of each Command object.
+	 */
 	@Test
 	public void testGetPrimaryOperandForAdd() {
 		testClass = new CommandImpl("add test");
@@ -96,8 +126,15 @@ public class CommandImplTest {
 
 	@Test
 	public void testGetPrimaryOperandForShow() {
-		testClass = new CommandImpl("show 1");
-		assertEquals("get primary operand for show", null,
+		testClass = new CommandImpl("show all");
+		assertEquals("get primary operand for show", "all",
+				testClass.getPrimaryOperand());
+	}
+
+	@Test
+	public void testGetPrimaryOperandForShowBlank() {
+		testClass = new CommandImpl("show");
+		assertEquals("Get primary operand for show that has no operand", "",
 				testClass.getPrimaryOperand());
 	}
 
@@ -108,29 +145,135 @@ public class CommandImplTest {
 				testClass.getPrimaryOperand());
 	}
 
+	/**
+	 * Tests for appropriate AdditionalArgument List.
+	 * The following tests ensure that the _additionalArguments field is not
+	 * null. In the event that there are no additional arguments in the user's
+	 * input, the List should be empty, and not null.
+	 */
+
 	@Test
-	public void testGetFirstWord() throws NoSuchMethodException,
-			SecurityException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
+	public void testAddCommandAdditionalArgumentsForNull() throws Exception {
+		testClass = new CommandImpl("add test");
+		Field additionalArguments = testClass.getClass().getDeclaredField(
+				"_additionalArguments");
+		additionalArguments.setAccessible(true);
+		assertNotNull(additionalArguments);
+	}
+
+	@Test
+	public void testRetrieveWithoutPrimaryCommandAdditionalArgumentsForNull()
+			throws Exception {
+		testClass = new CommandImpl("show");
+		Field additionalArguments = testClass.getClass().getDeclaredField(
+				"_additionalArguments");
+		additionalArguments.setAccessible(true);
+		assertNotNull(additionalArguments);
+	}
+
+	@Test
+	public void testRetrieveCommandAdditionalArgumentsForNull()
+			throws Exception {
+		testClass = new CommandImpl("show all");
+		Field additionalArguments = testClass.getClass().getDeclaredField(
+				"_additionalArguments");
+		additionalArguments.setAccessible(true);
+		assertNotNull(additionalArguments);
+	}
+
+	@Test
+	public void testUpdateCommandAdditionalArgumentsForNull() throws Exception {
+		testClass = new CommandImpl("update 1");
+		Field additionalArguments = testClass.getClass().getDeclaredField(
+				"_additionalArguments");
+		additionalArguments.setAccessible(true);
+		assertNotNull(additionalArguments);
+	}
+
+	@Test
+	public void testDeleteCommandAdditionalArgumentsForNull() throws Exception {
+		testClass = new CommandImpl("delete 1");
+		Field additionalArguments = testClass.getClass().getDeclaredField(
+				"_additionalArguments");
+		additionalArguments.setAccessible(true);
+		assertNotNull(additionalArguments);
+	}
+
+	/**
+	 * Tests for equals method.
+	 * The following tests ensure that the equals method correctly checks for
+	 * equality between Command Objects. Command Objects are deemed equal iff
+	 * the object has the same user input string.
+	 */
+
+	@Test
+	public void testEqualsWithNull() {
+		testClass = new CommandImpl("add test");
+		assertFalse("Checking if equals compares correctly with null",
+				testClass.equals(null));
+	}
+
+	@Test
+	public void testEqualWithSelf() {
+		testClass = new CommandImpl("add test");
+		assertTrue("Checking if equals compares correctly with self",
+				testClass.equals(testClass));
+	}
+
+	@Test
+	public void testEqualsWithNonCommandObjects() {
+		testClass = new CommandImpl("add test");
+		assertFalse("Checking if equals compares correctly with other objects",
+				testClass.equals("test"));
+	}
+
+	@Test
+	public void testEqualsWithSameCommand() {
+		testClass = new CommandImpl("add test");
+		assertTrue("Checking if equals compares correctly with same object",
+				testClass.equals(new CommandImpl("add test")));
+	}
+
+	/**
+	 * Tests for private helper methods
+	 * The following tests are to ensure that all the helper methods in the
+	 * Command class is working properly. The method that each test is
+	 * concerned with is indicated above them with in a line of comment.
+	 */
+
+	// void populateCmdMap()
+	@Test
+	public void testPopulateCmdMap() throws Exception {
+		testClass = new CommandImpl("add test");
+		Field cmdMap = testClass.getClass().getDeclaredField("_cmdMap");
+		cmdMap.setAccessible(true);
+		assertNotNull("checking if cmdMap is null", cmdMap);
+
+	}
+
+	// String getFirstWord(String)
+	@Test
+	public void testGetFirstWord() throws Exception {
 		Method getFirstWord = getMethodFromClass("getFirstWord", String.class);
 		assertEquals("Getting first word from string", "first",
 				getFirstWord.invoke(testClass, "first second third"));
 	}
 
+	// String RemoveFirstWord(String)
+
+	// String removeFirstWord(String)
 	@Test
-	public void testRemoveFirstWord() throws NoSuchMethodException,
-			SecurityException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
+	public void testRemoveFirstWord() throws Exception {
 		Method removeFirstWord = getMethodFromClass("removeFirstWord",
 				String.class);
 		assertEquals("Removing first word from string", "second third",
 				removeFirstWord.invoke(testClass, "first second third"));
 	}
 
+	// String[] splitToArguments(String);
+	// String[] splitToArguments(String)
 	@Test
-	public void testGetParameterWithNothing() throws NoSuchMethodException,
-			NullPointerException, SecurityException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
+	public void testSplitToArgumentsWithNothing() throws Exception {
 		testClass = new CommandImpl("add test");
 		Method splitToArguments = getMethodFromClass("splitToArguments",
 				String.class);
@@ -143,9 +286,7 @@ public class CommandImplTest {
 	}
 
 	@Test
-	public void testGetParameterWithOneWord() throws NoSuchMethodException,
-			SecurityException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
+	public void testSplitToArgumentsWithOneWord() throws Exception {
 		testClass = new CommandImpl("add hello --tag test");
 		Method splitToArguments = getMethodFromClass("splitToArguments",
 				String.class);
@@ -157,10 +298,7 @@ public class CommandImplTest {
 	}
 
 	@Test
-	public void testGetParameterWithMultipleWords()
-			throws NoSuchMethodException, NullPointerException,
-			SecurityException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
+	public void testSplitToArgumentsWithMultipleWords() throws Exception {
 		testClass = new CommandImpl("add test multiple --tag important");
 		Method splitToArguments = getMethodFromClass("splitToArguments",
 				String.class);
@@ -173,9 +311,7 @@ public class CommandImplTest {
 	}
 
 	@Test
-	public void testGetParametersWithSingleDash() throws NoSuchMethodException,
-			NullPointerException, SecurityException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
+	public void testSplitToArgumentsWithSingleDash() throws Exception {
 		testClass = new CommandImpl("add test -a single");
 		Method splitToArguments = getMethodFromClass("splitToArguments",
 				String.class);
@@ -188,9 +324,7 @@ public class CommandImplTest {
 	}
 
 	@Test
-	public void testGetParametersWithTwoDashes() throws IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException,
-			NoSuchMethodException, NullPointerException, SecurityException {
+	public void testSplitToArgumentsWithTwoDashes() throws Exception {
 		testClass = new CommandImpl("add test -a multiple dashes --tag test");
 		Method splitToArguments = getMethodFromClass("splitToArguments",
 				String.class);
