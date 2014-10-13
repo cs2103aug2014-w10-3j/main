@@ -57,7 +57,7 @@ public class OutputImpl implements Output {
 			case DELETE :
 				feedbackForDelete();
 				break;
-			case SHOW :
+			case RETRIEVE :
 				feedbackForShow();
 				break;
 			default:

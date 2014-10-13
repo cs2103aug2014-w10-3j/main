@@ -137,7 +137,7 @@ public class ParserImpl implements Parser {
 		 
 		 */
 		if (_resultingCommand.getCommandType() != CommandType.CREATE
-				&& _resultingCommand.getCommandType() != CommandType.SHOW) {
+				&& _resultingCommand.getCommandType() != CommandType.RETRIEVE) {
 			for (char c : priOp.toCharArray()) {
 				if (!Character.isDigit(c)) {
 					throw new IllegalArgumentException(NUMBER_EXPECTED);

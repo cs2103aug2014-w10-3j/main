@@ -47,7 +47,7 @@ public class CommandImplTest {
 	@Test
 	public void testGetCommandTypeForShow() {
 		testClass = new CommandImpl("show 1");
-		assertEquals("get command type for show", CommandType.SHOW,
+		assertEquals("get command type for show", CommandType.RETRIEVE,
 				testClass.getCommandType());
 	}
 
