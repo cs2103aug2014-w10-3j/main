@@ -28,8 +28,8 @@ public class UIImpl implements UI {
 	}
 
 	@Override
-	public void showWelcomeMessage() {
+	public void showWelcomeMessage(Result result) {
 		_output = new OutputImpl();
-		_output.displayWelcome();
+		_output.displayWelcome(result);
 	}
 }
