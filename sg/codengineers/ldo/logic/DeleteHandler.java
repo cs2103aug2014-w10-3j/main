@@ -37,6 +37,7 @@ public class DeleteHandler extends Handler {
 		}
 		
 		result = new ResultImpl(CommandType.DELETE, 
+				primaryOperand,
 				new Time(System.currentTimeMillis()), 
 				task);		
 		return result;

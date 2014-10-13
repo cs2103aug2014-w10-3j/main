@@ -31,7 +31,10 @@ public class CreateHandler extends Handler {
 		
 		_taskList.add(task);
 		
-		Result result = new ResultImpl(CommandType.CREATE, new Time(System.currentTimeMillis()), task);
+		Result result = new ResultImpl(CommandType.CREATE, 
+							primaryOperand,
+							new Time(System.currentTimeMillis()), 
+							task);
 		
 		return result;
 	}

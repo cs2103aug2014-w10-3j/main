@@ -15,6 +15,8 @@ import sg.codengineers.ldo.parser.ResultImpl;
 
 public class RetrieveHandler extends Handler {
 	
+	String pmOperand;
+	
 	public RetrieveHandler(List<Task> _taskList) {
 		super(_taskList);
 	}
@@ -22,7 +24,8 @@ public class RetrieveHandler extends Handler {
 	@Override
 	public Result execute(String primaryOperand,
 			Iterator<AdditionalArgument> iterator) {
-
+		
+		pmOperand = primaryOperand;
 		Result result = null;
 		
 		boolean isOpEmpty = primaryOperand == null || primaryOperand.equals("");
@@ -61,19 +64,19 @@ public class RetrieveHandler extends Handler {
 			}	
 		}
 		
-		
-		
 		return result;
 	}
 	
 	private Result constructResult(Task task){
 		return new ResultImpl(CommandType.RETRIEVE, 
+				pmOperand,
 				new Time(System.currentTimeMillis()), 
 				task);	
 	}
 	
 	private Result constructResult(List<Task> list){
 		return 	new ResultImpl(CommandType.RETRIEVE, 
+				pmOperand,
 				new Time(System.currentTimeMillis()), 
 				list);
 	}
