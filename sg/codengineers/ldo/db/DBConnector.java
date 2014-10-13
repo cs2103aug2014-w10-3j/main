@@ -1,96 +1,49 @@
 package sg.codengineers.ldo.db;
 
 /**
- * This class is the connector between the text file and
- * the database abstraction layer.
+ * This class is the connector between the database
+ * implementation and the database abstraction layer
  *
  * @author Sean
  */
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.*;
-import java.io.*;
 
-import sg.codengineers.ldo.logic.TaskImpl;
-import sg.codengineers.ldo.model.Task;
-
-public class DBConnector {
-
-	private String filename;
-	private File file;
+public interface DBConnector {
 
 	/**
-	 * Constructor
-	 * @param filename The name of the file to save the data to
+	 * A create method to enter new data into the
+	 * database.
+	 * 
+	 * @param data The data to be entered. It 
+	 * must already be converted to string format using
+	 * the toString implementation within the model
 	 */
-	public DBConnector(String filename) {
-		this.filename = filename;
-		initFile();
-	}
+	public void create(String data);
 
 	/**
-	 * Initializes the file to make sure it exist before any IO
-	 * operations are performed on it. Create a new file with the
-	 * supplied filename if the file does not already exist
+	 * An update method that allows each entry in the
+	 * database to be updated.
+	 * 
+	 * @param data The data to be updated. It 
+	 * must already be converted to string format using
+	 * the toString implementation within the model
 	 */
-	private void initFile() {
-		try {
-			file = new File(filename);
-
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public List<Task> read(){
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(file));
-			String line;
-			List<Task> taskLst = new ArrayList<Task>();
-			while ((line = br.readLine()) != null) {
-				taskLst.add(parseLine(line));
-			}
-			br.close();
-			return taskLst;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	private Task parseLine(String line) {
-		String[] lineArr = line.trim().split(";");
-		Task t = new TaskImpl(Integer.parseInt(lineArr[0]), lineArr[1]);
-		t.setDescription(lineArr[2]);
-		try {
-			DateFormat df = DateFormat.getDateTimeInstance();
-			t.setTimeStart(df.parse(lineArr[3]));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return t;
-	}
-
-	public void write(Task task) {
-		try {
-			DateFormat df = DateFormat.getDateTimeInstance();
-			String line = task.getId() + ";";
-			line += task.getName() + ";";
-			line += task.getDescription() + ";";
-			line += df.format(task.getStartTime()) + ";";
-			line += df.format(task.getEndTime()) + ";";
-			line += task.getTag();
-
-			BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
-			bw.write(line);
-			bw.newLine();
-			bw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+	public void update(String data);
+	
+	/**
+	 * A method that retrieves all entries from the
+	 * database.
+	 * 
+	 * @return A list containing all the entries from
+	 * the database
+	 */
+	public List<String> read();
+	
+	/**
+	 * A method that deletes an entry from the database
+	 * 
+	 * @param id The unique identifier of the entry
+	 */
+	public void delete(int id);
 }
