@@ -1,12 +1,9 @@
 package sg.codengineers.ldo.model;
 
 import java.sql.Time;
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import sg.codengineers.ldo.model.Command.CommandType;
-
-//import sg.codengineers.ldo.parser.CommandImpl.CommandType;
 
 /**
  * This interface specifies the available public methods to the Result Class

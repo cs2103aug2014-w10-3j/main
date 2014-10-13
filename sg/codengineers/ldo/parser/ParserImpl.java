@@ -93,7 +93,7 @@ public class ParserImpl implements Parser {
 	 * @throws Exception
 	 *             If the primary operand is null, throws an exception to
 	 *             indicate errors in the code.
-	 *             If the primary operand is invalid, throws an 
+	 *             If the primary operand is invalid, throws an
 	 *             IllegalArgumentException
 	 */
 	private void validatePrimaryOperand() throws Exception {
@@ -118,23 +118,19 @@ public class ParserImpl implements Parser {
 			/*
 			 * TODO in case we are not allowing <commandType> --help --<add arg>
 			 * <operand>
-			  
-			else {
-				if (hasMoreArguments()) {
-					throw newIllegalArgumentException(ARG_AFT_HELP); 
-				}
-			}
-			
+			 * else {
+			 * if (hasMoreArguments()) {
+			 * throw newIllegalArgumentException(ARG_AFT_HELP);
+			 * }
+			 * }
 			 */
 		}
 		/*
 		 * TODO in case we are not allowing <commandType> <primary operand>
 		 * --help
-		  
-		 if (hasHelpArgument()) { 
-		 	throw new IllegalArgumentException(HELP_PLACEMENT); 
-		 }
-		 
+		 * if (hasHelpArgument()) {
+		 * throw new IllegalArgumentException(HELP_PLACEMENT);
+		 * }
 		 */
 		if (_resultingCommand.getCommandType() != CommandType.CREATE
 				&& _resultingCommand.getCommandType() != CommandType.RETRIEVE) {
@@ -153,9 +149,9 @@ public class ParserImpl implements Parser {
 	 *         false otherwise
 	 * @throws Exception
 	 *             If the AdditionalArgument Iterator is null, throws an
-	 *             exception to indicate errors in code. 
-	 *             If the firstArg is a null with a .next() call to the 
-	 *             Iterator, throws an exception to indicate errors 
+	 *             exception to indicate errors in code.
+	 *             If the firstArg is a null with a .next() call to the
+	 *             Iterator, throws an exception to indicate errors
 	 *             in the code.
 	 */
 	private boolean hasHelpArgument() throws Exception {
@@ -203,11 +199,11 @@ public class ParserImpl implements Parser {
 	 *            The argument to be validated
 	 * @throws Exception
 	 *             If the argument is null, throws an exception to indicate
-	 *             error in code. 
+	 *             error in code.
 	 *             If the ArgumentType is null, throws an exception to indicate
-	 *             error in code. 
+	 *             error in code.
 	 *             If the ArgumentType is INVALID, throws an
-	 *             IllegalArgumentException. 
+	 *             IllegalArgumentException.
 	 *             If the operand is null, throws an exception to indicate
 	 *             error in code.
 	 *             If the operand is empty, throws an IllegalArgumentException
@@ -229,9 +225,9 @@ public class ParserImpl implements Parser {
 		if (argType == ArgumentType.INVALID) {
 			throw new IllegalArgumentException(INVALID_ARGUMENT);
 		}
-		if(operand == null) {
+		if (operand == null) {
 			throw new Exception(String.format(CODE_FAULT,
-					"assignMemberVariables","commandImpl"));
+					"assignMemberVariables", "commandImpl"));
 		}
 		if (argType == ArgumentType.HELP) {
 			if (!operand.isEmpty()) {
