@@ -35,8 +35,9 @@ public class UpdateHandler extends Handler {
 		}
 		
 		Result result = new ResultImpl(CommandType.CREATE, 
-						new Time(System.currentTimeMillis()), 
-						task);
+							primaryOperand,
+							new Time(System.currentTimeMillis()), 
+							task);
 		return result;
 	}
 
