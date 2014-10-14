@@ -106,7 +106,7 @@ public class TextDBConnector implements DBConnector {
 	}
 
 	@Override
-
 	public void delete(String data) throws IOException {
+		update(data + ";deleted");
 	}
 }
