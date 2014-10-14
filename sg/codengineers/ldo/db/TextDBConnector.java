@@ -51,8 +51,11 @@ public class TextDBConnector implements DBConnector {
 	}
 
 	@Override
-		
 	public void update(String data) throws IOException {
+		int id = Integer.parseInt(data.trim().split(";")[0]);
+		dataList.remove(id);
+		dataList.add(id, data);
+		writeList();
 	}
 
 	public void write(String data) throws IOException {
