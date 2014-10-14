@@ -10,16 +10,19 @@ import sg.codengineers.ldo.model.AdditionalArgument;
 import sg.codengineers.ldo.model.Command.CommandType;
 import sg.codengineers.ldo.model.Result;
 import sg.codengineers.ldo.model.Task;
-
+/**
+ * Logic class provides basic manipulation functions of tasks and task lists. <br>
+ * To construct a Logic instance, please call {@link Logic#getLogic()}. There will be only
+ * one Logic instance alive at a time.
+ * @author Wenhao
+ *
+ */
 public class Logic {
 	private DBConnector _dbConnector;
 	private List<Task> _taskList;
 	private boolean _isInitialized = false;
 	
-	private CreateHandler createHandler;
-	private RetrieveHandler retrieveHandler;
-	private UpdateHandler updateHandler;
-	private DeleteHandler deleteHandler;
+	private Handler createHandler,retrieveHandler,updateHandler,deleteHandler;
 	
 	private static Logic instance = null;
 	
