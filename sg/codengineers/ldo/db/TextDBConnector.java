@@ -51,7 +51,7 @@ public class TextDBConnector implements DBConnector {
 	}
 
 	@Override
-	public void update(String jsonData) {
+	public void update(String data) {
 		
 	}
 
