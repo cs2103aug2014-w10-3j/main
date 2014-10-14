@@ -20,9 +20,11 @@ public class TextDBConnector implements DBConnector {
 
 	/**
 	 * Constructor
+	 * 
 	 * @param filename The name of the file to save the data to
+	 * @throws IOException
 	 */
-	public TextDBConnector(String filename) {
+	public TextDBConnector(String filename) throws IOException {
 		this.filename = filename;
 		initFile();
 		dataList = read();
@@ -32,36 +34,44 @@ public class TextDBConnector implements DBConnector {
 	 * Initializes the file to make sure it exist before any IO
 	 * operations are performed on it. Create a new file with the
 	 * supplied filename if the file does not already exist
+	 * 
+	 * @throws IOException
 	 */
-	private void initFile() {
-		try {
-			file = new File(filename);
+	private void initFile() throws IOException {
+		file = new File(filename);
 
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (!file.exists()) {
+			file.createNewFile();
 		}
 	}
 
 	@Override
-	public void create(String data) {
+	public void create(String data) throws IOException {
 		write(data);
 	}
 
 	@Override
-	public void update(String data) {
 		
+	public void update(String data) throws IOException {
 	}
 
-	public void write(String data) {
-		try {
+	public void write(String data) throws IOException {
+		BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
+		bw.write(data);
+		
+		// A new line represents the separation of data
+		bw.newLine();
+		bw.close();
+		
+		// Defensive code
+		if (dataList == null || dataList.isEmpty()) {
+			dataList = read();
+		}
+		
+		// The dataList would exist by now
+		dataList.add(data);
+	}
 	
-			BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
-			bw.write(data);
-			
-			// A new line represents the separation of data
 			bw.newLine();
 			bw.close();
 			
@@ -78,30 +88,25 @@ public class TextDBConnector implements DBConnector {
 	}
 
 	@Override
-	public List<String> read(){
-		try {			
-			BufferedReader br = new BufferedReader(new FileReader(file));
-			String line;
-			
-			// Defensive check
-			if (dataList == null) {
-				dataList = new ArrayList<String>();
-			}
-			
-			while ((line = br.readLine()) != null) {
-				dataList.add(line);
-			}
-
-			br.close();
-			return dataList;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
+	public List<String> read() throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		String line;
+		
+		// Defensive check
+		if (dataList == null) {
+			dataList = new ArrayList<String>();
 		}
+		
+		while ((line = br.readLine()) != null) {
+			dataList.add(line);
+		}
+
+		br.close();
+		return dataList;
 	}
 
 	@Override
-	public void delete(int id) {
 
+	public void delete(String data) throws IOException {
 	}
 }
