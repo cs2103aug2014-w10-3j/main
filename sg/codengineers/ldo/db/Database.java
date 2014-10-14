@@ -20,8 +20,10 @@ public class Database {
 	/**
 	 * Constructor This is where we choose which connector to use and
 	 * initialize them accordingly.
+	 * 
+	 * @throws IOException
 	 */
-	public Database() {
+	private Database() throws IOException {
 		classToConnector = DBConfig.initDatabases();
 	}
 	
