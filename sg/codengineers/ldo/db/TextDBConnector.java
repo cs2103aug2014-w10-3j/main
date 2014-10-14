@@ -75,19 +75,20 @@ public class TextDBConnector implements DBConnector {
 		dataList.add(data);
 	}
 	
+	/**
+	 * This method rewrites the database with the data in the list
+	 * 
+	 * @throws IOException
+	 */
+	private void writeList() throws IOException {
+		BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+		
+		for (String s : dataList) {
+			bw.write(s);
 			bw.newLine();
-			bw.close();
-			
-			// Defensive code
-			if (dataList == null || dataList.isEmpty()) {
-				dataList = read();
-			}
-			
-			// The dataList would exist by now
-			dataList.add(data);
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
+		
+		bw.close();
 	}
 
 	@Override
