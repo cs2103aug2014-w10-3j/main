@@ -47,12 +47,11 @@ public class Database {
 	 * @param className The name of the model in question
 	 * @throws IOException
 	 */
-	public void read(String className) throws IOException {
+	public List<String> read(String className) throws IOException {
 		List<DBConnector> connectorList = classToConnector.get(className);
 		
-		for (DBConnector connector : connectorList) {
-			connector.read();
-		}
+		// Make sure that the first one is authoritative
+		return connectorList.get(0).read();
 	}
 	
 	/**
