@@ -15,7 +15,17 @@ import java.io.*;
 
 public class Database {
 
-	private Map<String, List<DBConnector>> classToConnector; 
+	private Map<String, List<DBConnector>> classToConnector;
+	
+	private static Database database;
+	private static boolean isInitialized = false;
+	
+	public static Database initDatabase() throws IOException{
+		if (!isInitialized) { 
+			database = new Database();
+		}
+		return database;
+	}
 
 	/**
 	 * Constructor This is where we choose which connector to use and
