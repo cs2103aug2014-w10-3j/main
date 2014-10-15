@@ -17,7 +17,7 @@ public class MockLogic {
 		if(file.exists()){
 			file.delete();
 		}
-		logic = Logic.getLogic();
+		logic = Logic.getInstance();
 		reflect();
 	}
 	

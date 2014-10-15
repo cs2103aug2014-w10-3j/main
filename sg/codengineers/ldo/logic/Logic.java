@@ -1,5 +1,6 @@
 package sg.codengineers.ldo.logic;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,7 +21,7 @@ import sg.codengineers.ldo.model.Task;
  */
 public class Logic {
 	
-	private DBConnector _dbConnector;
+	private Database _dbConnector;
 	private List<Task> _taskList;
 	private boolean _isInitialized = false;
 	
@@ -28,19 +29,19 @@ public class Logic {
 	
 	private static Logic instance = null;
 	
-	public static Logic getInstance(){
+	public static Logic getInstance()throws Exception{
 		if(instance == null){
 			instance = new Logic();
 		}
 		return instance;
 	}
 	
-	private Logic(){
+	private Logic()throws Exception{
 		this._dbConnector = Database.initDatabase();
 		initialize();
 	}
 
-	private void initialize() {
+	private void initialize() throws Exception{
 		if(_isInitialized){
 			return;
 		}
@@ -61,23 +62,23 @@ public class Logic {
 	
 
 	public Result createTask(String primaryOperand,
-			Iterator<AdditionalArgument> iterator) {
+			Iterator<AdditionalArgument> iterator) throws IOException{
 		Result result = createHandler.execute(primaryOperand, iterator);
-		_dbConnector.create(result.getTasksIterator().next().toString());
+		_dbConnector.create(result.getTasksIterator().next().toString(),TaskImpl.CLASS_NAME);
 		return result;
 	}
 
 	public Result deleteTask(String primaryOperand,
-			Iterator<AdditionalArgument> iterator) {
+			Iterator<AdditionalArgument> iterator) throws IOException{
 		Result result =deleteHandler.execute(primaryOperand, iterator);
-		_dbConnector.delete(result.getTasksIterator().next().getId());
+		_dbConnector.delete(result.getTasksIterator().next().toString(), TaskImpl.CLASS_NAME);
 		return result;
 	}
 
 	public Result updateTask(String primaryOperand,
-			Iterator<AdditionalArgument> iterator) {
+			Iterator<AdditionalArgument> iterator) throws IOException{
 		Result result = updateHandler.execute(primaryOperand, iterator);
-		_dbConnector.update(result.getTasksIterator().next().toString());
+		_dbConnector.update(result.getTasksIterator().next().toString(),TaskImpl.CLASS_NAME);
 		return result;
 	}
 
