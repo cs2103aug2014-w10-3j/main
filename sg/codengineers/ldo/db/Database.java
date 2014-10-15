@@ -11,16 +11,29 @@ package sg.codengineers.ldo.db;
  */
 
 import java.util.*;
+import java.io.*;
 
 public class Database {
 
-	private Map<String, List<DBConnector>> classToConnector; 
+	private Map<String, List<DBConnector>> classToConnector;
+	
+	private static Database database;
+	private static boolean isInitialized = false;
+	
+	public static Database initDatabase() throws IOException{
+		if (!isInitialized) { 
+			database = new Database();
+		}
+		return database;
+	}
 
 	/**
 	 * Constructor This is where we choose which connector to use and
 	 * initialize them accordingly.
+	 * 
+	 * @throws IOException
 	 */
-	public Database() {
+	private Database() throws IOException {
 		classToConnector = DBConfig.initDatabases();
 	}
 	
@@ -30,8 +43,9 @@ public class Database {
 	 * 
 	 * @param data The data to be saved
 	 * @param className The name of the model in question
+	 * @throws IOException
 	 */
-	public void create(String data, String className) {
+	public void create(String data, String className) throws IOException {
 		List<DBConnector> connectorList = classToConnector.get(className);
 		
 		for (DBConnector connector : connectorList) {
@@ -43,13 +57,13 @@ public class Database {
 	 * This allows the model to get all entries in the database
 	 * 
 	 * @param className The name of the model in question
+	 * @throws IOException
 	 */
-	public void read(String className) {
+	public List<String> read(String className) throws IOException {
 		List<DBConnector> connectorList = classToConnector.get(className);
 		
-		for (DBConnector connector : connectorList) {
-			connector.read();
-		}
+		// Make sure that the first one is authoritative
+		return connectorList.get(0).read();
 	}
 	
 	/**
@@ -57,8 +71,9 @@ public class Database {
 	 * 
 	 * @param data The data to be updated
 	 * @param className The name of the model in question
+	 * @throws IOException
 	 */
-	public void update(String data, String className) {
+	public void update(String data, String className) throws IOException {
 		List<DBConnector> connectorList = classToConnector.get(className);
 
 		for (DBConnector connector : connectorList) {
@@ -71,12 +86,13 @@ public class Database {
 	 * 
 	 * @param id The id of the entry to be deleted
 	 * @param className The name of the model in question
+	 * @throws IOException
 	 */
-	public void delete(int id, String className) {
+	public void delete(String data, String className) throws IOException {
 		List<DBConnector> connectorList = classToConnector.get(className);
 
 		for (DBConnector connector : connectorList) {
-			connector.delete(id);
+			connector.delete(data);
 		}
 	}
 }

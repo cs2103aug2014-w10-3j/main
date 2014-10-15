@@ -8,6 +8,7 @@ package sg.codengineers.ldo.db;
  */
 
 import java.util.*;
+import java.io.*;
 
 public interface DBConnector {
 
@@ -18,8 +19,9 @@ public interface DBConnector {
 	 * @param data The data to be entered. It 
 	 * must already be converted to string format using
 	 * the toString implementation within the model
+	 * @throws IOException
 	 */
-	public void create(String data);
+	public void create(String data) throws IOException;
 
 	/**
 	 * An update method that allows each entry in the
@@ -28,8 +30,9 @@ public interface DBConnector {
 	 * @param data The data to be updated. It 
 	 * must already be converted to string format using
 	 * the toString implementation within the model
+	 * @throws IOException
 	 */
-	public void update(String data);
+	public void update(String data) throws IOException;
 	
 	/**
 	 * A method that retrieves all entries from the
@@ -37,13 +40,15 @@ public interface DBConnector {
 	 * 
 	 * @return A list containing all the entries from
 	 * the database
+	 * @throws IOException
 	 */
-	public List<String> read();
+	public List<String> read()  throws IOException;
 	
 	/**
 	 * A method that deletes an entry from the database
 	 * 
 	 * @param id The unique identifier of the entry
+	 * @throws IOException
 	 */
-	public void delete(int id);
+	public void delete(String data)  throws IOException;
 }
