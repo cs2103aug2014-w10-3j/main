@@ -12,7 +12,7 @@ import sg.codengineers.ldo.ui.OutputImpl;
 
 public class Controller {
 	// logic
-	private Logic logic;
+	private static Logic logic;
 	// ui
 	private Input input;
 	private Output output;
@@ -21,6 +21,10 @@ public class Controller {
 		logic = Logic.getLogic();
 		input = new InputImpl();
 		output = new OutputImpl();
+	}
+	
+	public static Controller getControllerInstance(){
+		return new Controller();
 	}
 
 	public void run() {
