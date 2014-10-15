@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import sg.codengineers.ldo.db.DBConnector;
+import sg.codengineers.ldo.db.Database;
 import sg.codengineers.ldo.model.AdditionalArgument;
 import sg.codengineers.ldo.model.Command.CommandType;
 import sg.codengineers.ldo.model.Result;
@@ -18,6 +19,7 @@ import sg.codengineers.ldo.model.Task;
  *
  */
 public class Logic {
+	
 	private DBConnector _dbConnector;
 	private List<Task> _taskList;
 	private boolean _isInitialized = false;
@@ -26,7 +28,7 @@ public class Logic {
 	
 	private static Logic instance = null;
 	
-	public static Logic getLogic(){
+	public static Logic getInstance(){
 		if(instance == null){
 			instance = new Logic();
 		}
@@ -34,7 +36,7 @@ public class Logic {
 	}
 	
 	private Logic(){
-		this._dbConnector = new DBConnector("LDoDatabase.txt");
+		this._dbConnector = Database.initDatabase();
 		initialize();
 	}
 
@@ -43,7 +45,11 @@ public class Logic {
 			return;
 		}
 		
-		_taskList = _dbConnector.read();
+		_taskList = new ArrayList<Task>();
+		List<String> stringList = _dbConnector.read(TaskImpl.CLASS_NAME);
+		for(String s : stringList){
+			_taskList.add(TaskImpl.valueOf(s));
+		}
 		
 		createHandler = new CreateHandler(_taskList);
 		retrieveHandler = new RetrieveHandler(_taskList);
@@ -53,30 +59,25 @@ public class Logic {
 		_isInitialized = true;
 	}
 	
-	private void commitChange(){
-		for (Task task : _taskList){
-			_dbConnector.write(task);
-		}
-	}
 
 	public Result createTask(String primaryOperand,
 			Iterator<AdditionalArgument> iterator) {
 		Result result = createHandler.execute(primaryOperand, iterator);
-		commitChange();
+		_dbConnector.create(result.getTasksIterator().next().toString());
 		return result;
 	}
 
 	public Result deleteTask(String primaryOperand,
 			Iterator<AdditionalArgument> iterator) {
 		Result result =deleteHandler.execute(primaryOperand, iterator);
-		commitChange();
+		_dbConnector.delete(result.getTasksIterator().next().getId());
 		return result;
 	}
 
 	public Result updateTask(String primaryOperand,
 			Iterator<AdditionalArgument> iterator) {
 		Result result = updateHandler.execute(primaryOperand, iterator);
-		commitChange();
+		_dbConnector.update(result.getTasksIterator().next().toString());
 		return result;
 	}
 
