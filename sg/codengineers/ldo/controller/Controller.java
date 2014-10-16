@@ -17,8 +17,8 @@ public class Controller {
 	private Input input;
 	private Output output;
 
-	public Controller() {
-		logic = Logic.getLogic();
+	public Controller(){
+		logic = Logic.getInstance();
 		input = new InputImpl();
 		output = new OutputImpl();
 	}

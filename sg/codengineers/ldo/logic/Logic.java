@@ -29,9 +29,13 @@ public class Logic {
 	
 	private static Logic instance = null;
 	
-	public static Logic getInstance()throws Exception{
-		if(instance == null){
-			instance = new Logic();
+	public static Logic getInstance(){
+		try{
+			if(instance == null){
+				instance = new Logic();
+			}
+		} catch (Exception e){
+			e.printStackTrace();
 		}
 		return instance;
 	}

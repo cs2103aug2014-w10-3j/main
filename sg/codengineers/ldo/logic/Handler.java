@@ -35,9 +35,10 @@ public abstract class Handler {
 	 * @param primaryOperand
 	 * @param iterator
 	 * @return a {@link sg.codengineers.ldo.model.Result Result} object containing the retrieval result
-	 * or feedbacks from other operations.
+	 * or feedbacks from other operations. Will return <code>null</code> if the execution is unsuccessful.
+	 * @throws IllegalArgumentException Thrown when the handler cannot parse the input parameters.
 	 */
-	abstract public Result execute(String primaryOperand, Iterator<AdditionalArgument> iterator);
+	abstract public Result execute(String primaryOperand, Iterator<AdditionalArgument> iterator) throws IllegalArgumentException;
 	
 	public Handler(List<Task> taskList){
 		this._taskList = taskList;
@@ -56,40 +57,37 @@ public abstract class Handler {
 	 * @param task the {@link Task} object to be modified.
 	 * @param arg the {@link AdditionalArgument} containing modification information.
 	 */
-	protected void modifyTask(Task task, AdditionalArgument arg) {
+	protected void modifyTask(Task task, AdditionalArgument arg) throws ParseException, IllegalArgumentException{
 		String operand = arg.getOperand();
-		try{
-			switch(arg.getArgumentType()){
-			case NAME:
-				task.setName(operand);
+
+		switch(arg.getArgumentType()){
+		case NAME:
+			task.setName(operand);
+			break;
+		case DEADLINE:
+			task.setDeadline(FORMATTER.parse(operand));
+			break;
+		case TIME:
+			String[] sOperand = operand.split("\\s+");
+			if(sOperand.length != 2){
 				break;
-			case DEADLINE:
-				task.setDeadline(FORMATTER.parse(operand));
-				break;
-			case TIME:
-				String[] sOperand = operand.split("\\s+");
-				if(sOperand.length != 2){
-					break;
-				} else {
-					task.setTimeStart(FORMATTER.parse(sOperand[0]));
-					task.setTimeEnd(FORMATTER.parse(sOperand[1]));
-				}
-				break;
-			case PRIORITY:
-			case DONE:		
-			case TAG:
-				task.setTag(operand);
-				break;
-			case DESCRIPTION:
-				task.setDescription(operand);
-				break;
-			case HELP:
-			case INVALID:
-			default:
-				break;
+			} else {
+				task.setTimeStart(FORMATTER.parse(sOperand[0]));
+				task.setTimeEnd(FORMATTER.parse(sOperand[1]));
 			}
-		} catch(ParseException e){
-			e.printStackTrace();
+			break;
+		case PRIORITY:
+		case DONE:		
+		case TAG:
+			task.setTag(operand);
+			break;
+		case DESCRIPTION:
+			task.setDescription(operand);
+			break;
+		case HELP:
+		case INVALID:
+		default:
+			throw new IllegalArgumentException();
 		}
 	}
 	
