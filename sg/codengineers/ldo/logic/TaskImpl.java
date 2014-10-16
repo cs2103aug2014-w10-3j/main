@@ -24,13 +24,30 @@ public class TaskImpl implements Task {
 	
 	private static int _accumulateId = -1;
 	
-	public TaskImpl(int id, String name) {
-		_id = id;
+	public TaskImpl(String name) {
+		_id = getNextId();
 		_name = name;
 		_description = _tag = "";
 		_timeStart = _timeEnd = new Date();
 	}
 	
+	/**
+	 * Construct a new task by copying all information from the input task.
+	 * @param task The {@link Task} object from which the information will be copied
+	 */
+	public TaskImpl(Task task){
+		this._id = task.getId();
+		this._name = task.getName();
+		this._tag = task.getTag();
+		this._timeStart = task.getStartTime();
+		this._timeEnd = task.getEndTime();
+		this._description = task.getDescription();
+	}
+	
+	/**
+	 * Generate a unique ID for a new task.
+	 * @return the unique ID in integer format.
+	 */
 	public static int getNextId(){
 		_accumulateId ++;
 		return _accumulateId;
@@ -121,7 +138,7 @@ public class TaskImpl implements Task {
 		} else {
 			int id = Integer.valueOf(taskArgs[FIELD_ID_INDEX]);
 			String name = taskArgs[FIELD_NAME_INDEX];
-			task = new TaskImpl(id, name);
+			task = new TaskImpl(name);
 			
 			String description = taskArgs[FIELD_DESCRIPTION_INDEX];
 			if(description!= null && !description.isEmpty()){
