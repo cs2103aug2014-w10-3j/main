@@ -78,7 +78,7 @@ public class DBConfig {
 		List<DBConnector> connectorList = new ArrayList<DBConnector>();
 
 		for (String s : type) {
-			if (s == "textfile") {
+			if (s.equalsIgnoreCase("textfile")) {
 				connectorList.add(new TextDBConnector(className));
 			}
 		}
