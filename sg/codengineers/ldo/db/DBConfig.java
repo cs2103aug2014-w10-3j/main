@@ -36,6 +36,14 @@ public class DBConfig {
 	private String className;
 	private String[] type;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param className The name of the class whose
+	 * data is being saved
+	 * @param type The types of database that the type
+	 * of class has
+	 */
 	public DBConfig(String className, String[] type) {
 		this.className = className;
 		this.type = type;
