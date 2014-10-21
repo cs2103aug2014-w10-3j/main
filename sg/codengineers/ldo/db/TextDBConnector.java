@@ -90,7 +90,7 @@ public class TextDBConnector implements DBConnector {
 
 	@Override
 	public boolean update(String data) {
-		int id = Integer.parseInt(data.trim().split(";")[0]);
+		int id = Integer.parseInt(data.trim().split("<;>")[0]);
 		dataList.remove(id);
 		dataList.add(id, data);
 		return writeList();
