@@ -8,6 +8,8 @@ public class DatabaseTest {
 	private static Database db;
 	
 	private static final int FIRST = 0;
+	private static final int SECOND = 1;
+	private static final int THIRD = 2;
 	
 	@Before
 	public void initDatabases() {
