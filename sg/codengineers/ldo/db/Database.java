@@ -11,7 +11,6 @@ package sg.codengineers.ldo.db;
  */
 
 import java.util.*;
-import java.io.*;
 
 public class Database {
 
@@ -20,7 +19,7 @@ public class Database {
 	private static Database database;
 	private static boolean isInitialized = false;
 	
-	public static Database initDatabase() throws IOException{
+	public static Database initDatabase() {
 		if (!isInitialized) { 
 			database = new Database();
 		}
