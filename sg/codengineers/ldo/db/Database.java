@@ -14,6 +14,8 @@ import java.util.*;
 
 public class Database {
 
+	private static final int FIRST = 0;
+
 	private Map<String, List<DBConnector>> classToConnector;
 	
 	private static Database database;
@@ -61,7 +63,12 @@ public class Database {
 		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
 		
 		// Make sure that the first one is authoritative
-		return connectorList.get(0).read();
+		DBConnector authoritative = connectorList.get(FIRST);
+		if (authoritative == null) {
+			return null;
+		} else {
+			return authoritative.read();
+		}
 	}
 	
 	/**
