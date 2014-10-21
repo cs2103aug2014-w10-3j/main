@@ -9,31 +9,30 @@ package sg.codengineers.ldo.db;
  * @author Sean
  */
 
-import java.io.IOException;
 import java.util.List;
 
 public class GCalDBConnector implements DBConnector {
 
 	@Override
-	public void create(String data) throws IOException {
+	public boolean create(String data) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void update(String data) throws IOException {
+	public boolean update(String data) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public List<String> read() throws IOException {
+	public List<String> read() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void delete(String data) throws IOException {
+	public boolean delete(String data) {
 		// TODO Auto-generated method stub
 
 	}

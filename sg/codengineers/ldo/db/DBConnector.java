@@ -19,9 +19,9 @@ public interface DBConnector {
 	 * @param data The data to be entered. It 
 	 * must already be converted to string format using
 	 * the toString implementation within the model
-	 * @throws IOException
+	 * @return true if the operation succeeds
 	 */
-	public void create(String data) throws IOException;
+	public boolean create(String data);
 
 	/**
 	 * An update method that allows each entry in the
@@ -30,9 +30,9 @@ public interface DBConnector {
 	 * @param data The data to be updated. It 
 	 * must already be converted to string format using
 	 * the toString implementation within the model
-	 * @throws IOException
+	 * @return true if the operation succeeds
 	 */
-	public void update(String data) throws IOException;
+	public boolean update(String data);
 	
 	/**
 	 * A method that retrieves all entries from the
@@ -40,15 +40,14 @@ public interface DBConnector {
 	 * 
 	 * @return A list containing all the entries from
 	 * the database
-	 * @throws IOException
 	 */
-	public List<String> read()  throws IOException;
+	public List<String> read();
 	
 	/**
 	 * A method that deletes an entry from the database
 	 * 
 	 * @param id The unique identifier of the entry
-	 * @throws IOException
+	 * @return true if the operation succeeds
 	 */
-	public void delete(String data)  throws IOException;
+	public boolean delete(String data);
 }
