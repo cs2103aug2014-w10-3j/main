@@ -112,6 +112,8 @@ public class DBConfig {
 			if (configList.isEmpty()) {
 				configList = addDefaultSettings();
 			}
+			
+			classToConnector = new HashMap<String, List<DBConnector>>();
 
 			for (String s : configList) {
 				DBConfig config = DBConfig.fromString(s);
