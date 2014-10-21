@@ -30,8 +30,8 @@ public class DBConfig {
 	private static final int FIRST_WORD = 0;
 	private static final int TYPE_ARRAY = 1;
 	
-	private static final String DEFAULT_SETTING = "task textfile\n" +
-												  "test textfile";
+	
+	private static final String[] DEFAULT_SETTINGS = {"task textfile", "test textfile"};
 	
 	private String className;
 	private String[] type;
@@ -124,10 +124,12 @@ public class DBConfig {
 	}
 	
 	private static List<String> addDefaultSettings() {
-		config.create(DEFAULT_SETTING);
-		
 		List<String> settings = new ArrayList<String>();
-		settings.add(DEFAULT_SETTING);
+
+		for (String s : DEFAULT_SETTINGS) {
+			config.create(s);
+			settings.add(s);
+		}		
 		return settings;
 	}
 	
