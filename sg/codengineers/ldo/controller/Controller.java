@@ -1,6 +1,9 @@
 package sg.codengineers.ldo.controller;
 
+import java.util.Iterator;
+
 import sg.codengineers.ldo.logic.Logic;
+import sg.codengineers.ldo.model.AdditionalArgument;
 import sg.codengineers.ldo.model.Command;
 import sg.codengineers.ldo.model.Input;
 import sg.codengineers.ldo.model.Output;
@@ -86,19 +89,18 @@ public class Controller {
 	 */
 	public Result executeCommand(Command command) throws Exception {
 		CommandType commandType = command.getCommandType();
+		String primaryOperand = command.getPrimaryOperand();
+		Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
+		
 		switch (commandType) {
 			case CREATE:
-				return logic.createTask(command.getPrimaryOperand(),
-						command.getAdditionalArguments());
+				return logic.createTask(primaryOperand, iterator);
 			case DELETE:
-				return logic.deleteTask(command.getPrimaryOperand(),
-						command.getAdditionalArguments());
+				return logic.deleteTask(primaryOperand, iterator);
 			case UPDATE:
-				return logic.updateTask(command.getPrimaryOperand(),
-						command.getAdditionalArguments());
+				return logic.updateTask(primaryOperand, iterator);
 			case RETRIEVE:
-				return logic.retrieveTask(command.getPrimaryOperand(),
-						command.getAdditionalArguments());
+				return logic.retrieveTask(primaryOperand, iterator);
 			default:
 				throw new Exception("Invalid command.");
 		}
