@@ -147,4 +147,19 @@ public class TextDBConnector implements DBConnector {
 	public boolean delete(String data) {
 		return update(data + ";deleted");
 	}
+
+	@Override
+	public boolean clear() {
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+			
+			bw.write("");			
+			bw.close();
+			return true;
+		} catch(IOException e) {
+			e.printStackTrace();
+			System.exit(1);
+			return false;
+		}
+	}
 }

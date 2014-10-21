@@ -97,4 +97,24 @@ public class Database {
 		}
 		return success;
 	}
+	
+	/**
+	 * This method is used to clear the database of entries
+	 * This is only meant for unit testing purposes, to ensure
+	 * a clean state of the database so that the tests does not
+	 * depend on the information already present
+	 * 
+	 * @param className The class name to clear out
+	 * @return True if the operation succeeds
+	 */
+	public boolean clear(String className) {
+		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
+		boolean success = true;
+		
+		for (DBConnector connector : connectorList) {
+			// If anyone of the process fails, the whole operation fails
+			success = success && connector.clear();
+		}
+		return success;
+	}
 }

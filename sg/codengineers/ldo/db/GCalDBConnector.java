@@ -37,4 +37,10 @@ public class GCalDBConnector implements DBConnector {
 		return true;
 	}
 
+	@Override
+	public boolean clear() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

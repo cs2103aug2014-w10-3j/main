@@ -49,4 +49,14 @@ public interface DBConnector {
 	 * @return true if the operation succeeds
 	 */
 	public boolean delete(String data);
+	
+	/**
+	 * This method is used to clear the database of entries
+	 * This is only meant for unit testing purposes, to ensure
+	 * a clean state of the database so that the tests does not
+	 * depend on the information already present
+	 * 
+	 * @return True if the operation succeeds
+	 */
+	public boolean clear();
 }
