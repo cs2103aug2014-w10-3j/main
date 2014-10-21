@@ -24,10 +24,11 @@ public class TextDBConnector implements DBConnector {
 	 * @param filename The name of the file to save the data to
 	 * @throws IOException
 	 */
-	public TextDBConnector(String filename) throws IOException {
+	public TextDBConnector(String filename) {
 		this.filename = filename;
-		initFile();
-		dataList = read();
+		if (initFile()) {
+			dataList = read();
+		}		
 	}
 
 	/**
@@ -53,8 +54,9 @@ public class TextDBConnector implements DBConnector {
 	}
 
 	@Override
-	public void create(String data) throws IOException {
-		write(data);
+	public boolean create(String data) {
+		return write(data);
+	}
 
 	/**
 	 * This method writes one data to the database
@@ -87,11 +89,11 @@ public class TextDBConnector implements DBConnector {
 	}
 
 	@Override
-	public void update(String data) throws IOException {
+	public boolean update(String data) {
 		int id = Integer.parseInt(data.trim().split(";")[0]);
 		dataList.remove(id);
 		dataList.add(id, data);
-		writeList();
+		return writeList();
 	}
 
 	/**
@@ -142,7 +144,7 @@ public class TextDBConnector implements DBConnector {
 	}
 
 	@Override
-	public void delete(String data) throws IOException {
-		update(data + ";deleted");
+	public boolean delete(String data) {
+		return update(data + ";deleted");
 	}
 }
