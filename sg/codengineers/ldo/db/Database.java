@@ -30,10 +30,8 @@ public class Database {
 	/**
 	 * Constructor This is where we choose which connector to use and
 	 * initialize them accordingly.
-	 * 
-	 * @throws IOException
 	 */
-	private Database() throws IOException {
+	private Database() {
 		classToConnector = DBConfig.initDatabases();
 	}
 	
@@ -43,9 +41,8 @@ public class Database {
 	 * 
 	 * @param data The data to be saved
 	 * @param className The name of the model in question
-	 * @throws IOException
 	 */
-	public void create(String data, String className) throws IOException {
+	public void create(String data, String className) {
 		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
 		
 		for (DBConnector connector : connectorList) {
@@ -57,9 +54,8 @@ public class Database {
 	 * This allows the model to get all entries in the database
 	 * 
 	 * @param className The name of the model in question
-	 * @throws IOException
 	 */
-	public List<String> read(String className) throws IOException {
+	public List<String> read(String className) {
 		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
 		
 		// Make sure that the first one is authoritative
@@ -71,9 +67,8 @@ public class Database {
 	 * 
 	 * @param data The data to be updated
 	 * @param className The name of the model in question
-	 * @throws IOException
 	 */
-	public void update(String data, String className) throws IOException {
+	public void update(String data, String className) {
 		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
 
 		for (DBConnector connector : connectorList) {
@@ -86,9 +81,8 @@ public class Database {
 	 * 
 	 * @param id The id of the entry to be deleted
 	 * @param className The name of the model in question
-	 * @throws IOException
 	 */
-	public void delete(String data, String className) throws IOException {
+	public void delete(String data, String className) {
 		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
 
 		for (DBConnector connector : connectorList) {
