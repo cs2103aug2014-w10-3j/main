@@ -16,13 +16,13 @@ public class GCalDBConnector implements DBConnector {
 	@Override
 	public boolean create(String data) {
 		// TODO Auto-generated method stub
-
+		return true;
 	}
 
 	@Override
 	public boolean update(String data) {
 		// TODO Auto-generated method stub
-
+		return true;
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class GCalDBConnector implements DBConnector {
 	@Override
 	public boolean delete(String data) {
 		// TODO Auto-generated method stub
-
+		return true;
 	}
 
 }
