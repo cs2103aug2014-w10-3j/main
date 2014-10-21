@@ -45,8 +45,10 @@ public class DatabaseTest {
 		result = db.create("2<;>This is the last test message", "Test");
 		assertTrue(result);
 		
-		db.update("2<;>This is an updated message", "Test");
 		// Update one of them
+		result = db.update("2<;>This is an updated message", "Test");
+		assertTrue(result);
+		
 		// Make sure that it is changed
 		List<String> entries = db.read("Test");
 		assertEquals("The message was not updated",
@@ -91,8 +93,10 @@ public class DatabaseTest {
 		result = db.create("2<;>This is the last test message", "Test");
 		assertTrue(result);
 		
-		db.delete("2<;>This is the last test message", "Test");
 		// Delete a message
+		result = db.delete("2<;>This is the last test message", "Test");
+		assertTrue(result);
+		
 		// Ensure that the entry is soft deleted
 		List<String> entries = db.read("Test");
 		assertEquals("The message was not deleted",
@@ -110,8 +114,10 @@ public class DatabaseTest {
 		result = db.create("2<;>This is the last test message", "Test");
 		assertTrue(result);
 		
-		db.clear("Test");
 		// Clear the database
+		result = db.clear("Test");
+		assertTrue(result);
+
 		// Ensure that the database is cleared
 		List<String> entries = db.read("Test");
 		assertTrue("The list returned should be empty", db.read("Test").isEmpty());
