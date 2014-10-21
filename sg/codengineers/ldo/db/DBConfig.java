@@ -16,7 +16,6 @@ package sg.codengineers.ldo.db;
  */
 
 import java.util.*;
-import java.io.*;
 
 public class DBConfig {
 
@@ -71,10 +70,8 @@ public class DBConfig {
 	/**
 	 * Initialize the different types of database connectors
 	 * that a class can have
-	 * 
-	 * @throws IOException
 	 */
-	private void initDB() throws IOException {
+	private void initDB() {
 		List<DBConnector> connectorList = new ArrayList<DBConnector>();
 
 		for (String s : type) {
@@ -93,9 +90,8 @@ public class DBConfig {
 	 * 
 	 * @return A mapping of the text representation of the
 	 * class name to the database connector that it needs
-	 * @throws IOException
 	 */
-	public static Map<String, List<DBConnector>> initDatabases() throws IOException {
+	public static Map<String, List<DBConnector>> initDatabases() {
 		if (!isInitialized) {
 
 			/* 
@@ -126,7 +122,7 @@ public class DBConfig {
 		return classToConnector;
 	}
 	
-	private static List<String> addDefaultSettings() throws IOException {
+	private static List<String> addDefaultSettings() {
 		config.create(DEFAULT_SETTING);
 		
 		List<String> settings = new ArrayList<String>();
