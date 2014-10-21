@@ -157,6 +157,8 @@ public class TextDBConnector implements DBConnector {
 			
 			bw.write("");			
 			bw.close();
+			dataList.clear();
+
 			return true;
 		} catch(IOException e) {
 			e.printStackTrace();
