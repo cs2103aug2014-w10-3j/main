@@ -26,12 +26,12 @@ public class DBConfig {
 	private static boolean isInitialized = false;
 	
 	// Filename of the config file
-	private static final String FILENAME = "DBConfig";
+	private static final String FILENAME = "dbconfig";
 	
 	private static final int FIRST_WORD = 0;
 	private static final int TYPE_ARRAY = 1;
 	
-	private static final String DEFAULT_SETTING = "Text textfile";
+	private static final String DEFAULT_SETTING = "task textfile";
 	
 	private String className;
 	private String[] type;
