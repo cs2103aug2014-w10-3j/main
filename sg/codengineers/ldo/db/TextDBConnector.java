@@ -122,19 +122,20 @@ public class TextDBConnector implements DBConnector {
 	@Override
 	public List<String> read() {
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(file));
-			String line;
-			
 			// Defensive check
-			if (dataList == null) {
+			if (dataList == null || dataList.isEmpty()) {
 				dataList = new ArrayList<String>();
+				
+				BufferedReader br = new BufferedReader(new FileReader(file));
+				String line;
+
+				while ((line = br.readLine()) != null) {
+					dataList.add(line);
+				}
+		
+				br.close();
 			}
 			
-			while ((line = br.readLine()) != null) {
-				dataList.add(line);
-			}
-	
-			br.close();
 			return dataList;
 		} catch(IOException e) {
 			e.printStackTrace();
