@@ -22,7 +22,13 @@ public class DatabaseTest {
 
 	@Test
 	public void testCreate() {
-
+		boolean result = db.create("This is a test message", "Test");
+		assertTrue(result);
+		
+		List<String> entries = db.read("Test");
+		assertEquals("The entry is not the same as what is read",
+				"This is a test message",
+				entries.get(FIRST));
 	}
 	
 	public void testUpdate() {
