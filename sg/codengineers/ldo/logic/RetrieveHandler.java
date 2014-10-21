@@ -32,8 +32,14 @@ public class RetrieveHandler extends Handler {
 		boolean isItEmpty = iterator == null || !iterator.hasNext();
 		
 		if(!isOpEmpty){
-			int id = Integer.valueOf(primaryOperand);
-			result = constructResult(_taskList.get(id));	
+			
+			if(primaryOperand.equalsIgnoreCase("welcome")){
+				result = constructResult(primaryOperand);
+			} else {
+				int id = Integer.valueOf(primaryOperand);
+				result = constructResult(_taskList.get(id));
+			}
+			
 		} 
 		
 		if(isOpEmpty && isItEmpty){
@@ -79,6 +85,12 @@ public class RetrieveHandler extends Handler {
 				pmOperand,
 				new Time(System.currentTimeMillis()), 
 				list);
+	}
+	private Result constructResult(String message){
+		return new ResultImpl(CommandType.RETRIEVE,
+				pmOperand,
+				new Time(System.currentTimeMillis())
+				);
 	}
 
 }
