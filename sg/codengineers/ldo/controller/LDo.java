@@ -1,10 +1,10 @@
 package sg.codengineers.ldo.controller;
 
 public class LDo {
-	Controller controller;
+	private static Controller controller;
 	
 	public LDo(){
-		controller = new Controller();
+		controller = Controller.getInstance();
 	}
 
 	public void run(){

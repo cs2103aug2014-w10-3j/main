@@ -44,6 +44,10 @@ public class Logic {
 		this._dbConnector = Database.initDatabase();
 		initialize();
 	}
+	
+	protected Logic (boolean stub){
+		
+	}
 
 	private void initialize() throws Exception{
 		if(_isInitialized){
