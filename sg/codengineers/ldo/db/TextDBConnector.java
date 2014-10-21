@@ -147,7 +147,7 @@ public class TextDBConnector implements DBConnector {
 
 	@Override
 	public boolean delete(String data) {
-		return update(data + ";deleted");
+		return update(data + "<;>deleted");
 	}
 
 	@Override
