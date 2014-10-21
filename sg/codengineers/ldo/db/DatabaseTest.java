@@ -89,6 +89,18 @@ public class DatabaseTest {
 				"2<;>This is the last test message<;>deleted",
 				entries.get(THIRD));
 	}
+	
+	@Test
+	public void testClear() {
+		boolean result = db.create("0<;>This is a test message", "Test");
+		assertTrue(result);
+		result = db.create("1<;>This is another test message", "Test");
+		assertTrue(result);
+		result = db.create("2<;>This is the last test message", "Test");
+		assertTrue(result);
+		
+		db.clear("Test");
+		List<String> entries = db.read("Test");
+		assertTrue("The list returned should be empty", db.read("Test").isEmpty());
 	}
-
 }
