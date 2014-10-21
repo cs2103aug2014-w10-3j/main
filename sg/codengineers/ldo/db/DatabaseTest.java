@@ -33,8 +33,20 @@ public class DatabaseTest {
 				entries.get(FIRST));
 	}
 	
+	@Test
 	public void testUpdate() {
+		boolean result = db.create("0<;>This is a test message", "Test");
+		assertTrue(result);
+		result = db.create("1<;>This is another test message", "Test");
+		assertTrue(result);
+		result = db.create("2<;>This is the last test message", "Test");
+		assertTrue(result);
 		
+		db.update("2<;>This is an updated message", "Test");
+		List<String> entries = db.read("Test");
+		assertEquals("The message was not updated",
+				"2<;>This is an updated message",
+				entries.get(THIRD));
 	}
 	
 	@Test
@@ -48,19 +60,47 @@ public class DatabaseTest {
 		assertTrue(result);
 		
 		List<String> entries = db.read("Test");
-		assertEquals("The entry is not the same as what is read",
+		assertEquals("The first entry is not the same as what is read",
 				"This is a test message",
 				entries.get(FIRST));
-		assertEquals("The entry is not the same as what is read",
+		assertEquals("The second entry is not the same as what is read",
 				"This is another test message",
 				entries.get(SECOND));
-		assertEquals("The entry is not the same as what is read",
+		assertEquals("The third entry is not the same as what is read",
 				"This is the last test message",
+				entries.get(THIRD));
+		
+		assertTrue(db.clear("Test"));
+		assertTrue("The list returned should be empty", db.read("Test").isEmpty());
+	}
+	
+	@Test
+	public void testDelete() {
+		boolean result = db.create("0<;>This is a test message", "Test");
+		assertTrue(result);
+		result = db.create("1<;>This is another test message", "Test");
+		assertTrue(result);
+		result = db.create("2<;>This is the last test message", "Test");
+		assertTrue(result);
+		
+		db.delete("2<;>This is the last test message", "Test");
+		List<String> entries = db.read("Test");
+		assertEquals("The message was not deleted",
+				"2<;>This is the last test message<;>deleted",
 				entries.get(THIRD));
 	}
 	
-	public void testDelete() {
+	@Test
+	public void testClear() {
+		boolean result = db.create("0<;>This is a test message", "Test");
+		assertTrue(result);
+		result = db.create("1<;>This is another test message", "Test");
+		assertTrue(result);
+		result = db.create("2<;>This is the last test message", "Test");
+		assertTrue(result);
 		
+		db.clear("Test");
+		List<String> entries = db.read("Test");
+		assertTrue("The list returned should be empty", db.read("Test").isEmpty());
 	}
-
 }

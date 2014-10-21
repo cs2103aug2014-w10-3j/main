@@ -67,16 +67,17 @@ public class TextDBConnector implements DBConnector {
 	public boolean write(String data) {
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
-			bw.write(data);
-			
-			// A new line represents the separation of data
-			bw.newLine();
-			bw.close();
 			
 			// Defensive code
 			if (dataList == null || dataList.isEmpty()) {
 				dataList = read();
 			}
+
+			bw.write(data);
+			
+			// A new line represents the separation of data
+			bw.newLine();
+			bw.close();
 			
 			// The dataList would exist by now
 			dataList.add(data);
@@ -146,7 +147,7 @@ public class TextDBConnector implements DBConnector {
 
 	@Override
 	public boolean delete(String data) {
-		return update(data + ";deleted");
+		return update(data + "<;>deleted");
 	}
 
 	@Override
@@ -156,6 +157,8 @@ public class TextDBConnector implements DBConnector {
 			
 			bw.write("");			
 			bw.close();
+			dataList.clear();
+
 			return true;
 		} catch(IOException e) {
 			e.printStackTrace();
