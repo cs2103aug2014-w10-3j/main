@@ -39,7 +39,24 @@ public class DatabaseTest {
 	
 	@Test
 	public void testRead() {
+		// Add a few messages in to test and make sure they are created
+		boolean result = db.create("This is a test message", "Test");
+		assertTrue(result);
+		result = db.create("This is another test message", "Test");
+		assertTrue(result);
+		result = db.create("This is the last test message", "Test");
+		assertTrue(result);
 		
+		List<String> entries = db.read("Test");
+		assertEquals("The entry is not the same as what is read",
+				"This is a test message",
+				entries.get(FIRST));
+		assertEquals("The entry is not the same as what is read",
+				"This is another test message",
+				entries.get(SECOND));
+		assertEquals("The entry is not the same as what is read",
+				"This is the last test message",
+				entries.get(THIRD));
 	}
 	
 	public void testDelete() {
