@@ -87,7 +87,7 @@ public class Controller {
 	 * @return result contains the information needed for feedback
 	 * @throws Exception
 	 */
-	private Result executeCommand(Command command) throws Exception {
+	Result executeCommand(Command command) throws Exception {
 		CommandType commandType = command.getCommandType();
 		String primaryOperand = command.getPrimaryOperand();
 		Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
