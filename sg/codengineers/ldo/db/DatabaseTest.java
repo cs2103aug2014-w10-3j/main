@@ -37,6 +37,7 @@ public class DatabaseTest {
 		
 	}
 	
+	@Test
 	public void testRead() {
 		
 	}
