@@ -142,6 +142,9 @@ public class CommandImpl implements Command {
 		_cmdMap.put("show", CommandType.RETRIEVE);
 		_cmdMap.put("retrieve", CommandType.RETRIEVE);
 		_cmdMap.put("view", CommandType.RETRIEVE);
+		_cmdMap.put("sync", CommandType.SYNC);
+		_cmdMap.put("search", CommandType.SEARCH);
+		_cmdMap.put("exit", CommandType.EXIT);
 	}
 
 	/**

@@ -86,9 +86,10 @@ public class ParserImpl implements Parser {
 	/**
 	 * Checks that a valid primary operand is entered by the user. For all
 	 * commands, an empty primary command is acceptable if it is followed by a
-	 * --help or -h argument. Otherwise, only unary commands such as show, undo
-	 * will be acceptable for empty primary commands.CREATE and SHOW will also
-	 * be the only CommandTypes that accepts non digits for its primary operand.
+	 * --help or -h argument. Otherwise, only unary commands such as RETRIEVE,
+	 * UNDO, SYNC or EXIT will be acceptable for empty primary commands. CREATE
+	 * and RETRIEVE will also be the only CommandTypes that accepts non digits
+	 * for its primary operand.
 	 * 
 	 * @throws Exception
 	 *             If the primary operand is null, throws an exception to
@@ -112,7 +113,7 @@ public class ParserImpl implements Parser {
 		}
 
 		if (_isEmptyPriOp) {
-			if (!hasHelpArgument()) {
+			if (!hasHelpArgument() && !isUnaryCommand()) {
 				throw new IllegalArgumentException(HELP_EXPECTED);
 			}
 			/*
@@ -132,8 +133,8 @@ public class ParserImpl implements Parser {
 		 * throw new IllegalArgumentException(HELP_PLACEMENT);
 		 * }
 		 */
-		if (_resultingCommand.getCommandType() != CommandType.CREATE
-				&& _resultingCommand.getCommandType() != CommandType.RETRIEVE) {
+		if (_resultingCommand.getCommandType() == CommandType.UPDATE
+				|| _resultingCommand.getCommandType() == CommandType.DELETE) {
 			for (char c : priOp.toCharArray()) {
 				if (!Character.isDigit(c)) {
 					throw new IllegalArgumentException(NUMBER_EXPECTED);
@@ -241,4 +242,16 @@ public class ParserImpl implements Parser {
 		}
 	}
 
+	/**
+	 * Validates if the command is a unary Command.
+	 * Unary commands are commands that do not require a primary operand.
+	 * Commands that are unary are: retrieve/show/view, sync and exit
+	 * 
+	 * @return true if the command type is unary, false otherwise
+	 */
+	private boolean isUnaryCommand() {
+		return (_resultingCommand.getCommandType() == CommandType.RETRIEVE
+				|| _resultingCommand.getCommandType() == CommandType.SYNC
+				|| _resultingCommand.getCommandType() == CommandType.EXIT);
+	}
 }
