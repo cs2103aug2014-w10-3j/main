@@ -60,13 +60,13 @@ public class DatabaseTest {
 		assertTrue(result);
 		
 		List<String> entries = db.read("Test");
-		assertEquals("The entry is not the same as what is read",
+		assertEquals("The first entry is not the same as what is read",
 				"This is a test message",
 				entries.get(FIRST));
-		assertEquals("The entry is not the same as what is read",
+		assertEquals("The second entry is not the same as what is read",
 				"This is another test message",
 				entries.get(SECOND));
-		assertEquals("The entry is not the same as what is read",
+		assertEquals("The third entry is not the same as what is read",
 				"This is the last test message",
 				entries.get(THIRD));
 	}
