@@ -30,7 +30,8 @@ public class DBConfig {
 	private static final int FIRST_WORD = 0;
 	private static final int TYPE_ARRAY = 1;
 	
-	private static final String DEFAULT_SETTING = "task textfile";
+	private static final String DEFAULT_SETTING = "task textfile\n" +
+												  "test textfile";
 	
 	private String className;
 	private String[] type;
