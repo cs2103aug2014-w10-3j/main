@@ -92,7 +92,7 @@ public class CommandImplTest {
 	}
 
 	@Test
-	public void testGetCommandForSyn() {
+	public void testGetCommandForSync() {
 		testClass = new CommandImpl("sync");
 		assertEquals("get comand type for sync", CommandType.SYNC,
 				testClass.getCommandType());
@@ -102,6 +102,13 @@ public class CommandImplTest {
 	public void testGetCommandForExit() {
 		testClass = new CommandImpl("exit");
 		assertEquals("get command type for exit", CommandType.EXIT,
+				testClass.getCommandType());
+	}
+	
+	@Test
+	public void testGetCommandForSearch() {
+		testClass = new CommandImpl("search hello");
+		assertEquals("get command type for search", CommandType.SEARCH,
 				testClass.getCommandType());
 	}
 
@@ -159,6 +166,13 @@ public class CommandImplTest {
 				testClass.getPrimaryOperand());
 	}
 
+	@Test
+	public void testGetPrimaryOperandForSearch() {
+		testClass = new CommandImpl ("search hello");
+		assertEquals("get primary operand for search", "hello",
+				testClass.getPrimaryOperand());
+	}
+	
 	@Test
 	public void testGetPrimaryOperandForExit() {
 		testClass = new CommandImpl("exit");
@@ -295,6 +309,13 @@ public class CommandImplTest {
 		testClass = new CommandImpl("exit");
 		assertTrue("Checking if equals compares correctly with same object for exit",
 				testClass.equals(new CommandImpl ("exit")));
+	}
+	
+	@Test
+	public void testEqualsWithSearchCommand() {
+		testClass = new CommandImpl("search hello");
+		assertTrue("Checking if equals compares correctly with same object for saerch",
+				testClass.equals(new CommandImpl ("search hello")));
 	}
 
 	/**
