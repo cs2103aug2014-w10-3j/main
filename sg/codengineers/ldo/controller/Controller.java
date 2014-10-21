@@ -44,7 +44,7 @@ public class Controller {
 	 * 
 	 * @return one controller instance
 	 */
-	public static Controller getControllerInstance(){
+	public static Controller getInstance(){
 		return new Controller();
 	}
 	
@@ -87,7 +87,7 @@ public class Controller {
 	 * @return result contains the information needed for feedback
 	 * @throws Exception
 	 */
-	public Result executeCommand(Command command) throws Exception {
+	private Result executeCommand(Command command) throws Exception {
 		CommandType commandType = command.getCommandType();
 		String primaryOperand = command.getPrimaryOperand();
 		Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
