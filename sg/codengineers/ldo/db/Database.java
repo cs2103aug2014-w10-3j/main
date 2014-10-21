@@ -41,12 +41,15 @@ public class Database {
 	 * @param data The data to be saved
 	 * @param className The name of the model in question
 	 */
-	public void create(String data, String className) {
+	public boolean create(String data, String className) {
 		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
+		boolean success = true;
 		
 		for (DBConnector connector : connectorList) {
-			connector.create(data);
+			// If anyone of the process fails, the whole operation fails
+			success = success && connector.create(data);
 		}
+		return success;
 	}
 	
 	/**
@@ -67,12 +70,15 @@ public class Database {
 	 * @param data The data to be updated
 	 * @param className The name of the model in question
 	 */
-	public void update(String data, String className) {
+	public boolean update(String data, String className) {
 		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
+		boolean success = true;
 
 		for (DBConnector connector : connectorList) {
-			connector.update(data);
+			// If anyone of the process fails, the whole operation fails
+			success = success &&connector.update(data);
 		}
+		return success;
 	}
 	
 	/**
@@ -81,11 +87,14 @@ public class Database {
 	 * @param id The id of the entry to be deleted
 	 * @param className The name of the model in question
 	 */
-	public void delete(String data, String className) {
+	public boolean delete(String data, String className) {
 		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
-
+		boolean success = true;
+		
 		for (DBConnector connector : connectorList) {
-			connector.delete(data);
+			// If anyone of the process fails, the whole operation fails
+			success = success && connector.delete(data);
 		}
+		return success;
 	}
 }
