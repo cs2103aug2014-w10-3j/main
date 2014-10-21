@@ -46,7 +46,7 @@ public class Database {
 	 * @throws IOException
 	 */
 	public void create(String data, String className) throws IOException {
-		List<DBConnector> connectorList = classToConnector.get(className);
+		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
 		
 		for (DBConnector connector : connectorList) {
 			connector.create(data);
@@ -60,7 +60,7 @@ public class Database {
 	 * @throws IOException
 	 */
 	public List<String> read(String className) throws IOException {
-		List<DBConnector> connectorList = classToConnector.get(className);
+		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
 		
 		// Make sure that the first one is authoritative
 		return connectorList.get(0).read();
@@ -74,7 +74,7 @@ public class Database {
 	 * @throws IOException
 	 */
 	public void update(String data, String className) throws IOException {
-		List<DBConnector> connectorList = classToConnector.get(className);
+		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
 
 		for (DBConnector connector : connectorList) {
 			connector.update(data);
@@ -89,7 +89,7 @@ public class Database {
 	 * @throws IOException
 	 */
 	public void delete(String data, String className) throws IOException {
-		List<DBConnector> connectorList = classToConnector.get(className);
+		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
 
 		for (DBConnector connector : connectorList) {
 			connector.delete(data);
