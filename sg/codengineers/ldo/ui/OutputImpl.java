@@ -22,7 +22,7 @@ public class OutputImpl implements Output {
 	private static final String	UPDATED_MESSAGE	= "Updated %1s\n";
 	private static final String	DELETED_MESSAGE	= "Deleted %1s\n";
 	private static final String	STUB_MESSAGE	= "This module is still under development.\n";
-	private static final String	TASK			= "%1d. %1s ID:%2d\n";
+	private static final String	TASK			= "%1d. %1s\n";
 
 	/* Welcome messages */
 	private static final String	PROGRAM_NAME	= "L'Do";
@@ -47,7 +47,7 @@ public class OutputImpl implements Output {
 		_result = result;
 		_taskItr = result.getTasksIterator();
 		CommandType commandType = _result.getCommandType();
-		if(!_result.getMessage().isEmpty()) {
+		if(_result.getMessage() != null) {
 			stub();
 		}
 		else {
