@@ -26,7 +26,7 @@ import sg.codengineers.ldo.logic.Filter;
  */
 public abstract class Handler {
 	
-	public static boolean DEBUG_MODE = true;
+	public static boolean DEBUG_MODE = false;
 	public final static SimpleDateFormat FORMATTER = new SimpleDateFormat("dd/MM/yyyy");
 	protected List<Task> _taskList;
 	
