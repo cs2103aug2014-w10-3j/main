@@ -69,6 +69,9 @@ public class DatabaseTest {
 		assertEquals("The third entry is not the same as what is read",
 				"This is the last test message",
 				entries.get(THIRD));
+		
+		assertTrue(db.clear("Test"));
+		assertTrue("The list returned should be empty", db.read("Test").isEmpty());
 	}
 	
 	public void testDelete() {
