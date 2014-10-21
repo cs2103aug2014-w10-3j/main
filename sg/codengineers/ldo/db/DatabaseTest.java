@@ -33,8 +33,20 @@ public class DatabaseTest {
 				entries.get(FIRST));
 	}
 	
+	@Test
 	public void testUpdate() {
+		boolean result = db.create("0<;>This is a test message", "Test");
+		assertTrue(result);
+		result = db.create("1<;>This is another test message", "Test");
+		assertTrue(result);
+		result = db.create("2<;>This is the last test message", "Test");
+		assertTrue(result);
 		
+		db.update("2<;>This is an updated message", "Test");
+		List<String> entries = db.read("Test");
+		assertEquals("The message was not updated",
+				"2<;>This is an updated message",
+				entries.get(THIRD));
 	}
 	
 	@Test
