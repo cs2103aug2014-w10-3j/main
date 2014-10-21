@@ -12,6 +12,8 @@ import sg.codengineers.ldo.model.Command.CommandType;
 import sg.codengineers.ldo.parser.ResultImpl;
 
 public class UpdateHandler extends Handler {
+	//Difference between display index which starts from 1 and system index which starts from 0
+	private static int DIFFERENCE_DIPSLAY_INDEX_AND_SYSTEM_INDEX = 1;
 	
 	public static final int INVALID_ID = -1;
 	
@@ -27,7 +29,7 @@ public class UpdateHandler extends Handler {
 		
 		try{
 			if(primaryOperand != null){
-				taskId = Integer.valueOf(primaryOperand);
+				taskId = Integer.valueOf(primaryOperand) - DIFFERENCE_DIPSLAY_INDEX_AND_SYSTEM_INDEX;
 				
 				Task modifiedTask = new TaskImpl(_taskList.get(taskId));
 				
