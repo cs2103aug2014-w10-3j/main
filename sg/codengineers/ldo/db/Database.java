@@ -11,16 +11,17 @@ package sg.codengineers.ldo.db;
  */
 
 import java.util.*;
-import java.io.*;
 
 public class Database {
+
+	private static final int FIRST = 0;
 
 	private Map<String, List<DBConnector>> classToConnector;
 	
 	private static Database database;
 	private static boolean isInitialized = false;
 	
-	public static Database initDatabase() throws IOException{
+	public static Database initDatabase() {
 		if (!isInitialized) { 
 			database = new Database();
 		}
@@ -30,10 +31,8 @@ public class Database {
 	/**
 	 * Constructor This is where we choose which connector to use and
 	 * initialize them accordingly.
-	 * 
-	 * @throws IOException
 	 */
-	private Database() throws IOException {
+	private Database() {
 		classToConnector = DBConfig.initDatabases();
 	}
 	
@@ -43,27 +42,33 @@ public class Database {
 	 * 
 	 * @param data The data to be saved
 	 * @param className The name of the model in question
-	 * @throws IOException
 	 */
-	public void create(String data, String className) throws IOException {
-		List<DBConnector> connectorList = classToConnector.get(className);
+	public boolean create(String data, String className) {
+		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
+		boolean success = true;
 		
 		for (DBConnector connector : connectorList) {
-			connector.create(data);
+			// If anyone of the process fails, the whole operation fails
+			success = success && connector.create(data);
 		}
+		return success;
 	}
 	
 	/**
 	 * This allows the model to get all entries in the database
 	 * 
 	 * @param className The name of the model in question
-	 * @throws IOException
 	 */
-	public List<String> read(String className) throws IOException {
-		List<DBConnector> connectorList = classToConnector.get(className);
+	public List<String> read(String className) {
+		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
 		
 		// Make sure that the first one is authoritative
-		return connectorList.get(0).read();
+		DBConnector authoritative = connectorList.get(FIRST);
+		if (authoritative == null) {
+			return null;
+		} else {
+			return authoritative.read();
+		}
 	}
 	
 	/**
@@ -71,14 +76,16 @@ public class Database {
 	 * 
 	 * @param data The data to be updated
 	 * @param className The name of the model in question
-	 * @throws IOException
 	 */
-	public void update(String data, String className) throws IOException {
-		List<DBConnector> connectorList = classToConnector.get(className);
+	public boolean update(String data, String className) {
+		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
+		boolean success = true;
 
 		for (DBConnector connector : connectorList) {
-			connector.update(data);
+			// If anyone of the process fails, the whole operation fails
+			success = success &&connector.update(data);
 		}
+		return success;
 	}
 	
 	/**
@@ -86,13 +93,35 @@ public class Database {
 	 * 
 	 * @param id The id of the entry to be deleted
 	 * @param className The name of the model in question
-	 * @throws IOException
 	 */
-	public void delete(String data, String className) throws IOException {
-		List<DBConnector> connectorList = classToConnector.get(className);
-
+	public boolean delete(String data, String className) {
+		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
+		boolean success = true;
+		
 		for (DBConnector connector : connectorList) {
-			connector.delete(data);
+			// If anyone of the process fails, the whole operation fails
+			success = success && connector.delete(data);
 		}
+		return success;
+	}
+	
+	/**
+	 * This method is used to clear the database of entries
+	 * This is only meant for unit testing purposes, to ensure
+	 * a clean state of the database so that the tests does not
+	 * depend on the information already present
+	 * 
+	 * @param className The class name to clear out
+	 * @return True if the operation succeeds
+	 */
+	public boolean clear(String className) {
+		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
+		boolean success = true;
+		
+		for (DBConnector connector : connectorList) {
+			// If anyone of the process fails, the whole operation fails
+			success = success && connector.clear();
+		}
+		return success;
 	}
 }

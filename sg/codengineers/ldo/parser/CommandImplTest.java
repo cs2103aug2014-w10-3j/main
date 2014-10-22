@@ -91,6 +91,27 @@ public class CommandImplTest {
 				testClass.getCommandType());
 	}
 
+	@Test
+	public void testGetCommandForSync() {
+		testClass = new CommandImpl("sync");
+		assertEquals("get comand type for sync", CommandType.SYNC,
+				testClass.getCommandType());
+	}
+
+	@Test
+	public void testGetCommandForExit() {
+		testClass = new CommandImpl("exit");
+		assertEquals("get command type for exit", CommandType.EXIT,
+				testClass.getCommandType());
+	}
+	
+	@Test
+	public void testGetCommandForSearch() {
+		testClass = new CommandImpl("search hello");
+		assertEquals("get command type for search", CommandType.SEARCH,
+				testClass.getCommandType());
+	}
+
 	/**
 	 * Tests for correct primary operands.
 	 * The following tests are used to ensure that the appropriate strings are
@@ -135,6 +156,27 @@ public class CommandImplTest {
 	public void testGetPrimaryOperandForShowBlank() {
 		testClass = new CommandImpl("show");
 		assertEquals("Get primary operand for show that has no operand", "",
+				testClass.getPrimaryOperand());
+	}
+
+	@Test
+	public void testGetPrimaryOperandForSync() {
+		testClass = new CommandImpl("sync");
+		assertEquals("get primary operand for sync that has no operand", "",
+				testClass.getPrimaryOperand());
+	}
+
+	@Test
+	public void testGetPrimaryOperandForSearch() {
+		testClass = new CommandImpl ("search hello");
+		assertEquals("get primary operand for search", "hello",
+				testClass.getPrimaryOperand());
+	}
+	
+	@Test
+	public void testGetPrimaryOperandForExit() {
+		testClass = new CommandImpl("exit");
+		assertEquals("get primary operand for exit that has no operand", "",
 				testClass.getPrimaryOperand());
 	}
 
@@ -228,10 +270,52 @@ public class CommandImplTest {
 	}
 
 	@Test
-	public void testEqualsWithSameCommand() {
+	public void testEqualsWithAddCommand() {
 		testClass = new CommandImpl("add test");
-		assertTrue("Checking if equals compares correctly with same object",
+		assertTrue("Checking if equals compares correctly with same object for add",
 				testClass.equals(new CommandImpl("add test")));
+	}
+	
+	@Test
+	public void testEqualsWithUpdateCommand() {
+		testClass = new CommandImpl("update 1");
+		assertTrue("Checking if equals compares correctly with same object for update",
+				testClass.equals(new CommandImpl ("update 1")));
+	}
+	
+	@Test
+	public void testEqualsWithDeleteCommand() {
+		testClass = new CommandImpl("delete 1");
+		assertTrue("Checking if equals compares correctly with same object for delete",
+				testClass.equals(new CommandImpl ("delete 1")));
+	}
+	
+	@Test
+	public void testEqualsWithRetrieveCommand() {
+		testClass = new CommandImpl("retrieve 1");
+		assertTrue("Checking if equals compares correctly with same object for retrieve",
+				testClass.equals(new CommandImpl ("retrieve 1")));
+	}
+	
+	@Test
+	public void testEqualsWithSyncCommand() {
+		testClass = new CommandImpl("sync");
+		assertTrue("Checking if equals compares correctly with same object for sync",
+				testClass.equals(new CommandImpl ("sync")));
+	}
+	
+	@Test
+	public void testEqualsWithExitCommand() {
+		testClass = new CommandImpl("exit");
+		assertTrue("Checking if equals compares correctly with same object for exit",
+				testClass.equals(new CommandImpl ("exit")));
+	}
+	
+	@Test
+	public void testEqualsWithSearchCommand() {
+		testClass = new CommandImpl("search hello");
+		assertTrue("Checking if equals compares correctly with same object for saerch",
+				testClass.equals(new CommandImpl ("search hello")));
 	}
 
 	/**
@@ -259,8 +343,6 @@ public class CommandImplTest {
 				getFirstWord.invoke(testClass, "first second third"));
 	}
 
-	// String RemoveFirstWord(String)
-
 	// String removeFirstWord(String)
 	@Test
 	public void testRemoveFirstWord() throws Exception {
@@ -270,7 +352,6 @@ public class CommandImplTest {
 				removeFirstWord.invoke(testClass, "first second third"));
 	}
 
-	// String[] splitToArguments(String);
 	// String[] splitToArguments(String)
 	@Test
 	public void testSplitToArgumentsWithNothing() throws Exception {

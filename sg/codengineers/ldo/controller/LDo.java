@@ -4,7 +4,7 @@ public class LDo {
 	private static Controller controller;
 	
 	public LDo(){
-		controller = Controller.getControllerInstance();
+		controller = Controller.getInstance();
 	}
 
 	public void run(){

@@ -36,7 +36,7 @@ public class RetrieveHandler extends Handler {
 			if(primaryOperand.equalsIgnoreCase("welcome")){
 				result = constructResult(primaryOperand);
 			} else {
-				int id = Integer.valueOf(primaryOperand);
+				int id = Integer.valueOf(primaryOperand) - DIFFERENCE_DIPSLAY_INDEX_AND_SYSTEM_INDEX;
 				result = constructResult(_taskList.get(id));
 			}
 			

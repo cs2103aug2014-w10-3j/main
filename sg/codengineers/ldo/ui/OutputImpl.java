@@ -22,7 +22,7 @@ public class OutputImpl implements Output {
 	private static final String	UPDATED_MESSAGE	= "Updated %1s\n";
 	private static final String	DELETED_MESSAGE	= "Deleted %1s\n";
 	private static final String	STUB_MESSAGE	= "This module is still under development.\n";
-	private static final String	TASK			= "%1d. %1s ID:%2d\n";
+	private static final String	TASK			= "%1d. %1s\n";
 
 	/* Welcome messages */
 	private static final String	PROGRAM_NAME	= "L'Do";
@@ -47,10 +47,9 @@ public class OutputImpl implements Output {
 		_result = result;
 		_taskItr = result.getTasksIterator();
 		CommandType commandType = _result.getCommandType();
-		if(!_result.getMessage().isEmpty()) {
-			stub();
-		}
-		else {
+		if(_result.getMessage() != null) {
+			displayWelcome(result);
+		} else {
 			switch (commandType) {
 				case CREATE :
 					feedbackForCreate();
@@ -157,7 +156,9 @@ public class OutputImpl implements Output {
 	}
 
 	/**
-	 * Method to inform user that module is still a stub
+	 * Method to inform user that module has not been
+	 * fully developed. Only used during development,
+	 * not in the final product.
 	 */
 	private void stub() {
 		showToUser(STUB_MESSAGE);
