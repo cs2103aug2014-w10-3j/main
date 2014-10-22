@@ -25,7 +25,9 @@ import sg.codengineers.ldo.logic.Filter;
  *
  */
 public abstract class Handler {
-	
+	//Difference between display index which starts from 1 and system index which starts from 0
+	protected static int DIFFERENCE_DIPSLAY_INDEX_AND_SYSTEM_INDEX = 1;
+		
 	public static boolean DEBUG_MODE = false;
 	public final static SimpleDateFormat FORMATTER = new SimpleDateFormat("dd/MM/yyyy");
 	protected List<Task> _taskList;
