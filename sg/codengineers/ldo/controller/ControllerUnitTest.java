@@ -9,10 +9,18 @@ import sg.codengineers.ldo.model.Result;
 import sg.codengineers.ldo.model.Command.CommandType;
 import sg.codengineers.ldo.parser.CommandImpl;
 
+/**
+ * This unit test aims to test whether the controller
+ * correctly routes the data according to the command type.
+ */
 public class ControllerUnitTest {
-	boolean stub = true;
-	Controller controller = new Controller(stub);
+	//This boolean is used to create a controller which uses stubs
+	boolean UNIT_TEST_MODE = true;
+	Controller controller = new Controller(UNIT_TEST_MODE);
 	
+	/**
+	 * This function tests task creation.
+	 */
 	@Test
 	public void testCreate() {
 		try {
@@ -24,6 +32,9 @@ public class ControllerUnitTest {
 		}
 	}
 	
+	/**
+	 * This function tests task deletion.
+	 */
 	@Test
 	public void testDelete() {
 		try {
@@ -35,6 +46,9 @@ public class ControllerUnitTest {
 		}
 	}
 	
+	/**
+	 * This method tests task update.
+	 */
 	@Test
 	public void testUpdate() {
 		try {
@@ -46,6 +60,9 @@ public class ControllerUnitTest {
 		}
 	}
 	
+	/**
+	 * This method tests task display/show.
+	 */
 	@Test
 	public void testRetrieve(){
 		try {
