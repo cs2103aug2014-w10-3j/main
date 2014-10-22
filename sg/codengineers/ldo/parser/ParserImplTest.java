@@ -32,4 +32,34 @@ public class ParserImplTest {
 	public void testMultipleBlanksInput() throws Exception {
 		parserTest.parse("          ");
 	}
+
+	@Test(expected = Exception.class)
+	public void testAddWithEmptyPrimary() throws Exception {
+		parserTest.parse("add ");
+	}
+
+	@Test(expected = Exception.class)
+	public void testUpdateWithEmptyPrimary() throws Exception {
+		parserTest.parse("update ");
+	}
+
+	@Test(expected = Exception.class)
+	public void testDeleteWithEmptyPrimary() throws Exception {
+		parserTest.parse("delete ");
+	}
+
+	@Test(expected = Exception.class)
+	public void testSearchWithEmptyPrimary() throws Exception {
+		parserTest.parse("search ");
+	}
+
+	@Test(expected = Exception.class)
+	public void testUpdateWithNonDigit() throws Exception {
+		parserTest.parse("update a");
+	}
+
+	@Test(expected = Exception.class)
+	public void testDeleteWithNonDigit() throws Exception {
+		parserTest.parse("delete a");
+	}
 }
