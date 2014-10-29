@@ -168,10 +168,11 @@ public class OutputImpl implements Output {
 		showToUser(STUB_MESSAGE);
 	}
 	
-	private boolean isNumeric(String str)
-	{
-	    for (char c : str.toCharArray())
-	    {
+	private boolean isNumeric(String str) {
+		if(str.trim().isEmpty()){
+			return false;
+		}
+	    for (char c : str.toCharArray()) {
 	        if (!Character.isDigit(c)) {
 	        	return false;
 	        }
