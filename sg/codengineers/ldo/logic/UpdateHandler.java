@@ -12,7 +12,6 @@ import sg.codengineers.ldo.model.Command.CommandType;
 import sg.codengineers.ldo.parser.ResultImpl;
 
 public class UpdateHandler extends Handler {
-	
 	public static final int INVALID_ID = -1;
 	
 	public UpdateHandler(List<Task> _taskList) {
@@ -27,7 +26,7 @@ public class UpdateHandler extends Handler {
 		
 		try{
 			if(primaryOperand != null){
-				taskId = Integer.valueOf(primaryOperand);
+				taskId = Integer.valueOf(primaryOperand) - DIFFERENCE_DIPSLAY_INDEX_AND_SYSTEM_INDEX;
 				
 				Task modifiedTask = new TaskImpl(_taskList.get(taskId));
 				

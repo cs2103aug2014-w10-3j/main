@@ -16,7 +16,6 @@ package sg.codengineers.ldo.db;
  */
 
 import java.util.*;
-import java.io.*;
 
 public class DBConfig {
 
@@ -26,12 +25,13 @@ public class DBConfig {
 	private static boolean isInitialized = false;
 	
 	// Filename of the config file
-	private static final String FILENAME = "DBConfig";
+	private static final String FILENAME = "dbconfig";
 	
 	private static final int FIRST_WORD = 0;
 	private static final int TYPE_ARRAY = 1;
 	
-	private static final String DEFAULT_SETTING = "Text textfile";
+	
+	private static final String[] DEFAULT_SETTINGS = {"task textfile", "test textfile"};
 	
 	private String className;
 	private String[] type;
@@ -71,10 +71,8 @@ public class DBConfig {
 	/**
 	 * Initialize the different types of database connectors
 	 * that a class can have
-	 * 
-	 * @throws IOException
 	 */
-	private void initDB() throws IOException {
+	private void initDB() {
 		List<DBConnector> connectorList = new ArrayList<DBConnector>();
 
 		for (String s : type) {
@@ -93,9 +91,8 @@ public class DBConfig {
 	 * 
 	 * @return A mapping of the text representation of the
 	 * class name to the database connector that it needs
-	 * @throws IOException
 	 */
-	public static Map<String, List<DBConnector>> initDatabases() throws IOException {
+	public static Map<String, List<DBConnector>> initDatabases() {
 		if (!isInitialized) {
 
 			/* 
@@ -112,6 +109,8 @@ public class DBConfig {
 			if (configList.isEmpty()) {
 				configList = addDefaultSettings();
 			}
+			
+			classToConnector = new HashMap<String, List<DBConnector>>();
 
 			for (String s : configList) {
 				DBConfig config = DBConfig.fromString(s);
@@ -124,11 +123,13 @@ public class DBConfig {
 		return classToConnector;
 	}
 	
-	private static List<String> addDefaultSettings() throws IOException {
-		config.create(DEFAULT_SETTING);
-		
+	private static List<String> addDefaultSettings() {
 		List<String> settings = new ArrayList<String>();
-		settings.add(DEFAULT_SETTING);
+
+		for (String s : DEFAULT_SETTINGS) {
+			config.create(s);
+			settings.add(s);
+		}		
 		return settings;
 	}
 	

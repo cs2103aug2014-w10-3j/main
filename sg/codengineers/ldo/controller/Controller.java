@@ -3,6 +3,7 @@ package sg.codengineers.ldo.controller;
 import java.util.Iterator;
 
 import sg.codengineers.ldo.logic.Logic;
+import sg.codengineers.ldo.logic.LogicStub;
 import sg.codengineers.ldo.model.AdditionalArgument;
 import sg.codengineers.ldo.model.Command;
 import sg.codengineers.ldo.model.Input;
@@ -30,12 +31,16 @@ public class Controller {
 	private Output output;
 	
 	/**
-	 * Constructor
+	 * Constructors
 	 */
 	public Controller(){
 		logic = Logic.getInstance();
 		input = new InputImpl();
 		output = new OutputImpl();
+	}
+	
+	protected Controller(boolean stub){
+		logic = new LogicStub();
 	}
 	
 	/**
@@ -56,7 +61,7 @@ public class Controller {
 	 */
 	public void run() {
 		try {
-			Command welcomeCommand, command;
+			Command welcomeCommand;
 			Result result;
 			
 			welcomeCommand = new CommandImpl("show welcome");
@@ -64,15 +69,22 @@ public class Controller {
 			output.displayResult(result);
 			
 			while (true) {
-				try{
-					String userInput = input.readFromUser();
-					command = new CommandImpl(userInput);
-					result = executeCommand(command);
-					output.displayResult(result);
-				} catch (Exception e) {
-					output.displayException(e);
-				}
+				String userInput = input.readFromUser();
+				processString(userInput);
 			}
+		} catch (Exception e) {
+			output.displayException(e);
+		}
+	}
+	
+	public void processString(String userInput){
+		try{
+			Command command;
+			Result result;
+			
+			command = new CommandImpl(userInput);
+			result = executeCommand(command);
+			output.displayResult(result);
 		} catch (Exception e) {
 			output.displayException(e);
 		}
