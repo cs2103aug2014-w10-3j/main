@@ -43,7 +43,7 @@ public class RetrieveHandler extends Handler {
 				} catch(NumberFormatException e){
 					List<Task> resultList = new ArrayList<Task>(_taskList);
 					resultList = searchTask(resultList, new AdditionalArgumentImpl("name", primaryOperand));
-					result = constructResult(_taskList);
+					result = constructResult(resultList);
 				}
 			}
 			
@@ -52,7 +52,7 @@ public class RetrieveHandler extends Handler {
 		if(isOpEmpty && isItEmpty){
 			List<Task> resultList = new ArrayList<Task>(_taskList);
 			resultList = searchTask(resultList, new AdditionalArgumentImpl("deadline", FORMATTER.format(new Date())));
-			result = constructResult(_taskList);
+			result = constructResult(resultList);
 		}
 		
 		if(isOpEmpty && !isItEmpty){
