@@ -61,7 +61,7 @@ public class Controller {
 	 */
 	public void run() {
 		try {
-			Command welcomeCommand, command;
+			Command welcomeCommand;
 			Result result;
 			
 			welcomeCommand = new CommandImpl("show welcome");
@@ -69,15 +69,22 @@ public class Controller {
 			output.displayResult(result);
 			
 			while (true) {
-				try{
-					String userInput = input.readFromUser();
-					command = new CommandImpl(userInput);
-					result = executeCommand(command);
-					output.displayResult(result);
-				} catch (Exception e) {
-					output.displayException(e);
-				}
+				String userInput = input.readFromUser();
+				processString(userInput);
 			}
+		} catch (Exception e) {
+			output.displayException(e);
+		}
+	}
+	
+	public void processString(String userInput){
+		try{
+			Command command;
+			Result result;
+			
+			command = new CommandImpl(userInput);
+			result = executeCommand(command);
+			output.displayResult(result);
 		} catch (Exception e) {
 			output.displayException(e);
 		}
