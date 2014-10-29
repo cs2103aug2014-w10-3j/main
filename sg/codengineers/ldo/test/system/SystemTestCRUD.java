@@ -28,9 +28,24 @@ public class SystemTestCRUD {
 	public void testCreate() {
 		Controller controller = new Controller();
 		
-		//only primary argument
-		controller.processString("add dummy task");
-		assertEquals("Added create task #1\n", outContent.toString());
+		try{
+			//only primary argument
+			controller.processString("add primary argument");
+			assertEquals("Added primary argument\n", outContent.toString());
+			outContent.reset();
+			
+			//primary argument + time
+			controller.processString("add primary argument and time -t 29/10/2014");
+			assertEquals("Added primary argument and time\n", outContent.toString());
+			outContent.reset();
+			
+			//primary argument + description
+			controller.processString("add primary argument and desc -desc empty description");
+			assertEquals("Added primary argument and desc\n", outContent.toString());
+			outContent.reset();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Test
