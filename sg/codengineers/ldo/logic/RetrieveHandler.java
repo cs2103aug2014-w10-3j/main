@@ -31,7 +31,7 @@ public class RetrieveHandler extends Handler {
 		boolean isOpEmpty = primaryOperand == null || primaryOperand.equals("");
 		boolean isItEmpty = iterator == null || !iterator.hasNext();
 		
-		if(!isOpEmpty){
+		if(!isOpEmpty && isItEmpty){
 			
 			if(primaryOperand.equalsIgnoreCase("welcome")){
 				result = constructResult(primaryOperand);
@@ -51,8 +51,8 @@ public class RetrieveHandler extends Handler {
 		
 		if(isOpEmpty && isItEmpty){
 			List<Task> resultList = new ArrayList<Task>(_taskList);
-			resultList = searchTask(resultList, new AdditionalArgumentImpl("deadline", FORMATTER.format(new Date())));
-			result = constructResult(resultList);
+			//resultList = searchTask(resultList, new AdditionalArgumentImpl("deadline", FORMATTER.format(new Date())));
+			result = constructResult(_taskList);
 		}
 		
 		if(isOpEmpty && !isItEmpty){
