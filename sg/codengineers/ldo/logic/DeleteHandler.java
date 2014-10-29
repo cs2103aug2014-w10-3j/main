@@ -26,7 +26,7 @@ public class DeleteHandler extends Handler {
 		Result result = null;
 		Task task = null;
 		
-		int id = Integer.valueOf(primaryOperand);
+		int id = Integer.valueOf(primaryOperand) - DIFFERENCE_DIPSLAY_INDEX_AND_SYSTEM_INDEX;
 		
 		for(int i = 0; i < _taskList.size(); i++){
 			if(_taskList.get(i).getId() == id){
