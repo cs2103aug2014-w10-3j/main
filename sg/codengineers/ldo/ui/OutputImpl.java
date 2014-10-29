@@ -95,7 +95,11 @@ public class OutputImpl implements Output {
 	 */
 	private void feedbackForShow() {
 		int counter = 1;
-		showToUser("Showing "+_result.getPrimaryOperand());
+		if(isNumeric(_result.getPrimaryOperand())){
+			showToUser("Showing 1 task: \n");
+		} else {
+			showToUser("Showing "+_result.getPrimaryOperand()+"\n");
+		}
 		while (_taskItr.hasNext()) {
 			Task toPrint = _taskItr.next();
 			showToUser(String.format(TASK, counter, toPrint.getName()/*,
@@ -161,6 +165,17 @@ public class OutputImpl implements Output {
 	 */
 	private void stub() {
 		showToUser(STUB_MESSAGE);
+	}
+	
+	private boolean isNumeric(String str)
+	{
+	    for (char c : str.toCharArray())
+	    {
+	        if (!Character.isDigit(c)) {
+	        	return false;
+	        }
+	    }
+	    return true;
 	}
 
 	/**
