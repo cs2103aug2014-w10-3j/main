@@ -94,16 +94,21 @@ public class OutputImpl implements Output {
 	 */
 	private void feedbackForShow() {
 		int counter = 1;
-		if(isNumeric(_result.getPrimaryOperand())){
-			showToUser("Showing 1 task: \n");
-		} else {
-			showToUser("Showing "+_result.getPrimaryOperand()+"\n");
+		if(!_taskItr.hasNext()) { 
+			showToUser("Task list is empty.\n");
 		}
-		while (_taskItr.hasNext()) {
-			Task toPrint = _taskItr.next();
-			showToUser(String.format(TASK, counter, toPrint.getName()/*,
-					toPrint.getId() //TODO */));
-			counter++;
+		else {
+			if(isNumeric(_result.getPrimaryOperand())) {
+				showToUser("Showing 1 task: \n");
+			} else {
+				showToUser("Showing "+_result.getPrimaryOperand()+"\n");
+			}
+			while (_taskItr.hasNext()) {
+				Task toPrint = _taskItr.next();
+				showToUser(String.format(TASK, counter, toPrint.getName()/*,
+						toPrint.getId() //TODO */));
+				counter++;
+			}
 		}
 	}
 
