@@ -117,13 +117,18 @@ public abstract class Handler {
 	protected List<Task> searchTask(List<Task> list, AdditionalArgument arg){
 		List<Task> newList = new ArrayList<Task>(list);
 		final String operand = arg.getOperand();
+		
+		
+		
 		try{
 			switch(arg.getArgumentType()){
 			case NAME:
 				newList = filter(newList, new Filter<Task>(){
 					@Override
 					public boolean call(Task task){
-						return task.getName().contains(operand);
+						boolean x = task.getName().contains(operand);
+						//System.out.println(x);
+						return x;
 					}
 				});
 				break;
