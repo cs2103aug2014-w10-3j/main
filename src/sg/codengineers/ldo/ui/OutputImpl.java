@@ -94,12 +94,21 @@ public class OutputImpl implements Output {
 	 */
 	private void feedbackForShow() {
 		int counter = 1;
-		showToUser("Showing "+_result.getPrimaryOperand());
-		while (_taskItr.hasNext()) {
-			Task toPrint = _taskItr.next();
-			showToUser(String.format(TASK, counter, toPrint.getName()/*,
-					toPrint.getId() //TODO */));
-			counter++;
+		if(!_taskItr.hasNext()) { 
+			showToUser("Task list is empty.\n");
+		}
+		else {
+			if(isNumeric(_result.getPrimaryOperand())) {
+				showToUser("Showing 1 task: \n");
+			} else {
+				showToUser("Showing "+_result.getPrimaryOperand()+"\n");
+			}
+			while (_taskItr.hasNext()) {
+				Task toPrint = _taskItr.next();
+				showToUser(String.format(TASK, counter, toPrint.getName()/*,
+						toPrint.getId() //TODO */));
+				counter++;
+			}
 		}
 	}
 
@@ -162,6 +171,18 @@ public class OutputImpl implements Output {
 	 */
 	private void stub() {
 		showToUser(STUB_MESSAGE);
+	}
+	
+	private boolean isNumeric(String str) {
+		if(str.trim().isEmpty()){
+			return false;
+		}
+	    for (char c : str.toCharArray()) {
+	        if (!Character.isDigit(c)) {
+	        	return false;
+	        }
+	    }
+	    return true;
 	}
 
 	/**

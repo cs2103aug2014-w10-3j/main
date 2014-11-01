@@ -2,7 +2,6 @@ package sg.codengineers.ldo.logic;
 
 import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -39,11 +38,11 @@ public class RetrieveHandler extends Handler {
 				int id;
 				try{
 					id = Integer.valueOf(primaryOperand) - DIFFERENCE_DIPSLAY_INDEX_AND_SYSTEM_INDEX;
-					result = constructResult(_taskList.get(id));
+					result = constructResult(primaryOperand, _taskList.get(id));
 				} catch(NumberFormatException e){
 					List<Task> resultList = new ArrayList<Task>(_taskList);
 					resultList = searchTask(resultList, new AdditionalArgumentImpl("name", primaryOperand));
-					result = constructResult(resultList);
+					result = constructResult(primaryOperand, resultList);
 				}
 			}
 			
@@ -52,7 +51,7 @@ public class RetrieveHandler extends Handler {
 		if(isOpEmpty && isItEmpty){
 			List<Task> resultList = new ArrayList<Task>(_taskList);
 			//resultList = searchTask(resultList, new AdditionalArgumentImpl("deadline", FORMATTER.format(new Date())));
-			result = constructResult(_taskList);
+			result = constructResult(primaryOperand, _taskList);
 		}
 		
 		if(isOpEmpty && !isItEmpty){
@@ -60,7 +59,7 @@ public class RetrieveHandler extends Handler {
 			while(iterator.hasNext()){
 				resultList = searchTask(resultList, iterator.next());
 			}
-			result = constructResult(resultList);
+			result = constructResult(primaryOperand, resultList);
 		}
 		
 		if(DEBUG_MODE){
@@ -78,26 +77,6 @@ public class RetrieveHandler extends Handler {
 		}
 		
 		return result;
-	}
-	
-	private Result constructResult(Task task){
-		return new ResultImpl(CommandType.RETRIEVE, 
-				pmOperand,
-				new Time(System.currentTimeMillis()), 
-				task);	
-	}
-	
-	private Result constructResult(List<Task> list){
-		return 	new ResultImpl(CommandType.RETRIEVE, 
-				pmOperand,
-				new Time(System.currentTimeMillis()), 
-				list);
-	}
-	private Result constructResult(String message){
-		return new ResultImpl(CommandType.RETRIEVE,
-				pmOperand,
-				new Time(System.currentTimeMillis())
-				);
 	}
 
 }
