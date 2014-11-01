@@ -34,9 +34,14 @@ public class SystemTestCRUD {
 			assertEquals("Added primary arg\n", outContent.toString());
 			outContent.reset();
 			
-			//primary argument + time
-			controller.processString("add primary arg and time 1 -t 29/10/2014");
+			//primary argument + time using --time
+			controller.processString("add primary arg and time 1 --time 29/10/2014");
 			assertEquals("Added primary arg and time 1\n", outContent.toString());
+			outContent.reset();
+			
+			//primary argument + time using -t
+			controller.processString("add primary arg and time 2 -t 29/10/2014");
+			assertEquals("Added primary arg and time 2\n", outContent.toString());
 			outContent.reset();
 			
 			//primary argument + description using --description
