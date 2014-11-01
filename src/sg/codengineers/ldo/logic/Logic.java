@@ -78,7 +78,7 @@ public class Logic {
 
 	public Result deleteTask(String primaryOperand,
 			Iterator<AdditionalArgument> iterator) throws IOException{
-		Result result =deleteHandler.execute(primaryOperand, iterator);
+		Result result = deleteHandler.execute(primaryOperand, iterator);
 		_dbConnector.delete(result.getTasksIterator().next().toString(), TaskImpl.CLASS_NAME);
 		return result;
 	}

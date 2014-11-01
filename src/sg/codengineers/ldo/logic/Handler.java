@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Logger;
 
 import sg.codengineers.ldo.model.AdditionalArgument;
 import sg.codengineers.ldo.model.Result;
@@ -239,5 +238,11 @@ public abstract class Handler {
 				operand,
 				new Time(System.currentTimeMillis()), 
 				list);
-	}	
+	}
+	protected Result constructResult(String operand){
+		return new ResultImpl(CommandType.RETRIEVE,
+				operand,
+				new Time(System.currentTimeMillis())
+				);
+	}
 }
