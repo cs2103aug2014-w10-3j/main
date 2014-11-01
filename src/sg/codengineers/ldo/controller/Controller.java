@@ -112,9 +112,10 @@ public class Controller {
 			case UPDATE:
 				return logic.updateTask(primaryOperand, iterator);
 			case RETRIEVE:
-				return logic.retrieveTask(primaryOperand, iterator);
 			case SEARCH:
 				return logic.retrieveTask(primaryOperand, iterator);
+			case HELP:
+				return logic.showHelp(primaryOperand);
 			default:
 				throw new Exception("Invalid command.");
 		}
