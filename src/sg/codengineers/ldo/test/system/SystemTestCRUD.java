@@ -30,18 +30,38 @@ public class SystemTestCRUD {
 		
 		try{
 			//only primary argument
-			controller.processString("add primary argument");
-			assertEquals("Added primary argument\n", outContent.toString());
+			controller.processString("add primary arg");
+			assertEquals("Added primary arg\n", outContent.toString());
 			outContent.reset();
 			
 			//primary argument + time
-			controller.processString("add primary argument and time -t 29/10/2014");
-			assertEquals("Added primary argument and time\n", outContent.toString());
+			controller.processString("add primary arg and time 1 -t 29/10/2014");
+			assertEquals("Added primary arg and time 1\n", outContent.toString());
 			outContent.reset();
 			
-			//primary argument + description
-			controller.processString("add primary argument and desc -desc empty description");
-			assertEquals("Added primary argument and desc\n", outContent.toString());
+			//primary argument + description using --description
+			controller.processString("add primary arg and desc 1 --description empty description");
+			assertEquals("Added primary arg and desc 1\n", outContent.toString());
+			outContent.reset();
+			
+			//primary argument + description using -desc
+			controller.processString("add primary arg and desc 2 -desc empty description");
+			assertEquals("Added primary arg and desc 2\n", outContent.toString());
+			outContent.reset();
+			
+			//primary argument + description using --information
+			controller.processString("add primary arg and desc 3 --information empty description");
+			assertEquals("Added primary arg and desc 3\n", outContent.toString());
+			outContent.reset();
+			
+			//primary argument + description using -info
+			controller.processString("add primary arg and desc 4 -info empty description");
+			assertEquals("Added primary arg and desc 4\n", outContent.toString());
+			outContent.reset();
+			
+			//primary argument + description using -a
+			controller.processString("add primary arg and desc 5 -a empty description");
+			assertEquals("Added primary arg and desc 5\n", outContent.toString());
 			outContent.reset();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -55,7 +75,6 @@ public class SystemTestCRUD {
 	
 	@Test
 	public void testUpdate() {
-		
 	}
 	
 	@Test
