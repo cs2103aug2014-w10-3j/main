@@ -44,6 +44,16 @@ public class SystemTestCRUD {
 			assertEquals("Added primary arg and time 2\n", outContent.toString());
 			outContent.reset();
 			
+			//primary argument + deadline using --deadline
+			controller.processString("add primary arg and deadline 1 --deadline 01/11/2014");
+			assertEquals("Added primary arg and deadline 1\n", outContent.toString());
+			outContent.reset();
+			
+			//primary argument + deadline using -d
+			controller.processString("add primary arg and deadline 2 -d 01/11/2014");
+			assertEquals("Added primary arg and deadline 2\n", outContent.toString());
+			outContent.reset();
+			
 			//primary argument + description using --description
 			controller.processString("add primary arg and desc 1 --description empty description");
 			assertEquals("Added primary arg and desc 1\n", outContent.toString());
