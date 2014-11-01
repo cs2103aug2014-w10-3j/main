@@ -222,8 +222,13 @@ public class CommandImpl implements Command {
 		int length = additionalArguments.length;
 		for (int i = 0; i < length; i++) {
 			argument = additionalArguments[i].split(" ", 2);
-			_additionalArguments.add(new AdditionalArgumentImpl(argument[0],
-					argument[1]));
+			if (argument.length == 1) {
+				_additionalArguments.add(new AdditionalArgumentImpl(
+						argument[0], ""));
+			} else {
+				_additionalArguments.add(new AdditionalArgumentImpl(
+						argument[0], argument[1]));
+			}
 		}
 	}
 
