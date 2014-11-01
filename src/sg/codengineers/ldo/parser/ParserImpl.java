@@ -1,7 +1,6 @@
 package sg.codengineers.ldo.parser;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -16,7 +15,7 @@ public class ParserImpl implements Parser {
 
 	/* Constants */
 	private static final int					PRIMARY_OPERAND_POSITION	= 0;
-
+	private static final boolean				DEBUG_MODE					= false;
 	/* Messages to show to user for Exceptions */
 	private static String						CODE_FAULT					= "%1s in %2s component is not behaving according to how it should be";
 	private static String						BLANK_INPUT					= "Blank input not acceptable";
@@ -24,7 +23,6 @@ public class ParserImpl implements Parser {
 	private static String						HELP_EXPECTED				= "Help argument expected";
 	private static String						NUMBER_EXPECTED				= "Primary operand should contain numbers!";
 	private static String						INVALID_ARGUMENT			= "Invalid additional argument entered";
-	private static String						INVALID_OPERAND				= "Operand should not be present after help";
 	private static String						OPERAND_EXPECTED			= "Operand should follow additional argument %1s";
 
 	/* Static Variables */
@@ -40,15 +38,30 @@ public class ParserImpl implements Parser {
 
 	/* Public methods */
 	@Override
-	public Command parse(String userInput) throws Exception {
-		initialise();
-		_userInput = userInput;
-		checkForBlankInput();
+	public Command parse(String userInput) {
+		initialise(userInput);
+		try {
+			checkForBlankInput();
+		} catch (Exception e) {
+			if (DEBUG_MODE) {
+				e.printStackTrace();
+			}
+			return new CommandImpl(userInput, CommandType.INVALID,
+					e.getMessage(), null);
+		}
 		CommandType cmdType = getCommandType();
 		String priOp = getPrimaryOperand();
 		String[] splitInput = splitToArguments(removePrimaryArgument(priOp));
 		List<AdditionalArgument> addArgs = populateAdditionalArguments(splitInput);
-		validateInput(cmdType, priOp, splitInput);
+		try {
+			validateInput(cmdType, priOp, addArgs);
+		} catch (Exception e) {
+			if (DEBUG_MODE) {
+				e.printStackTrace();
+			}
+			return new CommandImpl(userInput, CommandType.INVALID,
+					e.getMessage(), null);
+		}
 		if (_isHelpRequest) {
 			cmdType = CommandType.HELP;
 			priOp = getFirstWord(userInput).toLowerCase();
@@ -76,7 +89,10 @@ public class ParserImpl implements Parser {
 	/**
 	 * Initialises the command map if it has yet to be done.
 	 */
-	private void initialise() {
+	private void initialise(String userInput) {
+		_userInput = userInput;
+		_isEmptyPriOp = false;
+		_isHelpRequest = false;
 		if (!_isInitialised) {
 			_cmdMap = new TreeMap<String, CommandType>();
 			populateCmdMap();
@@ -206,8 +222,8 @@ public class ParserImpl implements Parser {
 	/**
 	 * Validates the user input to ensure that all entries are acceptable
 	 * 
-	 * @param splitInput
-	 *            array of String of additional commands and additional operands
+	 * @param addArgs
+	 *            List of AdditionalArguments
 	 * @param priOp
 	 *            String object representing primary operand
 	 * @param cmdType
@@ -217,11 +233,11 @@ public class ParserImpl implements Parser {
 	 *             Throws an exception if it fails any of the validation tests
 	 */
 	private void validateInput(CommandType cmdType, String priOp,
-			String[] splitInput)
+			List<AdditionalArgument> addArgs)
 			throws Exception {
 		validateCommandType(cmdType);
-		validatePrimaryOperand();
-		validateAdditionalArguments();
+		validatePrimaryOperand(cmdType, priOp, addArgs);
+		validateAdditionalArguments(addArgs);
 	}
 
 	/**
@@ -254,14 +270,20 @@ public class ParserImpl implements Parser {
 	 * and RETRIEVE will also be the only CommandTypes that accepts non digits
 	 * for its primary operand.
 	 * 
+	 * @param cmdType
+	 *            commandType of current command.
+	 * 
+	 * @param priOp
+	 *            primary operand from user to be checked.
+	 * @param addArgs additional argument(s) of current command.
 	 * @throws Exception
 	 *             If the primary operand is null, throws an exception to
 	 *             indicate errors in the code.
 	 *             If the primary operand is invalid, throws an
 	 *             IllegalArgumentException
 	 */
-	private void validatePrimaryOperand() throws Exception {
-		String priOp = _resultingCommand.getPrimaryOperand();
+	private void validatePrimaryOperand(CommandType cmdType, String priOp, List<AdditionalArgument> addArgs)
+			throws Exception {
 
 		if (priOp == null) {
 			throw new Exception(String.format(CODE_FAULT, "getPrimaryOperand",
@@ -276,12 +298,11 @@ public class ParserImpl implements Parser {
 		}
 
 		if (_isEmptyPriOp) {
-			if (!hasHelpArgument() && !isUnaryCommand()) {
+			if (!hasHelpArgument(addArgs) && !isUnaryCommand(cmdType)) {
 				throw new IllegalArgumentException(HELP_EXPECTED);
 			}
 		}
-		if (_resultingCommand.getCommandType() == CommandType.UPDATE
-				|| _resultingCommand.getCommandType() == CommandType.DELETE) {
+		if (cmdType == CommandType.UPDATE || cmdType == CommandType.DELETE) {
 			for (char c : priOp.toCharArray()) {
 				if (!Character.isDigit(c)) {
 					throw new IllegalArgumentException(NUMBER_EXPECTED);
@@ -306,10 +327,10 @@ public class ParserImpl implements Parser {
 			argument = additionalArguments[i].split(" ", 2);
 			if (argument.length == 1) {
 				toReturn.add(new AdditionalArgumentImpl(
-						argument[0], ""));
+						getArgumentType(argument[0]), ""));
 			} else {
 				toReturn.add(new AdditionalArgumentImpl(
-						argument[0], argument[1]));
+						getArgumentType(argument[0]), argument[1]));
 			}
 		}
 
@@ -318,6 +339,7 @@ public class ParserImpl implements Parser {
 
 	/**
 	 * Checks if the user entered the help argument as the first argument
+	 * @param addArgs Additional Arguments of this command.
 	 * 
 	 * @return True if the first additional argument is of ArgumentType HELP
 	 *         false otherwise
@@ -328,14 +350,12 @@ public class ParserImpl implements Parser {
 	 *             Iterator, throws an exception to indicate errors
 	 *             in the code.
 	 */
-	private boolean hasHelpArgument() throws Exception {
-		Iterator<AdditionalArgument> addArgs = _resultingCommand
-				.getAdditionalArguments();
+	private boolean hasHelpArgument(List<AdditionalArgument> addArgs) throws Exception {
 		if (addArgs == null) {
 			throw new Exception(String.format(CODE_FAULT,
-					"getAdditionalArguments", "CommandImpl"));
+					"populateAdditionalArguments", "ParserImpl"));
 		}
-		AdditionalArgument firstArg = addArgs.next();
+		AdditionalArgument firstArg = addArgs.get(0);
 		if (firstArg == null) {
 			throw new Exception(String.format(CODE_FAULT, "hasHelpArgument",
 					"ParserImpl"));
@@ -349,20 +369,22 @@ public class ParserImpl implements Parser {
 	/**
 	 * Validates all the additional Arguments entered by the user.
 	 * 
+	 * @param addArgs
+	 *            additionalArguments to check
+	 * 
 	 * @throws Exception
 	 *             If the AdditionalArgument Iterator is null, throws an
 	 *             exception to indicate error in code.
 	 * 
 	 */
-	private void validateAdditionalArguments() throws Exception {
-		Iterator<AdditionalArgument> addArgs = _resultingCommand
-				.getAdditionalArguments();
+	private void validateAdditionalArguments(List<AdditionalArgument> addArgs)
+			throws Exception {
 		if (addArgs == null) {
 			throw new Exception(String.format(CODE_FAULT,
-					"getAdditionalArguments", "CommandImpl"));
+					"populateAdditionalArguments", "ParserImpl"));
 		}
-		while (addArgs.hasNext()) {
-			validateArgument(addArgs.next());
+		for (AdditionalArgument addArg : addArgs) {
+			validateArgument(addArg);
 		}
 	}
 
@@ -394,7 +416,7 @@ public class ParserImpl implements Parser {
 		String operand = arg.getOperand();
 		if (argType == null) {
 			throw new Exception(String.format(CODE_FAULT,
-					"getAdditionalArguments", "commandImpl"));
+					"getAdditionalArguments", "ParserImpl"));
 		}
 		if (argType == ArgumentType.INVALID) {
 			throw new IllegalArgumentException(INVALID_ARGUMENT);
@@ -404,9 +426,7 @@ public class ParserImpl implements Parser {
 					"assignMemberVariables", "commandImpl"));
 		}
 		if (argType == ArgumentType.HELP) {
-			if (!operand.isEmpty()) {
-				throw new IllegalArgumentException(INVALID_OPERAND);
-			}
+			_isHelpRequest = true;
 		}
 		else {
 			if (operand.isEmpty()) {
@@ -414,7 +434,22 @@ public class ParserImpl implements Parser {
 			}
 		}
 	}
-
+	
+	/**
+	 * Takes the input of the user and returns the argument type
+	 * 
+	 * @param argument
+	 *            Input string from user
+	 * @return The argument type of the argument.
+	 */
+	private ArgumentType getArgumentType(String argument) {
+		ArgumentType argumentType = _argsMap.get(argument);
+		if (argumentType == null) {
+			return ArgumentType.INVALID;
+		}
+		return argumentType;
+	}
+	
 	/**
 	 * Validates if the command is a unary Command.
 	 * Unary commands are commands that do not require a primary operand.
@@ -422,10 +457,9 @@ public class ParserImpl implements Parser {
 	 * 
 	 * @return true if the command type is unary, false otherwise
 	 */
-	private boolean isUnaryCommand() {
-		return (_resultingCommand.getCommandType() == CommandType.RETRIEVE
-				|| _resultingCommand.getCommandType() == CommandType.SYNC
-				|| _resultingCommand.getCommandType() == CommandType.EXIT);
+	private boolean isUnaryCommand(CommandType cmdType) {
+		return (cmdType == CommandType.RETRIEVE || cmdType == CommandType.SYNC
+				|| cmdType == CommandType.EXIT);
 	}
 
 	/**
