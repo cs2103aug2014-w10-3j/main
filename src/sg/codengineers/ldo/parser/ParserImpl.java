@@ -19,7 +19,7 @@ public class ParserImpl implements Parser {
 	/* Messages to show to user for Exceptions */
 	private static String						CODE_FAULT					= "%1s in %2s component is not behaving according to how it should be";
 	private static String						BLANK_INPUT					= "Blank input not acceptable";
-	private static String						INVALID_COMMAND				= "Invalid command type entered";
+	private static String						INVALID_COMMAND				= "%1s has an Invalid command type entered";
 	private static String						HELP_EXPECTED				= "Help argument expected";
 	private static String						NUMBER_EXPECTED				= "Primary operand should contain numbers!";
 	private static String						INVALID_ARGUMENT			= "Invalid additional argument entered";
@@ -47,7 +47,7 @@ public class ParserImpl implements Parser {
 				e.printStackTrace();
 			}
 			return new CommandImpl(userInput, CommandType.INVALID,
-					e.getMessage(), null);
+					e.getMessage(), new ArrayList<AdditionalArgument>());
 		}
 		CommandType cmdType = getCommandType();
 		String priOp = getPrimaryOperand();
@@ -60,7 +60,7 @@ public class ParserImpl implements Parser {
 				e.printStackTrace();
 			}
 			return new CommandImpl(userInput, CommandType.INVALID,
-					e.getMessage(), null);
+					e.getMessage(), new ArrayList<AdditionalArgument>());
 		}
 		if (_isHelpRequest) {
 			cmdType = CommandType.HELP;
@@ -203,7 +203,6 @@ public class ParserImpl implements Parser {
 	 *         white spaces.
 	 */
 	private String[] splitToArguments(String addArgs) {
-
 		String[] additionalArguments = addArgs.split("--+|-+");
 		ArrayList<String> toReturn = new ArrayList<String>();
 		int length = additionalArguments.length;
@@ -258,7 +257,8 @@ public class ParserImpl implements Parser {
 					"ParserImpl"));
 		}
 		if (cmdType == CommandType.INVALID) {
-			throw new IllegalArgumentException(INVALID_COMMAND);
+			throw new IllegalArgumentException(String.format(INVALID_COMMAND,
+					_userInput));
 		}
 	}
 
@@ -359,6 +359,9 @@ public class ParserImpl implements Parser {
 		if (addArgs == null) {
 			throw new Exception(String.format(CODE_FAULT,
 					"populateAdditionalArguments", "ParserImpl"));
+		}
+		if (addArgs.size() == 0) {
+			return false;
 		}
 		AdditionalArgument firstArg = addArgs.get(0);
 		if (firstArg == null) {

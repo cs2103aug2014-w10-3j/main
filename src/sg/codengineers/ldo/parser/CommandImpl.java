@@ -1,6 +1,7 @@
 package sg.codengineers.ldo.parser;
 
 // import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -75,6 +76,10 @@ public class CommandImpl implements Command {
 	 */
 	@Override
 	public Iterator<AdditionalArgument> getAdditionalArguments() {
+		if (_additionalArguments == null) {
+			List<AdditionalArgument> tempList = new ArrayList<AdditionalArgument>();
+			return tempList.iterator();
+		}
 		return _additionalArguments.iterator();
 	}
 
