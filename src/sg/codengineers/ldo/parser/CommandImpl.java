@@ -1,10 +1,13 @@
 package sg.codengineers.ldo.parser;
 
+// import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import sg.codengineers.ldo.model.AdditionalArgument;
 import sg.codengineers.ldo.model.Command;
+
+// import sg.codengineers.ldo.model.Parser;
 
 /**
  * This class specifies the implementation of Command as specified by the
@@ -38,6 +41,7 @@ public class CommandImpl implements Command {
 	 * 
 	 * @return a String object representing the initial user input string
 	 */
+	@Override
 	public String getUserInput() {
 		return _userInput;
 	}
@@ -48,6 +52,7 @@ public class CommandImpl implements Command {
 	 * @return a CommandType object representing the command type of this
 	 *         Command object.
 	 */
+	@Override
 	public CommandType getCommandType() {
 		return _commandType;
 	}
@@ -57,6 +62,7 @@ public class CommandImpl implements Command {
 	 * 
 	 * @return a String containing the primary operand
 	 */
+	@Override
 	public String getPrimaryOperand() {
 		return _primaryOperand;
 	}
@@ -67,6 +73,7 @@ public class CommandImpl implements Command {
 	 * 
 	 * @return an iterator containing all the additional arguments
 	 */
+	@Override
 	public Iterator<AdditionalArgument> getAdditionalArguments() {
 		return _additionalArguments.iterator();
 	}

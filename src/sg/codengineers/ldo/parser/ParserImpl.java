@@ -6,10 +6,10 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import sg.codengineers.ldo.model.AdditionalArgument;
-import sg.codengineers.ldo.model.Command;
-import sg.codengineers.ldo.model.Parser;
 import sg.codengineers.ldo.model.AdditionalArgument.ArgumentType;
+import sg.codengineers.ldo.model.Command;
 import sg.codengineers.ldo.model.Command.CommandType;
+import sg.codengineers.ldo.model.Parser;
 
 public class ParserImpl implements Parser {
 
@@ -72,21 +72,6 @@ public class ParserImpl implements Parser {
 	}
 
 	/**
-	 * Checks if the input given by user is blank
-	 * 
-	 * @throws Exception
-	 *             throws an IllegalArgumentException if the user entered
-	 *             nothing but whitespace characters.
-	 */
-	private void checkForBlankInput() throws Exception {
-		if (_userInput.trim().isEmpty()) {
-			throw new IllegalArgumentException(BLANK_INPUT);
-		}
-	}
-
-	/* Private methods */
-
-	/**
 	 * Initialises the command map if it has yet to be done.
 	 */
 	private void initialise(String userInput) {
@@ -98,6 +83,21 @@ public class ParserImpl implements Parser {
 			populateCmdMap();
 			populateArgsMap();
 			_isInitialised = true;
+		}
+	}
+
+	/* Private Methods */
+
+	/**
+	 * Checks if the input given by user is blank
+	 * 
+	 * @throws Exception
+	 *             throws an IllegalArgumentException if the user entered
+	 *             nothing but whitespace characters.
+	 */
+	private void checkForBlankInput() throws Exception {
+		if (_userInput.trim().isEmpty()) {
+			throw new IllegalArgumentException(BLANK_INPUT);
 		}
 	}
 
@@ -275,14 +275,16 @@ public class ParserImpl implements Parser {
 	 * 
 	 * @param priOp
 	 *            primary operand from user to be checked.
-	 * @param addArgs additional argument(s) of current command.
+	 * @param addArgs
+	 *            additional argument(s) of current command.
 	 * @throws Exception
 	 *             If the primary operand is null, throws an exception to
 	 *             indicate errors in the code.
 	 *             If the primary operand is invalid, throws an
 	 *             IllegalArgumentException
 	 */
-	private void validatePrimaryOperand(CommandType cmdType, String priOp, List<AdditionalArgument> addArgs)
+	private void validatePrimaryOperand(CommandType cmdType, String priOp,
+			List<AdditionalArgument> addArgs)
 			throws Exception {
 
 		if (priOp == null) {
@@ -339,7 +341,9 @@ public class ParserImpl implements Parser {
 
 	/**
 	 * Checks if the user entered the help argument as the first argument
-	 * @param addArgs Additional Arguments of this command.
+	 * 
+	 * @param addArgs
+	 *            Additional Arguments of this command.
 	 * 
 	 * @return True if the first additional argument is of ArgumentType HELP
 	 *         false otherwise
@@ -350,7 +354,8 @@ public class ParserImpl implements Parser {
 	 *             Iterator, throws an exception to indicate errors
 	 *             in the code.
 	 */
-	private boolean hasHelpArgument(List<AdditionalArgument> addArgs) throws Exception {
+	private boolean hasHelpArgument(List<AdditionalArgument> addArgs)
+			throws Exception {
 		if (addArgs == null) {
 			throw new Exception(String.format(CODE_FAULT,
 					"populateAdditionalArguments", "ParserImpl"));
@@ -434,7 +439,7 @@ public class ParserImpl implements Parser {
 			}
 		}
 	}
-	
+
 	/**
 	 * Takes the input of the user and returns the argument type
 	 * 
@@ -449,7 +454,7 @@ public class ParserImpl implements Parser {
 		}
 		return argumentType;
 	}
-	
+
 	/**
 	 * Validates if the command is a unary Command.
 	 * Unary commands are commands that do not require a primary operand.
@@ -459,7 +464,7 @@ public class ParserImpl implements Parser {
 	 */
 	private boolean isUnaryCommand(CommandType cmdType) {
 		return (cmdType == CommandType.RETRIEVE || cmdType == CommandType.SYNC
-				|| cmdType == CommandType.EXIT);
+		|| cmdType == CommandType.EXIT);
 	}
 
 	/**

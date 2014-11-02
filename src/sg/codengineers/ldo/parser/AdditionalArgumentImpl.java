@@ -12,8 +12,8 @@ import sg.codengineers.ldo.model.AdditionalArgument;
 public class AdditionalArgumentImpl implements AdditionalArgument {
 
 	/* Member variables */
-	private ArgumentType						_argumentType;
-	private String								_operand;
+	private ArgumentType	_argumentType;
+	private String			_operand;
 
 	/* Constructors */
 	public AdditionalArgumentImpl(ArgumentType argumentType, String value) {
@@ -28,6 +28,7 @@ public class AdditionalArgumentImpl implements AdditionalArgument {
 	 * 
 	 * @return A String containing the value of the argument
 	 */
+	@Override
 	public String getOperand() {
 		return _operand;
 	}
@@ -37,6 +38,7 @@ public class AdditionalArgumentImpl implements AdditionalArgument {
 	 * 
 	 * @return An ArgumentType of the argument
 	 */
+	@Override
 	public ArgumentType getArgumentType() {
 		return _argumentType;
 	}
