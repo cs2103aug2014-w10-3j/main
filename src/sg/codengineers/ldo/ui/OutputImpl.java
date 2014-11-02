@@ -80,6 +80,7 @@ public class OutputImpl implements Output {
 	private void feedbackForCreate() {
 		Task completedTask = _taskItr.next();
 		showToUser(String.format(CREATED_MESSAGE, completedTask.getName()));
+		showOneTaskToUser();
 	}
 
 	private void feedbackForUpdate() {
