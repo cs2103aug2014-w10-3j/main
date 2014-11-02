@@ -86,6 +86,7 @@ public class OutputImpl implements Output {
 	private void feedbackForUpdate() {
 		Task completedTask = _taskItr.next();
 		showToUser(String.format(UPDATED_MESSAGE, completedTask.getName()));
+		showOneTaskToUser();
 	}
 
 	private void feedbackForDelete() {
