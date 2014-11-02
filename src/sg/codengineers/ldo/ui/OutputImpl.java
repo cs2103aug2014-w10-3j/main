@@ -67,6 +67,9 @@ public class OutputImpl implements Output {
 				case RETRIEVE :
 					feedbackForRetrieve();
 					break;
+				case SEARCH :
+					feedbackForSearch();
+					break;
 				default:
 					throw new IllegalArgumentException(
 							"Command Type Invalid");
@@ -263,6 +266,12 @@ public class OutputImpl implements Output {
 		else {
 			showToUser(NO_TASK_TODAY);
 		}
+	}
+
+	private void feedbackForSearch() {
+		showToUser("Showing all tasks containing \""
+				+ _result.getPrimaryOperand() + "\":\n");
+		showMultipleTasksToUser();
 	}
 
 	/**
