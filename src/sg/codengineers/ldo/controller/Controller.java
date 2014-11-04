@@ -45,6 +45,12 @@ public class Controller {
 		parser = new ParserImpl();
 	}
 	
+	/**
+	 * This constructor allows the controller to use a logic stub
+	 * for unit testing purposes.
+	 * @param stub
+	 * 			true if the unit is under testing, false otherwise
+	 */
 	protected Controller(boolean stub){
 		logic = new LogicStub();
 	}
@@ -67,7 +73,8 @@ public class Controller {
 	 */
 	public void run() {
 		try {
-			showWelcomeMessage();
+			String welcomeCommand = "show welcome";
+			processString(welcomeCommand);
 			
 			while (true) {
 				String userInput = input.readFromUser();
@@ -78,25 +85,19 @@ public class Controller {
 		}
 	}
 	
-	private void showWelcomeMessage() {
-		try {
-			Command welcomeCommand;
-			Result welcomeResult;
-			
-			welcomeCommand = parser.parse("show welcome");
-			welcomeResult = executeCommand(welcomeCommand);
-			output.displayResult(welcomeResult);
-		} catch (Exception e){
-			output.displayException(e);
-		}
-	}
-	
-	public void processString(String userInput){
+	/**
+	 * Processes command string and displays
+	 * messages and feedback to continue
+	 * interaction with user.
+	 * @param rawCommand
+	 * 			unprocessed command string
+	 */
+	public void processString(String rawCommand){
 		try{
 			Command command;
 			Result result;
 			
-			command = new CommandImpl(userInput);
+			command = new CommandImpl(rawCommand);
 			result = executeCommand(command);
 			output.displayResult(result);
 		} catch (Exception e) {
