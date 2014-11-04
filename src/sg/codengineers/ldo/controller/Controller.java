@@ -8,9 +8,11 @@ import sg.codengineers.ldo.model.AdditionalArgument;
 import sg.codengineers.ldo.model.Command;
 import sg.codengineers.ldo.model.Input;
 import sg.codengineers.ldo.model.Output;
+import sg.codengineers.ldo.model.Parser;
 import sg.codengineers.ldo.model.Result;
 import sg.codengineers.ldo.model.Command.CommandType;
 import sg.codengineers.ldo.parser.CommandImpl;
+import sg.codengineers.ldo.parser.ParserImpl;
 import sg.codengineers.ldo.ui.InputImpl;
 import sg.codengineers.ldo.ui.OutputImpl;
 
@@ -62,9 +64,10 @@ public class Controller {
 	public void run() {
 		try {
 			Command welcomeCommand;
+			Parser parser = new ParserImpl();
 			Result result;
 			
-			welcomeCommand = new CommandImpl("show welcome");
+			welcomeCommand = parser.parse("show welcome");
 			result = executeCommand(welcomeCommand);
 			output.displayResult(result);
 			
@@ -112,9 +115,10 @@ public class Controller {
 			case UPDATE:
 				return logic.updateTask(primaryOperand, iterator);
 			case RETRIEVE:
-				return logic.retrieveTask(primaryOperand, iterator);
 			case SEARCH:
 				return logic.retrieveTask(primaryOperand, iterator);
+//			case HELP:
+//				return logic.showHelp(primaryOperand);
 			default:
 				throw new Exception("Invalid command.");
 		}
