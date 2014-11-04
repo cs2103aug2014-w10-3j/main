@@ -14,11 +14,13 @@ public class TaskImpl implements Task {
 	public static int FIELD_TAG_INDEX = 3;
 	public static int FIELD_TIMESTART_INDEX = 4;
 	public static int FIELD_TIMEEND_INDEX = 5;
+	public static int FIELD_PRIORITY_INDEX = 6;
 	
 	public static int FIELD_COUNT = 6;
 	private int _id;
 	private String _name, _description, _tag;
 	private Date _timeStart, _timeEnd;
+	private Priority _priority;
 	
 	private static int _accumulateId = -1;
 	
@@ -167,8 +169,24 @@ public class TaskImpl implements Task {
 				task.setTimeEnd(eTime);
 				task.setTimeStart(sTime);
 			}
+			
+			Priority priority = Priority.fromString(taskArgs[FIELD_PRIORITY_INDEX]);
+			if(priority != null){
+				task.setPriority(priority);
+			}
+
 		}
 		
 		return task;
+	}
+
+	@Override
+	public Priority getPriority() {
+		return _priority;
+	}
+
+	@Override
+	public void setPriority(Priority priority) {
+		this._priority = priority;
 	}
 }
