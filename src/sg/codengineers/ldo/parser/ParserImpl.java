@@ -37,6 +37,15 @@ public class ParserImpl implements Parser {
 	private boolean								_isHelpRequest;
 
 	/* Public methods */
+
+	/**
+	 * Parses an input string into a Command Object.
+	 * 
+	 * In the event of an unsuccessful parsing, a Command Object with the
+	 * command type INVALID is returned instead. The rationale behind the
+	 * unsuccessful parsing is stored within the command as it's primary
+	 * operand.
+	 */
 	@Override
 	public Command parse(String userInput) {
 		initialise(userInput);
@@ -69,6 +78,33 @@ public class ParserImpl implements Parser {
 		}
 		_resultingCommand = new CommandImpl(_userInput, cmdType, priOp, addArgs);
 		return _resultingCommand;
+	}
+
+	@Override
+	public AdditionalArgument parseToAddArg(String userInput) {
+		initialise(userInput);
+
+		try {
+			checkForBlankInput();
+		} catch (Exception e) {
+			if (DEBUG_MODE) {
+				e.printStackTrace();
+			}
+			return new AdditionalArgumentImpl(ArgumentType.INVALID,
+					e.getMessage());
+		}
+		ArgumentType argType = getArgumentType(getFirstWord(userInput));
+		String operand = getOperand();
+		try {
+			validateArgument(new AdditionalArgumentImpl(argType, operand));
+		} catch (Exception e) {
+			if (DEBUG_MODE) {
+				e.printStackTrace();
+			}
+			return new AdditionalArgumentImpl(ArgumentType.INVALID,
+					e.getMessage());
+		}
+		return new AdditionalArgumentImpl(argType, operand);
 	}
 
 	/**
@@ -219,17 +255,11 @@ public class ParserImpl implements Parser {
 	}
 
 	/**
-	 * Validates the user input to ensure that all entries are acceptable
 	 * 
-	 * @param addArgs
-	 *            List of AdditionalArguments
-	 * @param priOp
-	 *            String object representing primary operand
 	 * @param cmdType
-	 *            String object representing command type
-	 * 
+	 * @param priOp
+	 * @param addArgs
 	 * @throws Exception
-	 *             Throws an exception if it fails any of the validation tests
 	 */
 	private void validateInput(CommandType cmdType, String priOp,
 			List<AdditionalArgument> addArgs)
@@ -456,6 +486,10 @@ public class ParserImpl implements Parser {
 			return ArgumentType.INVALID;
 		}
 		return argumentType;
+	}
+
+	private String getOperand() {
+		return removeFirstWord(_userInput);
 	}
 
 	/**
