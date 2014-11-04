@@ -106,6 +106,15 @@ public class Controller {
 	}
 	
 	/**
+	 * Shows exit message and exits the system
+	 */
+	private void terminate(){
+		String exitMessage = "show terminate";
+		processString(exitMessage);
+		System.exit(0);
+	}
+	
+	/**
 	 * This function is the control flow of data in L'Do.
 	 * It passes data to be processed by the Logic component
 	 * according to the command type.
@@ -132,7 +141,7 @@ public class Controller {
 //			case HELP:
 //				return logic.showHelp(primaryOperand);
 			case EXIT:
-				System.exit(0);
+				terminate();
 			default:
 				throw new Exception("Invalid command.");
 		}
