@@ -32,6 +32,9 @@ public class Controller {
 	private Input input;
 	private Output output;
 	
+	// Parser instance
+	private Parser parser;
+	
 	/**
 	 * Constructors
 	 */
@@ -39,6 +42,7 @@ public class Controller {
 		logic = Logic.getInstance();
 		input = new InputImpl();
 		output = new OutputImpl();
+		parser = new ParserImpl();
 	}
 	
 	protected Controller(boolean stub){
@@ -63,19 +67,26 @@ public class Controller {
 	 */
 	public void run() {
 		try {
-			Command welcomeCommand;
-			Parser parser = new ParserImpl();
-			Result result;
-			
-			welcomeCommand = parser.parse("show welcome");
-			result = executeCommand(welcomeCommand);
-			output.displayResult(result);
+			showWelcomeMessage();
 			
 			while (true) {
 				String userInput = input.readFromUser();
 				processString(userInput);
 			}
 		} catch (Exception e) {
+			output.displayException(e);
+		}
+	}
+	
+	private void showWelcomeMessage() {
+		try {
+			Command welcomeCommand;
+			Result welcomeResult;
+			
+			welcomeCommand = parser.parse("show welcome");
+			welcomeResult = executeCommand(welcomeCommand);
+			output.displayResult(welcomeResult);
+		} catch (Exception e){
 			output.displayException(e);
 		}
 	}
