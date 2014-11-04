@@ -32,6 +32,9 @@ public class Controller {
 	private Input input;
 	private Output output;
 	
+	// Parser instance
+	private Parser parser;
+	
 	/**
 	 * Constructors
 	 */
@@ -39,8 +42,15 @@ public class Controller {
 		logic = Logic.getInstance();
 		input = new InputImpl();
 		output = new OutputImpl();
+		parser = new ParserImpl();
 	}
 	
+	/**
+	 * This constructor allows the controller to use a logic stub
+	 * for unit testing purposes.
+	 * @param stub
+	 * 			true if the unit is under testing, false otherwise
+	 */
 	protected Controller(boolean stub){
 		logic = new LogicStub();
 	}
@@ -63,13 +73,8 @@ public class Controller {
 	 */
 	public void run() {
 		try {
-			Command welcomeCommand;
-			Parser parser = new ParserImpl();
-			Result result;
-			
-			welcomeCommand = parser.parse("show welcome");
-			result = executeCommand(welcomeCommand);
-			output.displayResult(result);
+			String welcomeCommand = "show welcome";
+			processString(welcomeCommand);
 			
 			while (true) {
 				String userInput = input.readFromUser();
@@ -80,17 +85,33 @@ public class Controller {
 		}
 	}
 	
-	public void processString(String userInput){
+	/**
+	 * Processes command string and displays
+	 * messages and feedback to continue
+	 * interaction with user.
+	 * @param rawCommand
+	 * 			unprocessed command string
+	 */
+	public void processString(String rawCommand){
 		try{
 			Command command;
 			Result result;
 			
-			command = new CommandImpl(userInput);
+			command = new CommandImpl(rawCommand);
 			result = executeCommand(command);
 			output.displayResult(result);
 		} catch (Exception e) {
 			output.displayException(e);
 		}
+	}
+	
+	/**
+	 * Shows exit message and exits the system
+	 */
+	private void terminate(){
+		String exitMessage = "show terminate";
+		processString(exitMessage);
+		System.exit(0);
 	}
 	
 	/**
@@ -119,6 +140,8 @@ public class Controller {
 				return logic.retrieveTask(primaryOperand, iterator);
 //			case HELP:
 //				return logic.showHelp(primaryOperand);
+			case EXIT:
+				terminate();
 			default:
 				throw new Exception("Invalid command.");
 		}
