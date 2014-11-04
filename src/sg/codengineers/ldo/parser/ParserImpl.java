@@ -334,7 +334,14 @@ public class ParserImpl implements Parser {
 				throw new IllegalArgumentException(HELP_EXPECTED);
 			}
 		}
-		if (cmdType == CommandType.UPDATE || cmdType == CommandType.DELETE) {
+		if (cmdType == CommandType.UPDATE) {
+			for (char c : priOp.toCharArray()) {
+				if (!Character.isDigit(c)) {
+					throw new IllegalArgumentException(NUMBER_EXPECTED);
+				}
+			}
+		}
+		if (cmdType == CommandType.DELETE && !priOp.equalsIgnoreCase("all")) {
 			for (char c : priOp.toCharArray()) {
 				if (!Character.isDigit(c)) {
 					throw new IllegalArgumentException(NUMBER_EXPECTED);
