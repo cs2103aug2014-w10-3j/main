@@ -85,7 +85,30 @@ public class SystemTestCRUD {
 	
 	@Test
 	public void testRetrive() {
-		
+		Controller controller = new Controller();
+		try {
+			//IMPT! delete all tasks
+			
+			//show all
+			controller.processString("show");
+			assertEquals("Task list is empty.\n", outContent.toString());
+			outContent.reset();
+			
+			controller.processString("add task 1");
+			controller.processString("add task 2");
+			controller.processString("add task 3");
+			controller.processString("add task 4");
+			outContent.reset();
+			controller.processString("show");
+			String expectedFeedback = "Showing\n"
+					+ "1. task 1\n"
+					+ "2. task 2\n"
+					+ "3. task 3\n"
+					+ "4. task 4\n";
+			assertEquals(expectedFeedback, outContent.toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Test
