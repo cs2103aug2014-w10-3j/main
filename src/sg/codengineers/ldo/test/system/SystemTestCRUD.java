@@ -113,6 +113,27 @@ public class SystemTestCRUD {
 	
 	@Test
 	public void testUpdate() {
+		Controller controller = new Controller();
+		try{
+			controller.processString("add task 1");
+			controller.processString("add task 2");
+			controller.processString("add task 3");
+			controller.processString("add task 4");
+			outContent.reset();
+			
+			//update before show, will be from today's list shown at the beginning of the program
+			controller.processString("edit 1 -n task one");
+			assertEquals("Updated task one", outContent.toString());
+			outContent.reset();
+			
+			//update name
+			controller.processString("show");
+			controller.processString("update 1 -n task one");
+			assertEquals("Updated task one", outContent.toString());
+			outContent.reset();
+		} catch (Exception e){
+			e.printStackTrace();
+		}
 	}
 	
 	@Test
