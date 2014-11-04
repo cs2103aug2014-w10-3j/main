@@ -26,6 +26,7 @@ public class Logic {
 	private boolean _isInitialized = false;
 	
 	private Handler createHandler,retrieveHandler,updateHandler,deleteHandler;
+	private HelpHandler helpHandler;
 	
 	private static Logic instance = null;
 	
@@ -64,7 +65,7 @@ public class Logic {
 		retrieveHandler = new RetrieveHandler(_taskList);
 		updateHandler = new UpdateHandler(_taskList);
 		deleteHandler = new DeleteHandler(_taskList);
-		
+		helpHandler = new HelpHandler(_taskList);
 		_isInitialized = true;
 	}
 	
@@ -78,7 +79,7 @@ public class Logic {
 
 	public Result deleteTask(String primaryOperand,
 			Iterator<AdditionalArgument> iterator) throws IOException{
-		Result result =deleteHandler.execute(primaryOperand, iterator);
+		Result result = deleteHandler.execute(primaryOperand, iterator);
 		_dbConnector.delete(result.getTasksIterator().next().toString(), TaskImpl.CLASS_NAME);
 		return result;
 	}
@@ -97,6 +98,10 @@ public class Logic {
 
 	public Result showTasks(Iterator<AdditionalArgument> iterator) {
 		return retrieveHandler.execute(null, iterator);
+	}
+	
+	public Result showHelp(CommandType type){
+		return helpHandler.execute(type);
 	}
 	
 }
