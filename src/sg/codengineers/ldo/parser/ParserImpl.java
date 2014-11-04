@@ -151,6 +151,7 @@ public class ParserImpl implements Parser {
 		_cmdMap.put("sync", CommandType.SYNC);
 		_cmdMap.put("search", CommandType.SEARCH);
 		_cmdMap.put("help", CommandType.HELP);
+		_cmdMap.put("undo", CommandType.UNDO);
 		_cmdMap.put("exit", CommandType.EXIT);
 	}
 
@@ -508,7 +509,7 @@ public class ParserImpl implements Parser {
 	 */
 	private boolean isUnaryCommand(CommandType cmdType) {
 		return (cmdType == CommandType.RETRIEVE || cmdType == CommandType.SYNC
-		|| cmdType == CommandType.EXIT);
+				|| cmdType == CommandType.UNDO || cmdType == CommandType.EXIT);
 	}
 
 	/**
