@@ -12,6 +12,7 @@ import sg.codengineers.ldo.model.AdditionalArgument;
 import sg.codengineers.ldo.model.Result;
 import sg.codengineers.ldo.model.Task;
 import sg.codengineers.ldo.model.Command.CommandType;
+import sg.codengineers.ldo.model.Task.Priority;
 import sg.codengineers.ldo.parser.ResultImpl;
 import sg.codengineers.ldo.logic.Filter;
 
@@ -78,6 +79,12 @@ public abstract class Handler {
 			}
 			break;
 		case PRIORITY:
+			Task.Priority priority = Priority.fromString(operand);
+			if(priority != null){
+				task.setPriority(priority);
+			} else {
+				throw new IllegalArgumentException();
+			}
 		case DONE:		
 		case TAG:
 			task.setTag(operand);
@@ -116,9 +123,7 @@ public abstract class Handler {
 	protected List<Task> searchTask(List<Task> list, AdditionalArgument arg){
 		List<Task> newList = new ArrayList<Task>(list);
 		final String operand = arg.getOperand();
-		
-		
-		
+
 		try{
 			switch(arg.getArgumentType()){
 			case NAME:
@@ -164,7 +169,20 @@ public abstract class Handler {
 					});
 				}
 				break;
-			case PRIORITY:				
+			case PRIORITY:		
+				final Task.Priority priority = Priority.fromString(operand);
+				if(priority != null){
+					newList = filter(newList, new Filter<Task>(){
+						@Override
+						public boolean call(Task task){
+							if(task.getPriority() == priority){
+								return true;
+							}
+							return false;
+						}
+					});					
+				}
+				break;				
 			case DONE:		
 			case TAG:
 				newList = filter(newList, new Filter<Task>(){

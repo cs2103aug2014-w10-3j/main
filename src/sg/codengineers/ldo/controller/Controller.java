@@ -8,9 +8,10 @@ import sg.codengineers.ldo.model.AdditionalArgument;
 import sg.codengineers.ldo.model.Command;
 import sg.codengineers.ldo.model.Input;
 import sg.codengineers.ldo.model.Output;
+import sg.codengineers.ldo.model.Parser;
 import sg.codengineers.ldo.model.Result;
 import sg.codengineers.ldo.model.Command.CommandType;
-import sg.codengineers.ldo.parser.CommandImpl;
+import sg.codengineers.ldo.parser.ParserImpl;
 import sg.codengineers.ldo.ui.InputImpl;
 import sg.codengineers.ldo.ui.OutputImpl;
 
@@ -30,6 +31,9 @@ public class Controller {
 	private Input input;
 	private Output output;
 	
+	// Parser instance
+	private Parser parser;
+	
 	/**
 	 * Constructors
 	 */
@@ -37,8 +41,15 @@ public class Controller {
 		logic = Logic.getInstance();
 		input = new InputImpl();
 		output = new OutputImpl();
+		parser = new ParserImpl();
 	}
 	
+	/**
+	 * This constructor allows the controller to use a logic stub
+	 * for unit testing purposes.
+	 * @param stub
+	 * 			true if the unit is under testing, false otherwise
+	 */
 	protected Controller(boolean stub){
 		logic = new LogicStub();
 	}
@@ -61,12 +72,8 @@ public class Controller {
 	 */
 	public void run() {
 		try {
-			Command welcomeCommand;
-			Result result;
-			
-			welcomeCommand = new CommandImpl("show welcome");
-			result = executeCommand(welcomeCommand);
-			output.displayResult(result);
+			String welcomeCommand = "show welcome";
+			processString(welcomeCommand);
 			
 			while (true) {
 				String userInput = input.readFromUser();
@@ -77,17 +84,33 @@ public class Controller {
 		}
 	}
 	
-	public void processString(String userInput){
+	/**
+	 * Processes command string and displays
+	 * messages and feedback to continue
+	 * interaction with user.
+	 * @param rawCommand
+	 * 			unprocessed command string
+	 */
+	public void processString(String rawCommand){
 		try{
 			Command command;
 			Result result;
 			
-			command = new CommandImpl(userInput);
+			command = parser.parse(rawCommand);
 			result = executeCommand(command);
 			output.displayResult(result);
 		} catch (Exception e) {
 			output.displayException(e);
 		}
+	}
+	
+	/**
+	 * Shows exit message and exits the system
+	 */
+	private void terminate(){
+		String exitMessage = "show terminate";
+		processString(exitMessage);
+		System.exit(0);
 	}
 	
 	/**
@@ -115,7 +138,11 @@ public class Controller {
 			case SEARCH:
 				return logic.retrieveTask(primaryOperand, iterator);
 			case HELP:
-				return logic.showHelp(primaryOperand);
+				return logic.showHelp(commandType);
+			case UNDO:
+				return logic.undoTask();
+			case EXIT:
+				terminate();
 			default:
 				throw new Exception("Invalid command.");
 		}

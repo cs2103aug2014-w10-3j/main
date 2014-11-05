@@ -2,6 +2,7 @@ package sg.codengineers.ldo.logic;
 
 import java.sql.Time;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class CreateHandler extends Handler {
 
 	@Override
 	public Result execute(String primaryOperand,Iterator<AdditionalArgument> iterator) throws IllegalArgumentException{
+		
 		if(primaryOperand == null){
 			return null;
 		}
@@ -36,7 +38,7 @@ public class CreateHandler extends Handler {
 			task = null;
 			throw new IllegalArgumentException("Unable to parse the given parameters!");
 		}
-
+		
 		_taskList.add(task);
 	
 		Result result = new ResultImpl(CommandType.CREATE, 

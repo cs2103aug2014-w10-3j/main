@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Stack;
 
 import sg.codengineers.ldo.db.DBConnector;
 import sg.codengineers.ldo.db.Database;
@@ -23,12 +24,14 @@ public class Logic {
 	
 	private Database _dbConnector;
 	private List<Task> _taskList;
+	private Stack<List<Task>> _listStack;
 	private boolean _isInitialized = false;
 	
 	private Handler createHandler,retrieveHandler,updateHandler,deleteHandler;
 	private HelpHandler helpHandler;
 	
 	private static Logic instance = null;
+	public static final boolean DEBUG = true;
 	
 	public static Logic getInstance(){
 		try{
@@ -36,7 +39,9 @@ public class Logic {
 				instance = new Logic();
 			}
 		} catch (Exception e){
-			e.printStackTrace();
+			if(Logic.DEBUG){
+				e.printStackTrace();
+			}
 		}
 		return instance;
 	}
@@ -67,13 +72,17 @@ public class Logic {
 		deleteHandler = new DeleteHandler(_taskList);
 		helpHandler = new HelpHandler(_taskList);
 		_isInitialized = true;
+		_listStack = new Stack<List<Task>>();
+		_listStack.push(new ArrayList<Task>());
 	}
 	
 
 	public Result createTask(String primaryOperand,
 			Iterator<AdditionalArgument> iterator) throws IOException{
-		Result result = createHandler.execute(primaryOperand, iterator);
+		Result result = null;
+		result = createHandler.execute(primaryOperand, iterator);
 		_dbConnector.create(result.getTasksIterator().next().toString(),TaskImpl.CLASS_NAME);
+		_listStack.push(_taskList);
 		return result;
 	}
 
@@ -81,6 +90,7 @@ public class Logic {
 			Iterator<AdditionalArgument> iterator) throws IOException{
 		Result result = deleteHandler.execute(primaryOperand, iterator);
 		_dbConnector.delete(result.getTasksIterator().next().toString(), TaskImpl.CLASS_NAME);
+		_listStack.push(_taskList);
 		return result;
 	}
 
@@ -88,6 +98,7 @@ public class Logic {
 			Iterator<AdditionalArgument> iterator) throws IOException{
 		Result result = updateHandler.execute(primaryOperand, iterator);
 		_dbConnector.update(result.getTasksIterator().next().toString(),TaskImpl.CLASS_NAME);
+		_listStack.push(_taskList);
 		return result;
 	}
 
@@ -98,6 +109,15 @@ public class Logic {
 
 	public Result showTasks(Iterator<AdditionalArgument> iterator) {
 		return retrieveHandler.execute(null, iterator);
+	}
+	
+	public Result undoTask(){
+		_taskList.clear();
+		if(_listStack.size() > 1){
+			_listStack.pop();
+			_taskList.addAll(_listStack.get(_listStack.size()-1));
+		}
+		return null;
 	}
 	
 	public Result showHelp(CommandType type){

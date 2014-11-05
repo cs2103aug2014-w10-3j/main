@@ -27,8 +27,18 @@ public class DeleteHandler extends Handler {
 		Task task = null;
 		
 		int id = Integer.valueOf(primaryOperand) - DIFFERENCE_DIPSLAY_INDEX_AND_SYSTEM_INDEX;
-		task = _taskList.remove(id);
-	
+		try{
+			task = _taskList.remove(id);
+		} catch(Exception e){
+			if(Logic.DEBUG){
+				e.printStackTrace();
+			}
+			throw e;
+		}
+		
+		List<Task> backup = new ArrayList<Task>(_taskList);
+		backup.add(task);
+
 		result = new ResultImpl(CommandType.DELETE, 
 				primaryOperand,
 				new Time(System.currentTimeMillis()), 
