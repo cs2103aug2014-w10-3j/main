@@ -119,6 +119,13 @@ public class ParserImplTest {
 	}
 
 	@Test
+	public void testSearchWithEmptyPrimary() throws Exception {
+		Command obtainedCommand = testClass.parse("search ");
+		assertEquals("testing search with empty primary operand",
+				CommandType.SEARCH, obtainedCommand.getCommandType());
+	}
+
+	@Test
 	public void testGetCommandForHelp() {
 		Command obtainedCommand = testClass.parse("add --help");
 		assertEquals("get command type for help", CommandType.HELP,
@@ -455,13 +462,6 @@ public class ParserImplTest {
 	public void testDeleteWithEmptyPrimary() throws Exception {
 		Command obtainedCommand = testClass.parse("delete ");
 		assertEquals("testing delete with empty primary operand",
-				CommandType.INVALID, obtainedCommand.getCommandType());
-	}
-
-	@Test
-	public void testSearchWithEmptyPrimary() throws Exception {
-		Command obtainedCommand = testClass.parse("search ");
-		assertEquals("testing search with empty primary operand",
 				CommandType.INVALID, obtainedCommand.getCommandType());
 	}
 
