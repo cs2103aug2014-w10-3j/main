@@ -75,8 +75,21 @@ public class GCalDBConnector implements DBConnector {
 
 	@Override
 	public List<String> read() {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			Events events = service.events().list(CALENDAR_ID).execute();
+			gCalEvents = events.getItems();
+
+			List<String> taskList = new ArrayList<String>();
+
+			for (Event e : gCalEvents) {
+				taskList.add(eventToTask(e).toString());
+			}
+
+			return taskList;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override
