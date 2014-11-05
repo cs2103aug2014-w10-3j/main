@@ -122,7 +122,8 @@ public class TaskImpl implements Task {
 		builder.append(_description+"<;>");
 		builder.append(_tag+"<;>");
 		builder.append(Handler.FORMATTER.format(_timeStart)+"<;>");
-		builder.append(Handler.FORMATTER.format(_timeEnd));
+		builder.append(Handler.FORMATTER.format(_timeEnd)+"<;>");
+		builder.append(_priority);
 		return builder.toString();
 	}
 	
