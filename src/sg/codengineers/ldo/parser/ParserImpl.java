@@ -1,6 +1,9 @@
 package sg.codengineers.ldo.parser;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -9,7 +12,6 @@ import sg.codengineers.ldo.model.AdditionalArgument;
 import sg.codengineers.ldo.model.AdditionalArgument.ArgumentType;
 import sg.codengineers.ldo.model.Command;
 import sg.codengineers.ldo.model.Command.CommandType;
-import sg.codengineers.ldo.model.Date;
 import sg.codengineers.ldo.model.Parser;
 
 /**
@@ -37,6 +39,7 @@ public class ParserImpl implements Parser {
 	/* Static Variables */
 	private static Map<String, CommandType>		_cmdMap;
 	private static Map<String, ArgumentType>	_argsMap;
+	private static List<DateFormat>				_dateFormats;
 	private static boolean						_isInitialised;
 
 	/* Member Variables */
@@ -89,6 +92,13 @@ public class ParserImpl implements Parser {
 		return _resultingCommand;
 	}
 
+	/**
+	 * Parses an input string to an AdditionalArgument Object.
+	 * 
+	 * In the event of an unsuccessful parse, an AdditionalArgument with an
+	 * INVALID argument type will be returned. The rationale behind the
+	 * unsuccessful parsing will be stored as the operand.
+	 */
 	@Override
 	public AdditionalArgument parseToAddArg(String userInput) {
 		initialise(userInput);
@@ -116,11 +126,17 @@ public class ParserImpl implements Parser {
 		return new AdditionalArgumentImpl(argType, operand);
 	}
 
+	/**
+	 * Parses an input string to a Date object.
+	 * 
+	 * In the event of an unsuccessful parse, a Date object with -1 for its
+	 * fields is returned instead.
+	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	public Date parseToDate(String userInput) {
-		_userInput = userInput;
-		int date;
-		Date _resultingDate = new DateImpl(EMPTY_VALUE, EMPTY_VALUE,
+		initialise(userInput);
+		Date _resultingDate = new Date(EMPTY_VALUE, EMPTY_VALUE,
 				EMPTY_VALUE, EMPTY_VALUE, EMPTY_VALUE);
 		try {
 			checkForBlankInput();
@@ -128,14 +144,16 @@ public class ParserImpl implements Parser {
 			if (DEBUG_MODE) {
 				e.printStackTrace();
 			}
-			return new DateImpl(EMPTY_VALUE, EMPTY_VALUE, EMPTY_VALUE,
+			return new Date(EMPTY_VALUE, EMPTY_VALUE, EMPTY_VALUE,
 					EMPTY_VALUE, EMPTY_VALUE);
 		}
 
-		String[] tokens = userInput.split("([\\s+:\\.-)");
-		for (String s : tokens) {
-			if (!s.isEmpty()) {
-
+		for (DateFormat format : _dateFormats) {
+			try {
+				_resultingDate = format.parse(userInput);
+				break;
+			} catch (Exception e) {
+				// Do-nothing, move to next format
 			}
 		}
 
@@ -155,6 +173,7 @@ public class ParserImpl implements Parser {
 			_cmdMap = new TreeMap<String, CommandType>();
 			populateCmdMap();
 			populateArgsMap();
+			populateAcceptableDateFormats();
 			_isInitialised = true;
 		}
 	}
@@ -231,6 +250,13 @@ public class ParserImpl implements Parser {
 		_argsMap.put("a", ArgumentType.DESCRIPTION);
 	}
 
+	private void populateAcceptableDateFormats() {
+		_dateFormats.add(new SimpleDateFormat("dd MMM yyyy HH:mm"));
+		_dateFormats.add(new SimpleDateFormat("dd MMM yy HH:mm"));
+		_dateFormats.add(new SimpleDateFormat("dd MM yyyy HH:mm"));
+		_dateFormats.add(new SimpleDateFormat("dd MM yy HH:mm"));
+	}
+
 	/**
 	 * Extracts the word representing the command type based on user input
 	 * 
@@ -291,12 +317,16 @@ public class ParserImpl implements Parser {
 	}
 
 	/**
-	 * TODO
+	 * Validates input for Command
 	 * 
 	 * @param cmdType
+	 *            Command Type
 	 * @param priOp
+	 *            Primary Operand
 	 * @param addArgs
+	 *            List of additional arguments
 	 * @throws Exception
+	 *             if any of the parameters do not clear the validation rules.
 	 */
 	private void validateInput(CommandType cmdType, String priOp,
 			List<AdditionalArgument> addArgs)
@@ -545,7 +575,8 @@ public class ParserImpl implements Parser {
 	 */
 	private boolean isUnaryCommand(CommandType cmdType) {
 		return (cmdType == CommandType.RETRIEVE || cmdType == CommandType.SYNC
-				|| cmdType == CommandType.UNDO || cmdType == CommandType.EXIT);
+				|| cmdType == CommandType.UNDO || cmdType == CommandType.EXIT
+				|| cmdType == CommandType.HELP);
 	}
 
 	/**

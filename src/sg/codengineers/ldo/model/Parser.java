@@ -1,5 +1,7 @@
 package sg.codengineers.ldo.model;
 
+import java.util.Date;
+
 /**
  * This interface specifies the public methods available to the Parser Class
  * 
