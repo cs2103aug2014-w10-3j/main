@@ -39,6 +39,7 @@ public class ParserImpl implements Parser {
 	/* Static Variables */
 	private static Map<String, CommandType>		_cmdMap;
 	private static Map<String, ArgumentType>	_argsMap;
+	private static List<DateFormat>				_dateTimeFormats;
 	private static List<DateFormat>				_dateFormats;
 	private static boolean						_isInitialised;
 
@@ -129,35 +130,40 @@ public class ParserImpl implements Parser {
 	/**
 	 * Parses an input string to a Date object.
 	 * 
-	 * In the event of an unsuccessful parse, a Date object with -1 for its
-	 * fields is returned instead.
+	 * In the event of an unsuccessful parse, a null object is returned instead.
 	 */
-	@SuppressWarnings("deprecation")
 	@Override
 	public Date parseToDate(String userInput) {
 		initialise(userInput);
-		Date _resultingDate = new Date(EMPTY_VALUE, EMPTY_VALUE,
-				EMPTY_VALUE, EMPTY_VALUE, EMPTY_VALUE);
+		Date resultingDate = null;
 		try {
 			checkForBlankInput();
 		} catch (Exception e) {
 			if (DEBUG_MODE) {
 				e.printStackTrace();
 			}
-			return new Date(EMPTY_VALUE, EMPTY_VALUE, EMPTY_VALUE,
-					EMPTY_VALUE, EMPTY_VALUE);
+			return null;
+		}
+
+		for (DateFormat format : _dateTimeFormats) {
+			try {
+				resultingDate = format.parse(userInput);
+				return resultingDate;
+			} catch (Exception e) {
+				// Do nothing, move to next format
+			}
 		}
 
 		for (DateFormat format : _dateFormats) {
 			try {
-				_resultingDate = format.parse(userInput);
-				break;
+				resultingDate = format.parse(userInput);
+				return resultingDate;
 			} catch (Exception e) {
-				// Do-nothing, move to next format
+				// Do nothing, move to next format.
 			}
 		}
 
-		return _resultingDate;
+		return resultingDate;
 	}
 
 	/* Private Methods */
@@ -169,11 +175,14 @@ public class ParserImpl implements Parser {
 		_userInput = userInput;
 		_isEmptyPriOp = false;
 		_isHelpRequest = false;
+		_dateTimeFormats = new ArrayList<DateFormat>();
+		_dateFormats = new ArrayList<DateFormat>();
 		if (!_isInitialised) {
 			_cmdMap = new TreeMap<String, CommandType>();
 			populateCmdMap();
 			populateArgsMap();
-			populateAcceptableDateFormats();
+			populateDateTimeFormats();
+			populateDateFormats();
 			_isInitialised = true;
 		}
 	}
@@ -250,11 +259,22 @@ public class ParserImpl implements Parser {
 		_argsMap.put("a", ArgumentType.DESCRIPTION);
 	}
 
-	private void populateAcceptableDateFormats() {
-		_dateFormats.add(new SimpleDateFormat("dd MMM yyyy HH:mm"));
-		_dateFormats.add(new SimpleDateFormat("dd MMM yy HH:mm"));
-		_dateFormats.add(new SimpleDateFormat("dd MM yyyy HH:mm"));
-		_dateFormats.add(new SimpleDateFormat("dd MM yy HH:mm"));
+	private void populateDateTimeFormats() {
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yyyy HH:mm"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yy HH:mm"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MM yyyy HH:mm"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MM yy HH:mm"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yyyy hh:mm a"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yy hh:mm a"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MM yyyy hh:mm a"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MM yy hh:mm a"));
+	}
+
+	private void populateDateFormats() {
+		_dateFormats.add(new SimpleDateFormat("dd MMM yyyy"));
+		_dateFormats.add(new SimpleDateFormat("dd MMM yy"));
+		_dateFormats.add(new SimpleDateFormat("dd MM yyyy"));
+		_dateFormats.add(new SimpleDateFormat("dd MM yy"));
 	}
 
 	/**
