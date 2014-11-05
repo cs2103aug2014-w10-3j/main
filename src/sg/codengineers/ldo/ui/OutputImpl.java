@@ -18,15 +18,15 @@ public class OutputImpl implements Output {
 	/* Constants */
 
 	/* Message Strings */
-	private static final String	CREATED_MESSAGE	= "Added %1s\n";
-	private static final String	UPDATED_MESSAGE	= "Updated %1s\n";
-	private static final String	DELETED_MESSAGE	= "Deleted %1s\n";
+	private static final String	CREATED_MESSAGE	= "Added %s\n";
+	private static final String	UPDATED_MESSAGE	= "Updated %s\n";
+	private static final String	DELETED_MESSAGE	= "Deleted %s\n";
 	private static final String	EXIT_MESSAGE	= "Bye! See you again.\n";
 	private static final String	STUB_MESSAGE	= "This module is still under development.\n";
-	private static final String	TASK			= "%1d. %1s\n";
-	private static final String	NAME			= "Name: %1s\n";
-	private static final String	DESCRIPTION		= "Description: %1s\n";
-	private static final String	TAG				= "Tag: %1s\n";
+	private static final String	TASK			= "[%d]. %s\n";
+	private static final String	NAME			= "Name: %s\n";
+	private static final String	DESCRIPTION		= "Description: %s\n";
+	private static final String	TAG				= "Tag: %s\n";
 	private static final String	DEADLINE		= "Deadline: %s %s\n";
 
 	/* Welcome messages */
@@ -48,10 +48,12 @@ public class OutputImpl implements Output {
 	 *             the result is INVALID
 	 */
 	@Override
-	public void displayResult(Result result) throws Exception {
+	public void displayResult(Result result) {
 		_result = result;
 		_taskItr = result.getTasksIterator();
 		CommandType commandType = _result.getCommandType();
+
+		// TODO remove after result is properly implemented
 		if (_result == null) {
 			feedbackForUndo();
 			return;
@@ -75,6 +77,9 @@ public class OutputImpl implements Output {
 				break;
 			case HELP :
 				feedbackForHelp();
+				break;
+			case UNDO :
+				feedbackForUndo();
 				break;
 			default:
 				throw new IllegalArgumentException(
@@ -132,9 +137,9 @@ public class OutputImpl implements Output {
 	 * Method will display multiple tasks to user.
 	 * An example of the format will be:
 	 * 
-	 * 1. <Task Name>
-	 * 2. <Task Name>
-	 * 3. <Task Name>
+	 * [1] <Task Name>
+	 * [2] <Task Name>
+	 * [3] <Task Name>
 	 * 
 	 */
 	private void showMultipleTasksToUser() {
