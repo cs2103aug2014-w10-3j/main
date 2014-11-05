@@ -139,7 +139,8 @@ public class Logic {
 		return new ResultImpl(CommandType.UNDO,userInput, new Time(System.currentTimeMillis()),task);
 	}
 	
-	public Result showHelp(CommandType type){
+	public Result showHelp(Command command){
+		CommandType type = command.getCommandType();
 		return helpHandler.execute(type);
 	}
 	
