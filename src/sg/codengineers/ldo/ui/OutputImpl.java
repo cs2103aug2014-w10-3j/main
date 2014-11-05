@@ -52,6 +52,8 @@ public class OutputImpl implements Output {
 		_result = result;
 		_taskItr = result.getTasksIterator();
 		CommandType commandType = _result.getCommandType();
+
+		// TODO remove after result is properly implemented
 		if (_result == null) {
 			feedbackForUndo();
 			return;
@@ -75,6 +77,9 @@ public class OutputImpl implements Output {
 				break;
 			case HELP :
 				feedbackForHelp();
+				break;
+			case UNDO :
+				feedbackForUndo();
 				break;
 			default:
 				throw new IllegalArgumentException(
