@@ -12,11 +12,11 @@ import sg.codengineers.ldo.model.Command.CommandType;
 import sg.codengineers.ldo.parser.AdditionalArgumentImpl;
 import sg.codengineers.ldo.parser.ResultImpl;
 
-public class RetrieveHandler extends Handler {
+public class SearchHandler extends Handler {
 	
 	String pmOperand;
 	
-	public RetrieveHandler(List<Task> _taskList) {
+	public SearchHandler(List<Task> _taskList) {
 		super(_taskList);
 	}
 
@@ -31,28 +31,11 @@ public class RetrieveHandler extends Handler {
 		boolean isItEmpty = iterator == null || !iterator.hasNext();
 		
 		if(!isOpEmpty && isItEmpty){
-			
-			if(primaryOperand.equalsIgnoreCase("welcome")){
-				result = constructResult(primaryOperand);
-			} else {
-				int id;
-				try{
-					id = Integer.valueOf(primaryOperand) - DIFFERENCE_DIPSLAY_INDEX_AND_SYSTEM_INDEX;
-					result = constructResult(primaryOperand, _taskList.get(id));
-				} catch(NumberFormatException e){
-					List<Task> resultList = new ArrayList<Task>(_taskList);
-					resultList = searchTask(resultList, new AdditionalArgumentImpl(AdditionalArgument.ArgumentType.NAME, primaryOperand));
-					result = constructResult(primaryOperand, resultList);
-				}
-			}
+			List<Task> resultList = new ArrayList<Task>(_taskList);
+			resultList = searchTask(resultList, new AdditionalArgumentImpl(AdditionalArgument.ArgumentType.NAME, primaryOperand));
+			result = constructResult(primaryOperand, resultList);
 			
 		} 
-		
-		if(isOpEmpty && isItEmpty){
-			List<Task> resultList = new ArrayList<Task>(_taskList);
-			//resultList = searchTask(resultList, new AdditionalArgumentImpl("deadline", FORMATTER.format(new Date())));
-			result = constructResult(primaryOperand, _taskList);
-		}
 		
 		if(isOpEmpty && !isItEmpty){
 			List<Task> resultList = new ArrayList<Task>(_taskList);
@@ -62,7 +45,7 @@ public class RetrieveHandler extends Handler {
 			result = constructResult(primaryOperand, resultList);
 		}
 		
-		if(DEBUG_MODE){
+		if(Logic.DEBUG){
 			if(result.getTasksIterator().hasNext()){
 				Iterator<Task> debugIter = result.getTasksIterator();
 				int cnt = 0;

@@ -13,39 +13,49 @@ import sg.codengineers.ldo.model.Task;
 import sg.codengineers.ldo.parser.ResultImpl;
 
 public class CreateHandler extends Handler {
-	
+
 	public CreateHandler(List<Task> _taskList) {
 		super(_taskList);
 	}
 
 	@Override
 	public Result execute(String primaryOperand,Iterator<AdditionalArgument> iterator) throws IllegalArgumentException{
-		
+
 		if(primaryOperand == null){
 			return null;
 		}
 
 		Task task = new TaskImpl(primaryOperand);
-		
-		try{
-				
-			while(iterator.hasNext()){
-				AdditionalArgument arg = iterator.next();
+
+
+		AdditionalArgument arg = null;
+		while(iterator.hasNext()){
+			try{
+				arg = iterator.next();
 				modifyTask(task, arg);
+			} catch (Exception e){
+				if(arg != null){
+					return new ResultImpl(CommandType.INVALID, 
+							"Invalid argument "+arg.getOperand()+".",
+							new Time(System.currentTimeMillis()));						
+				} else {
+					return new ResultImpl(CommandType.INVALID, 
+							"Invalid argument.",
+							new Time(System.currentTimeMillis()));		
+				}
+
 			}
-		
-		} catch (ParseException | IllegalArgumentException e){
-			task = null;
-			throw new IllegalArgumentException("Unable to parse the given parameters!");
 		}
-		
+
+
+
 		_taskList.add(task);
-	
+
 		Result result = new ResultImpl(CommandType.CREATE, 
-							primaryOperand,
-							new Time(System.currentTimeMillis()), 
-							task);
-		
+				primaryOperand,
+				new Time(System.currentTimeMillis()), 
+				task);
+
 		return result;
 
 	}
