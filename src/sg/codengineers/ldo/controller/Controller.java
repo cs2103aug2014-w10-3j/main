@@ -139,6 +139,8 @@ public class Controller {
 				return logic.retrieveTask(primaryOperand, iterator);
 			case HELP:
 				return logic.showHelp(commandType);
+			case UNDO:
+				return logic.undoTask();
 			case EXIT:
 				terminate();
 			default:
