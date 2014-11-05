@@ -28,6 +28,9 @@ public class Controller {
 	private static Logic logic;
 	
 	private static String COMMAND_SHOW_TODAY = "show today";
+	private static String MSG_ERROR_UNABLE_TO_START_LDO = "Sorry!"
+														+ "There is an error when starting the program.\n"
+														+ "Please restart the program.\n";
 	
 	// UI instances
 	private Input input;
@@ -89,31 +92,39 @@ public class Controller {
 	 * 			unprocessed command string
 	 */
 	public void processCommand(String rawCommand){
-		Command command;
-		Result result;
-		CommandType commandType;
-		
-		command = parser.parse(rawCommand);
-		commandType = command.getCommandType();
-		
-		if (isValidCommandType(commandType)){
-			result = executeCommand(command);
-			commandType = result.getCommandType();
+		try {
+			Command command;
+			Result result;
+			CommandType commandType;
+			
+			command = parser.parse(rawCommand);
+			commandType = command.getCommandType();
 			
 			if (isValidCommandType(commandType)){
-				output.displayResult(result);
+				result = executeCommand(command);
+				commandType = result.getCommandType();
+				
+				if (isValidCommandType(commandType)){
+					output.displayResult(result);
+				} else {
+					output.displayError(result.getMessage());
+				}
 			} else {
-				output.displayError(result.getMessage());
+				output.displayError(command.getMessage());
 			}
-		} else {
-			output.displayError(command.getMessage());
+		} catch (Exception e) {
+			output.displayError(MSG_ERROR_UNABLE_TO_START_LDO);
 		}
 	}
 	
 	public void processWelcome() {
-		Command command = parser.parse(COMMAND_SHOW_TODAY);
-		Result result = executeCommand(command);
-		output.displayWelcome(result);
+		try {
+			Command command = parser.parse(COMMAND_SHOW_TODAY);
+			Result result = executeCommand(command);
+			output.displayWelcome(result);
+		} catch (Exception e) {
+			output.displayError(MSG_ERROR_UNABLE_TO_START_LDO);
+		}
 	}
 	
 	private boolean isValidCommandType(CommandType commandType){
@@ -151,7 +162,7 @@ public class Controller {
 	 * @return result contains the information needed for feedback
 	 * @throws Exception
 	 */
-	Result executeCommand(Command command) {
+	Result executeCommand(Command command) throws Exception {
 		CommandType commandType = command.getCommandType();
 		String primaryOperand = command.getPrimaryOperand();
 		Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
