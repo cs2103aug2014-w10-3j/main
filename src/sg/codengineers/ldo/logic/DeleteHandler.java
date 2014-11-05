@@ -26,6 +26,16 @@ public class DeleteHandler extends Handler {
 		Result result = null;
 		Task task = null;
 		
+		if(primaryOperand.equalsIgnoreCase("all")){
+			List<Task> theList = new ArrayList<Task>(_taskList);
+			_taskList.clear();
+			result = new ResultImpl(CommandType.DELETE, 
+					primaryOperand,
+					new Time(System.currentTimeMillis()), 
+					theList);	
+			return result;
+		}
+		
 		int id = Integer.valueOf(primaryOperand) - DIFFERENCE_DIPSLAY_INDEX_AND_SYSTEM_INDEX;
 		try{
 			task = _taskList.remove(id);
@@ -36,9 +46,6 @@ public class DeleteHandler extends Handler {
 			throw e;
 		}
 		
-		List<Task> backup = new ArrayList<Task>(_taskList);
-		backup.add(task);
-
 		result = new ResultImpl(CommandType.DELETE, 
 				primaryOperand,
 				new Time(System.currentTimeMillis()), 
