@@ -11,7 +11,6 @@ import sg.codengineers.ldo.model.Output;
 import sg.codengineers.ldo.model.Parser;
 import sg.codengineers.ldo.model.Result;
 import sg.codengineers.ldo.model.Command.CommandType;
-import sg.codengineers.ldo.parser.CommandImpl;
 import sg.codengineers.ldo.parser.ParserImpl;
 import sg.codengineers.ldo.ui.InputImpl;
 import sg.codengineers.ldo.ui.OutputImpl;
@@ -97,7 +96,7 @@ public class Controller {
 			Command command;
 			Result result;
 			
-			command = new CommandImpl(rawCommand);
+			command = parser.parse(rawCommand);
 			result = executeCommand(command);
 			output.displayResult(result);
 		} catch (Exception e) {
