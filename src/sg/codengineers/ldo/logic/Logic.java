@@ -1,6 +1,7 @@
 package sg.codengineers.ldo.logic;
 
 import java.io.IOException;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,9 +12,11 @@ import java.util.Stack;
 import sg.codengineers.ldo.db.DBConnector;
 import sg.codengineers.ldo.db.Database;
 import sg.codengineers.ldo.model.AdditionalArgument;
+import sg.codengineers.ldo.model.Command;
 import sg.codengineers.ldo.model.Command.CommandType;
 import sg.codengineers.ldo.model.Result;
 import sg.codengineers.ldo.model.Task;
+import sg.codengineers.ldo.parser.ResultImpl;
 /**
  * Logic class provides basic manipulation functions of tasks and task lists. <br>
  * To construct a Logic instance, please call {@link Logic#getLogic()}. There will be only
@@ -26,6 +29,7 @@ public class Logic {
 	private Database _dbConnector;
 	private List<Task> _taskList;
 	private Stack<List<Task>> _listStack;
+	private Stack<Command> _commandStack;
 	private boolean _isInitialized = false;
 	
 	private Handler createHandler,searchHandler,updateHandler,deleteHandler;
@@ -120,7 +124,7 @@ public class Logic {
 			_listStack.pop();
 			_taskList.addAll(_listStack.get(_listStack.size()-1));
 		}
-		return null;
+		return new ResultImpl(CommandType.UNDO, null, new Time(System.currentTimeMillis()));
 	}
 	
 	public Result showHelp(CommandType type){
