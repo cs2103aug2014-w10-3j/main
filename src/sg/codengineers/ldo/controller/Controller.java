@@ -72,12 +72,16 @@ public class Controller {
 	 */
 	public void run() {
 		try {
-			String welcomeCommand = "show welcome";
-			processString(welcomeCommand);
+			Result processResult;
+			
+			String showTodayCommand = "show today";
+			processResult = processCommand(showTodayCommand);
+			output.displayWelcome(processResult);
 			
 			while (true) {
 				String userInput = input.readFromUser();
-				processString(userInput);
+				processResult = processCommand(userInput);
+				output.displayResult(processResult);
 			}
 		} catch (Exception e) {
 			output.displayException(e);
@@ -91,16 +95,19 @@ public class Controller {
 	 * @param rawCommand
 	 * 			unprocessed command string
 	 */
-	public void processString(String rawCommand){
+	public Result processCommand(String rawCommand){
 		try{
 			Command command;
 			Result result;
 			
 			command = parser.parse(rawCommand);
 			result = executeCommand(command);
-			output.displayResult(result);
+			
+			return result;
 		} catch (Exception e) {
 			output.displayException(e);
+			
+			return null;
 		}
 	}
 	
@@ -108,8 +115,8 @@ public class Controller {
 	 * Shows exit message and exits the system
 	 */
 	private void terminate(){
-		String exitMessage = "show terminate";
-		processString(exitMessage);
+		String exitCommand = "show terminate";
+		output.displayExitMessage(exitCommand);
 		System.exit(0);
 	}
 	
