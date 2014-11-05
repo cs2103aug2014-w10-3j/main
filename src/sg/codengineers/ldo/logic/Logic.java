@@ -73,7 +73,7 @@ public class Logic {
 		helpHandler = new HelpHandler(_taskList);
 		_isInitialized = true;
 		_listStack = new Stack<List<Task>>();
-		_listStack.push(new ArrayList<Task>());
+		_listStack.push(new ArrayList<Task>(_taskList));
 	}
 	
 
@@ -82,7 +82,7 @@ public class Logic {
 		Result result = null;
 		result = createHandler.execute(primaryOperand, iterator);
 		_dbConnector.create(result.getTasksIterator().next().toString(),TaskImpl.CLASS_NAME);
-		_listStack.push(_taskList);
+		_listStack.push(new ArrayList<Task>(_taskList));
 		return result;
 	}
 
@@ -90,7 +90,7 @@ public class Logic {
 			Iterator<AdditionalArgument> iterator) throws IOException{
 		Result result = deleteHandler.execute(primaryOperand, iterator);
 		_dbConnector.delete(result.getTasksIterator().next().toString(), TaskImpl.CLASS_NAME);
-		_listStack.push(_taskList);
+		_listStack.push(new ArrayList<Task>(_taskList));
 		return result;
 	}
 
@@ -98,7 +98,7 @@ public class Logic {
 			Iterator<AdditionalArgument> iterator) throws IOException{
 		Result result = updateHandler.execute(primaryOperand, iterator);
 		_dbConnector.update(result.getTasksIterator().next().toString(),TaskImpl.CLASS_NAME);
-		_listStack.push(_taskList);
+		_listStack.push(new ArrayList<Task>(_taskList));
 		return result;
 	}
 
