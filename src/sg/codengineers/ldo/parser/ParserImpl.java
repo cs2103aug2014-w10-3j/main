@@ -9,13 +9,22 @@ import sg.codengineers.ldo.model.AdditionalArgument;
 import sg.codengineers.ldo.model.AdditionalArgument.ArgumentType;
 import sg.codengineers.ldo.model.Command;
 import sg.codengineers.ldo.model.Command.CommandType;
+import sg.codengineers.ldo.model.Date;
 import sg.codengineers.ldo.model.Parser;
 
+/**
+ * This class implements a Parser as implemented by the Parser interface.
+ * 
+ * @author Victor Hazali
+ * 
+ */
 public class ParserImpl implements Parser {
 
 	/* Constants */
 	private static final int					PRIMARY_OPERAND_POSITION	= 0;
+	private static final int					EMPTY_VALUE					= -1;
 	private static final boolean				DEBUG_MODE					= false;
+
 	/* Messages to show to user for Exceptions */
 	private static String						CODE_FAULT					= "%1s in %2s component is not behaving according to how it should be";
 	private static String						BLANK_INPUT					= "Blank input not acceptable";
@@ -107,6 +116,34 @@ public class ParserImpl implements Parser {
 		return new AdditionalArgumentImpl(argType, operand);
 	}
 
+	@Override
+	public Date parseToDate(String userInput) {
+		_userInput = userInput;
+		int date;
+		Date _resultingDate = new DateImpl(EMPTY_VALUE, EMPTY_VALUE,
+				EMPTY_VALUE, EMPTY_VALUE, EMPTY_VALUE);
+		try {
+			checkForBlankInput();
+		} catch (Exception e) {
+			if (DEBUG_MODE) {
+				e.printStackTrace();
+			}
+			return new DateImpl(EMPTY_VALUE, EMPTY_VALUE, EMPTY_VALUE,
+					EMPTY_VALUE, EMPTY_VALUE);
+		}
+
+		String[] tokens = userInput.split("([\\s+:\\.-)");
+		for (String s : tokens) {
+			if (!s.isEmpty()) {
+
+			}
+		}
+
+		return _resultingDate;
+	}
+
+	/* Private Methods */
+
 	/**
 	 * Initialises the command map if it has yet to be done.
 	 */
@@ -121,8 +158,6 @@ public class ParserImpl implements Parser {
 			_isInitialised = true;
 		}
 	}
-
-	/* Private Methods */
 
 	/**
 	 * Checks if the input given by user is blank
@@ -256,6 +291,7 @@ public class ParserImpl implements Parser {
 	}
 
 	/**
+	 * TODO
 	 * 
 	 * @param cmdType
 	 * @param priOp
