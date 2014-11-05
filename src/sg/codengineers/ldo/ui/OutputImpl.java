@@ -127,9 +127,9 @@ public class OutputImpl implements Output {
 	 * Method will display multiple tasks to user.
 	 * An example of the format will be:
 	 * 
-	 * 1. <Task Name> <Task's Unique ID>
-	 * 2. <Task Name> <Task's Unique ID>
-	 * 3. <Task Name> <Task's Unique ID>
+	 * 1. <Task Name>
+	 * 2. <Task Name>
+	 * 3. <Task Name>
 	 * 
 	 */
 	private void showMultipleTasksToUser() {
