@@ -30,6 +30,17 @@ import java.util.*;
 
 public class GCalDBConnector implements DBConnector {
 
+	// The clientId and clientSecret can be found in Google Developers
+	// Console
+	private static final String CLIENT_ID = "300670791643-aqcjcpka4r18bnr53rl5vtvj2h88l9ga.apps.googleusercontent.com";
+	private static final String CLIENT_SECRET = "pp9dS5SHzSEl_pu5hXw0ZFDk";
+
+	private static final String CALENDAR_SUMMARY = "L'Do";
+	private static final String CALENDAR_ID = "L-DO@cs2103.nus.edu.sg";
+
+	// No way around this since there is a name clash in the imported libraries
+	private com.google.api.services.calendar.Calendar service = null;
+
 	@Override
 	public boolean create(String data) {
 		// TODO Auto-generated method stub
