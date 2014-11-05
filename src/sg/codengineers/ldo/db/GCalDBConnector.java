@@ -42,9 +42,19 @@ public class GCalDBConnector implements DBConnector {
 	private com.google.api.services.calendar.Calendar service = null;
 
 	@Override
-	public boolean create(String data) {
-		// TODO Auto-generated method stub
-		return true;
+	public boolean create(Object data) {
+		try {			
+			Task task = convertToTask(data);			
+			Event event = taskToEvent(task);
+
+			Event createdEvent = service.events().insert(CALENDAR_ID, event).execute();
+			gCalEvents.add(createdEvent);
+
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;	
+		}
 	}
 
 	@Override
