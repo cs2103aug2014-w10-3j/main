@@ -51,6 +51,10 @@ public class OutputImpl implements Output {
 		_result = result;
 		_taskItr = result.getTasksIterator();
 		CommandType commandType = _result.getCommandType();
+		if (_result == null) {
+			feedbackForUndo();
+			return;
+		}
 		if (_result.getMessage() != null) {
 			displayWelcome(result);
 		} else {
@@ -115,6 +119,10 @@ public class OutputImpl implements Output {
 		}
 	}
 
+	private void feedbackForUndo() {
+		showToUser("Undone last command");
+	}
+
 	/**
 	 * Method will display multiple tasks to user.
 	 * An example of the format will be:
@@ -154,69 +162,72 @@ public class OutputImpl implements Output {
 	 */
 	@SuppressWarnings("deprecation")
 	private void showOneTaskToUser() {
-		while(_taskItr.hasNext()){
-		Task toPrint = _taskItr.next();
-		showToUser(String.format(NAME, toPrint.getName()));
-		if (!toPrint.getDescription().isEmpty()) {
-			showToUser(String.format(DESCRIPTION, toPrint.getDescription()));
-		}
-		if (!toPrint.getTag().isEmpty()) {
-			showToUser(String.format(TAG, toPrint.getTag()));
-		}
-		if (toPrint.getDeadline() != null) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(String.format("%02d", toPrint.getDeadline().getHours()));
-			sb.append(":");
-			sb.append(String.format("%02d", toPrint.getDeadline().getMinutes()));
-			String time = sb.toString();
-			sb = new StringBuilder();
-			sb.append(String.format("%02d", toPrint.getDeadline().getDate()));
-			sb.append(" ");
-			int month = toPrint.getDeadline().getMonth();
-			switch (month) {
-				case 0 :
-					sb.append("Jan");
-					break;
-				case 1 :
-					sb.append("Feb");
-					break;
-				case 2 :
-					sb.append("Mar");
-					break;
-				case 3 :
-					sb.append("Apr");
-					break;
-				case 4 :
-					sb.append("May");
-					break;
-				case 5 :
-					sb.append("Jun");
-					break;
-				case 6 :
-					sb.append("Jul");
-					break;
-				case 7 :
-					sb.append("Aug");
-					break;
-				case 8 :
-					sb.append("Sep");
-					break;
-				case 9 :
-					sb.append("Oct");
-					break;
-				case 10 :
-					sb.append("Nov");
-					break;
-				case 11 :
-					sb.append("Dec");
-					break;
-				default:
+		while (_taskItr.hasNext()) {
+			Task toPrint = _taskItr.next();
+			showToUser(String.format(NAME, toPrint.getName()));
+			if (!toPrint.getDescription().isEmpty()) {
+				showToUser(String.format(DESCRIPTION, toPrint.getDescription()));
 			}
-			sb.append(String.format("%04d",
-					toPrint.getDeadline().getYear() + 1900));
-			String date = sb.toString();
-			showToUser(String.format(DEADLINE, time, date));
-		}
+			if (!toPrint.getTag().isEmpty()) {
+				showToUser(String.format(TAG, toPrint.getTag()));
+			}
+			if (toPrint.getDeadline() != null) {
+				StringBuilder sb = new StringBuilder();
+				sb.append(String.format("%02d", toPrint.getDeadline()
+						.getHours()));
+				sb.append(":");
+				sb.append(String.format("%02d", toPrint.getDeadline()
+						.getMinutes()));
+				String time = sb.toString();
+				sb = new StringBuilder();
+				sb.append(String
+						.format("%02d", toPrint.getDeadline().getDate()));
+				sb.append(" ");
+				int month = toPrint.getDeadline().getMonth();
+				switch (month) {
+					case 0 :
+						sb.append("Jan");
+						break;
+					case 1 :
+						sb.append("Feb");
+						break;
+					case 2 :
+						sb.append("Mar");
+						break;
+					case 3 :
+						sb.append("Apr");
+						break;
+					case 4 :
+						sb.append("May");
+						break;
+					case 5 :
+						sb.append("Jun");
+						break;
+					case 6 :
+						sb.append("Jul");
+						break;
+					case 7 :
+						sb.append("Aug");
+						break;
+					case 8 :
+						sb.append("Sep");
+						break;
+					case 9 :
+						sb.append("Oct");
+						break;
+					case 10 :
+						sb.append("Nov");
+						break;
+					case 11 :
+						sb.append("Dec");
+						break;
+					default:
+				}
+				sb.append(String.format("%04d",
+						toPrint.getDeadline().getYear() + 1900));
+				String date = sb.toString();
+				showToUser(String.format(DEADLINE, time, date));
+			}
 		}
 	}
 
