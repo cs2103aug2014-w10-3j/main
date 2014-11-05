@@ -154,6 +154,7 @@ public class OutputImpl implements Output {
 	 */
 	@SuppressWarnings("deprecation")
 	private void showOneTaskToUser() {
+		while(_taskItr.hasNext()){
 		Task toPrint = _taskItr.next();
 		showToUser(String.format(NAME, toPrint.getName()));
 		if (!toPrint.getDescription().isEmpty()) {
@@ -215,6 +216,7 @@ public class OutputImpl implements Output {
 					toPrint.getDeadline().getYear() + 1900));
 			String date = sb.toString();
 			showToUser(String.format(DEADLINE, time, date));
+		}
 		}
 	}
 
