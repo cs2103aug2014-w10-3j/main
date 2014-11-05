@@ -17,7 +17,7 @@ public interface Output {
 	 *             Throws an Illegal Argument Exception when command type of
 	 *             result is invalid
 	 */
-	public void displayResult(Result result) throws Exception;
+	public void displayResult(Result result);
 
 	/**
 	 * Displays an exception message to the user. The method will first display
