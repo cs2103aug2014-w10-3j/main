@@ -16,7 +16,7 @@ public class TaskImpl implements Task {
 	public static int FIELD_TIMEEND_INDEX = 5;
 	public static int FIELD_PRIORITY_INDEX = 6;
 	
-	public static int FIELD_COUNT = 6;
+	public static int FIELD_COUNT = 7;
 	private int _id;
 	private String _name, _description, _tag;
 	private Date _timeStart, _timeEnd;
@@ -122,7 +122,8 @@ public class TaskImpl implements Task {
 		builder.append(_description+"<;>");
 		builder.append(_tag+"<;>");
 		builder.append(Handler.FORMATTER.format(_timeStart)+"<;>");
-		builder.append(Handler.FORMATTER.format(_timeEnd));
+		builder.append(Handler.FORMATTER.format(_timeEnd)+"<;>");
+		builder.append(_priority);
 		return builder.toString();
 	}
 	
