@@ -21,6 +21,7 @@ public class OutputImpl implements Output {
 	private static final String	CREATED_MESSAGE	= "Added %1s\n";
 	private static final String	UPDATED_MESSAGE	= "Updated %1s\n";
 	private static final String	DELETED_MESSAGE	= "Deleted %1s\n";
+	private static final String	EXIT_MESSAGE	= "Bye! See you again.\n";
 	private static final String	STUB_MESSAGE	= "This module is still under development.\n";
 	private static final String	TASK			= "%1d. %1s\n";
 	private static final String	NAME			= "Name: %1s\n";
@@ -51,29 +52,33 @@ public class OutputImpl implements Output {
 		_result = result;
 		_taskItr = result.getTasksIterator();
 		CommandType commandType = _result.getCommandType();
-		if (_result.getMessage() != null) {
-			displayWelcome(result);
-		} else {
-			switch (commandType) {
-				case CREATE :
-					feedbackForCreate();
-					break;
-				case UPDATE :
-					feedbackForUpdate();
-					break;
-				case DELETE :
-					feedbackForDelete();
-					break;
-				case RETRIEVE :
-					feedbackForRetrieve();
-					break;
-				case SEARCH :
-					feedbackForSearch();
-					break;
-				default:
-					throw new IllegalArgumentException(
-							"Command Type Invalid");
-			}
+		if (_result == null) {
+			feedbackForUndo();
+			return;
+		}
+
+		switch (commandType) {
+			case CREATE :
+				feedbackForCreate();
+				break;
+			case UPDATE :
+				feedbackForUpdate();
+				break;
+			case DELETE :
+				feedbackForDelete();
+				break;
+			case RETRIEVE :
+				feedbackForRetrieve();
+				break;
+			case SEARCH :
+				feedbackForSearch();
+				break;
+			case HELP :
+				feedbackForHelp();
+				break;
+			default:
+				throw new IllegalArgumentException(
+						"Command Type Invalid");
 		}
 	}
 
@@ -115,13 +120,21 @@ public class OutputImpl implements Output {
 		}
 	}
 
+	private void feedbackForUndo() {
+		showToUser("Undone last command");
+	}
+
+	private void feedbackForHelp() {
+		showToUser(_result.getMessage());
+	}
+
 	/**
 	 * Method will display multiple tasks to user.
 	 * An example of the format will be:
 	 * 
-	 * 1. <Task Name> <Task's Unique ID>
-	 * 2. <Task Name> <Task's Unique ID>
-	 * 3. <Task Name> <Task's Unique ID>
+	 * 1. <Task Name>
+	 * 2. <Task Name>
+	 * 3. <Task Name>
 	 * 
 	 */
 	private void showMultipleTasksToUser() {
@@ -154,78 +167,78 @@ public class OutputImpl implements Output {
 	 */
 	@SuppressWarnings("deprecation")
 	private void showOneTaskToUser() {
-		while(_taskItr.hasNext()){
-		Task toPrint = _taskItr.next();
-		showToUser(String.format(NAME, toPrint.getName()));
-		if (!toPrint.getDescription().isEmpty()) {
-			showToUser(String.format(DESCRIPTION, toPrint.getDescription()));
-		}
-		if (!toPrint.getTag().isEmpty()) {
-			showToUser(String.format(TAG, toPrint.getTag()));
-		}
-		if (toPrint.getDeadline() != null) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(String.format("%02d", toPrint.getDeadline().getHours()));
-			sb.append(":");
-			sb.append(String.format("%02d", toPrint.getDeadline().getMinutes()));
-			String time = sb.toString();
-			sb = new StringBuilder();
-			sb.append(String.format("%02d", toPrint.getDeadline().getDate()));
-			sb.append(" ");
-			int month = toPrint.getDeadline().getMonth();
-			switch (month) {
-				case 0 :
-					sb.append("Jan");
-					break;
-				case 1 :
-					sb.append("Feb");
-					break;
-				case 2 :
-					sb.append("Mar");
-					break;
-				case 3 :
-					sb.append("Apr");
-					break;
-				case 4 :
-					sb.append("May");
-					break;
-				case 5 :
-					sb.append("Jun");
-					break;
-				case 6 :
-					sb.append("Jul");
-					break;
-				case 7 :
-					sb.append("Aug");
-					break;
-				case 8 :
-					sb.append("Sep");
-					break;
-				case 9 :
-					sb.append("Oct");
-					break;
-				case 10 :
-					sb.append("Nov");
-					break;
-				case 11 :
-					sb.append("Dec");
-					break;
-				default:
+		while (_taskItr.hasNext()) {
+			Task toPrint = _taskItr.next();
+			showToUser(String.format(NAME, toPrint.getName()));
+			if (!toPrint.getDescription().isEmpty()) {
+				showToUser(String.format(DESCRIPTION, toPrint.getDescription()));
 			}
-			sb.append(String.format("%04d",
-					toPrint.getDeadline().getYear() + 1900));
-			String date = sb.toString();
-			showToUser(String.format(DEADLINE, time, date));
-		}
+			if (!toPrint.getTag().isEmpty()) {
+				showToUser(String.format(TAG, toPrint.getTag()));
+			}
+			if (toPrint.getDeadline() != null) {
+				StringBuilder sb = new StringBuilder();
+				sb.append(String.format("%02d", toPrint.getDeadline()
+						.getHours()));
+				sb.append(":");
+				sb.append(String.format("%02d", toPrint.getDeadline()
+						.getMinutes()));
+				String time = sb.toString();
+				sb = new StringBuilder();
+				sb.append(String
+						.format("%02d", toPrint.getDeadline().getDate()));
+				sb.append(" ");
+				int month = toPrint.getDeadline().getMonth();
+				switch (month) {
+					case 0 :
+						sb.append("Jan ");
+						break;
+					case 1 :
+						sb.append("Feb ");
+						break;
+					case 2 :
+						sb.append("Mar ");
+						break;
+					case 3 :
+						sb.append("Apr ");
+						break;
+					case 4 :
+						sb.append("May ");
+						break;
+					case 5 :
+						sb.append("Jun ");
+						break;
+					case 6 :
+						sb.append("Jul ");
+						break;
+					case 7 :
+						sb.append("Aug ");
+						break;
+					case 8 :
+						sb.append("Sep ");
+						break;
+					case 9 :
+						sb.append("Oct ");
+						break;
+					case 10 :
+						sb.append("Nov ");
+						break;
+					case 11 :
+						sb.append("Dec ");
+						break;
+					default:
+				}
+				sb.append(String.format("%04d",
+						toPrint.getDeadline().getYear() + 1900));
+				String date = sb.toString();
+				showToUser(String.format(DEADLINE, time, date));
+			}
 		}
 	}
 
 	@Override
-	public void displayException(Exception e) {
-		if (e.getMessage() != null) {
-			showToUser(e.getMessage() + "\n");
-		}
-		e.printStackTrace();
+	public void displayError(String errorMessage) {
+		showToUser(errorMessage);
 	}
 
 	@Override
@@ -246,6 +259,11 @@ public class OutputImpl implements Output {
 		_result = result;
 		showToUser(PROGRAM_NAME + "\n");
 		displayTodaysTask();
+	}
+
+	@Override
+	public void displayExit() {
+		showToUser(EXIT_MESSAGE);
 	}
 
 	/**
