@@ -48,7 +48,7 @@ public class OutputImpl implements Output {
 	 *             the result is INVALID
 	 */
 	@Override
-	public void displayResult(Result result) throws Exception {
+	public void displayResult(Result result) {
 		_result = result;
 		_taskItr = result.getTasksIterator();
 		CommandType commandType = _result.getCommandType();
