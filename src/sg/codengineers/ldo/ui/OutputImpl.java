@@ -54,12 +54,6 @@ public class OutputImpl implements Output {
 		_taskItr = result.getTasksIterator();
 		CommandType commandType = _result.getCommandType();
 
-		// TODO remove after result is properly implemented
-		if (_result == null) {
-			feedbackForUndo();
-			return;
-		}
-
 		switch (commandType) {
 			case CREATE :
 				feedbackForCreate();
