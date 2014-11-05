@@ -106,6 +106,7 @@ public class OutputImpl implements Output {
 	 * 
 	 */
 	private void feedbackForRetrieve() {
+		clearScreen();
 		if (!_result.getTasksIterator().hasNext()) {
 			showToUser("Task list is empty.\n");
 		}
@@ -276,6 +277,7 @@ public class OutputImpl implements Output {
 	 * <NO_TASK_TODAY_MESSAGE>
 	 */
 	public void displayWelcome(Result result) {
+		clearScreen();
 		_result = result;
 		showToUser(PROGRAM_NAME + "\n");
 		displayTodaysTask();
@@ -311,6 +313,7 @@ public class OutputImpl implements Output {
 	}
 
 	private void feedbackForSearch() {
+		clearScreen();
 		showToUser("Showing all tasks containing \""
 				+ _result.getPrimaryOperand() + "\":\n");
 		showMultipleTasksToUser();
@@ -323,6 +326,25 @@ public class OutputImpl implements Output {
 	 */
 	private void stub() {
 		showToUser(STUB_MESSAGE);
+	}
+
+	private void clearScreen() {
+		try
+		{
+			final String os = System.getProperty("os.name");
+
+			if (os.contains("Windows"))
+			{
+				Runtime.getRuntime().exec("cls");
+			}
+			else
+			{
+				Runtime.getRuntime().exec("clear");
+			}
+		} catch (final Exception e)
+		{
+			// Handle any exceptions.
+		}
 	}
 
 	private boolean isNumeric(String str) {
