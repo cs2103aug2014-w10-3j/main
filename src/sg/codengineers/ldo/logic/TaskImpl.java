@@ -28,7 +28,7 @@ public class TaskImpl implements Task {
 		_id = getNextId();
 		_name = name;
 		_description = _tag = "";
-		_timeStart = _timeEnd = new Date();
+		_timeStart = _timeEnd = null;
 	}
 	
 	/**

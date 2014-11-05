@@ -1,6 +1,7 @@
 package sg.codengineers.ldo.logic;
 
 import java.io.IOException;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,9 +12,11 @@ import java.util.Stack;
 import sg.codengineers.ldo.db.DBConnector;
 import sg.codengineers.ldo.db.Database;
 import sg.codengineers.ldo.model.AdditionalArgument;
+import sg.codengineers.ldo.model.Command;
 import sg.codengineers.ldo.model.Command.CommandType;
 import sg.codengineers.ldo.model.Result;
 import sg.codengineers.ldo.model.Task;
+import sg.codengineers.ldo.parser.ResultImpl;
 /**
  * Logic class provides basic manipulation functions of tasks and task lists. <br>
  * To construct a Logic instance, please call {@link Logic#getLogic()}. There will be only
@@ -26,6 +29,7 @@ public class Logic {
 	private Database _dbConnector;
 	private List<Task> _taskList;
 	private Stack<List<Task>> _listStack;
+	private Stack<Command> _commandStack;
 	private boolean _isInitialized = false;
 	
 	private Handler createHandler,searchHandler,updateHandler,deleteHandler;
@@ -77,37 +81,44 @@ public class Logic {
 		_isInitialized = true;
 		_listStack = new Stack<List<Task>>();
 		_listStack.push(new ArrayList<Task>(_taskList));
+		_commandStack = new Stack<Command>();
 	}
 	
 
-	public Result createTask(String primaryOperand,
-			Iterator<AdditionalArgument> iterator) throws IOException{
+	public Result createTask(Command command) throws IOException{
+		String primaryOperand = command.getPrimaryOperand();
+		Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
 		Result result = null;
 		result = createHandler.execute(primaryOperand, iterator);
 		_dbConnector.create(result.getTasksIterator().next(),TaskImpl.CLASS_NAME);
 		_listStack.push(new ArrayList<Task>(_taskList));
+		_commandStack.push(command);
 		return result;
 	}
 
-	public Result deleteTask(String primaryOperand,
-			Iterator<AdditionalArgument> iterator) throws IOException{
+	public Result deleteTask(Command command) throws IOException{
+		String primaryOperand = command.getPrimaryOperand();
+		Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
 		Result result = deleteHandler.execute(primaryOperand, iterator);
 		_dbConnector.delete(result.getTasksIterator().next(), TaskImpl.CLASS_NAME);
 		_listStack.push(new ArrayList<Task>(_taskList));
+		_commandStack.push(command);
 		return result;
 	}
 
-	public Result updateTask(String primaryOperand,
-			Iterator<AdditionalArgument> iterator) throws IOException{
+	public Result updateTask(Command command) throws IOException{
+		String primaryOperand = command.getPrimaryOperand();
+		Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
 		Result result = updateHandler.execute(primaryOperand, iterator);
 		_dbConnector.update(result.getTasksIterator().next(),TaskImpl.CLASS_NAME);
 		_listStack.push(new ArrayList<Task>(_taskList));
+		_commandStack.push(command);
 		return result;
 	}
 
 	public Result searchTask(String primaryOperand,
 			Iterator<AdditionalArgument> iterator) {
-		return searchHandler.execute(primaryOperand, iterator);Date date;date.
+		return searchHandler.execute(primaryOperand, iterator);
 	}
 
 	public Result showTasks(Integer index) {
@@ -118,9 +129,14 @@ public class Logic {
 		_taskList.clear();
 		if(_listStack.size() > 1){
 			_listStack.pop();
-			_taskList.addAll(_listStack.get(_listStack.size()-1));
+			_taskList.addAll(_listStack.peek());
 		}
-		return null;
+		String userInput= null;
+		if(!_commandStack.isEmpty()){
+			userInput = _commandStack.pop().getUserInput();
+		}
+		Task task = null;
+		return new ResultImpl(CommandType.UNDO,userInput, new Time(System.currentTimeMillis()),task);
 	}
 	
 	public Result showHelp(CommandType type){
