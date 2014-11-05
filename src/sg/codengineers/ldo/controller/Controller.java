@@ -164,21 +164,20 @@ public class Controller {
 	 */
 	Result executeCommand(Command command) throws Exception {
 		CommandType commandType = command.getCommandType();
-		String primaryOperand = command.getPrimaryOperand();
-		Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
 		
 		switch (commandType) {
 			case CREATE:
-				return logic.createTask(primaryOperand, iterator);
+				return logic.createTask(command);
 			case DELETE:
-				return logic.deleteTask(primaryOperand, iterator);
+				return logic.deleteTask(command);
 			case UPDATE:
-				return logic.updateTask(primaryOperand, iterator);
+				return logic.updateTask(command);
 			case RETRIEVE:
+				return logic.showTask(command);
 			case SEARCH:
-				return logic.retrieveTask(primaryOperand, iterator);
+				return logic.searchTask(command);
 			case HELP:
-				return logic.showHelp(commandType);
+				return logic.showHelp(command);
 			case UNDO:
 				return logic.undoTask();
 			case EXIT:
