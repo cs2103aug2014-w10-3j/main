@@ -1,6 +1,9 @@
 package sg.codengineers.ldo.parser;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -11,23 +14,32 @@ import sg.codengineers.ldo.model.Command;
 import sg.codengineers.ldo.model.Command.CommandType;
 import sg.codengineers.ldo.model.Parser;
 
+/**
+ * This class implements a Parser as implemented by the Parser interface.
+ * 
+ * @author Victor Hazali
+ * 
+ */
 public class ParserImpl implements Parser {
 
 	/* Constants */
 	private static final int					PRIMARY_OPERAND_POSITION	= 0;
 	private static final boolean				DEBUG_MODE					= false;
+
 	/* Messages to show to user for Exceptions */
-	private static String						CODE_FAULT					= "%1s in %2s component is not behaving according to how it should be";
-	private static String						BLANK_INPUT					= "Blank input not acceptable";
-	private static String						INVALID_COMMAND				= "%1s has an Invalid command type entered";
-	private static String						HELP_EXPECTED				= "Help argument expected";
-	private static String						NUMBER_EXPECTED				= "Primary operand should contain numbers!";
-	private static String						INVALID_ARGUMENT			= "Invalid additional argument entered";
-	private static String						OPERAND_EXPECTED			= "Operand should follow additional argument %1s";
+	private static String						CODE_FAULT					= "%1s in %2s component is not behaving according to how it should be.\n";
+	private static String						BLANK_INPUT					= "Blank input not acceptable\n";
+	private static String						INVALID_COMMAND				= "%1s has an Invalid command type entered\n";
+	private static String						HELP_EXPECTED				= "Help argument expected\n";
+	private static String						NUMBER_EXPECTED				= "Primary operand should contain numbers!\n";
+	private static String						INVALID_ARGUMENT			= "Invalid additional argument entered\n";
+	private static String						OPERAND_EXPECTED			= "Operand should follow additional argument %1s\n";
 
 	/* Static Variables */
 	private static Map<String, CommandType>		_cmdMap;
 	private static Map<String, ArgumentType>	_argsMap;
+	private static List<DateFormat>				_dateTimeFormats;
+	private static List<DateFormat>				_dateFormats;
 	private static boolean						_isInitialised;
 
 	/* Member Variables */
@@ -56,7 +68,7 @@ public class ParserImpl implements Parser {
 				e.printStackTrace();
 			}
 			return new CommandImpl(userInput, CommandType.INVALID,
-					e.getMessage(), new ArrayList<AdditionalArgument>());
+					e.getMessage());
 		}
 		CommandType cmdType = getCommandType();
 		String priOp = getPrimaryOperand();
@@ -69,7 +81,7 @@ public class ParserImpl implements Parser {
 				e.printStackTrace();
 			}
 			return new CommandImpl(userInput, CommandType.INVALID,
-					e.getMessage(), new ArrayList<AdditionalArgument>());
+					e.getMessage());
 		}
 		if (_isHelpRequest) {
 			cmdType = CommandType.HELP;
@@ -80,6 +92,13 @@ public class ParserImpl implements Parser {
 		return _resultingCommand;
 	}
 
+	/**
+	 * Parses an input string to an AdditionalArgument Object.
+	 * 
+	 * In the event of an unsuccessful parse, an AdditionalArgument with an
+	 * INVALID argument type will be returned. The rationale behind the
+	 * unsuccessful parsing will be stored as the operand.
+	 */
 	@Override
 	public AdditionalArgument parseToAddArg(String userInput) {
 		initialise(userInput);
@@ -108,21 +127,64 @@ public class ParserImpl implements Parser {
 	}
 
 	/**
+	 * Parses an input string to a Date object.
+	 * 
+	 * In the event of an unsuccessful parse, a null object is returned instead.
+	 */
+	@Override
+	public Date parseToDate(String userInput) {
+		initialise(userInput);
+		Date resultingDate = null;
+		try {
+			checkForBlankInput();
+		} catch (Exception e) {
+			if (DEBUG_MODE) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		for (DateFormat format : _dateTimeFormats) {
+			try {
+				resultingDate = format.parse(userInput);
+				return resultingDate;
+			} catch (Exception e) {
+				// Do nothing, move to next format
+			}
+		}
+
+		for (DateFormat format : _dateFormats) {
+			try {
+				resultingDate = format.parse(userInput);
+				return resultingDate;
+			} catch (Exception e) {
+				// Do nothing, move to next format.
+			}
+		}
+
+		return resultingDate;
+	}
+
+	/* Private Methods */
+
+	/**
 	 * Initialises the command map if it has yet to be done.
 	 */
 	private void initialise(String userInput) {
 		_userInput = userInput;
 		_isEmptyPriOp = false;
 		_isHelpRequest = false;
+		_dateTimeFormats = new ArrayList<DateFormat>();
+		_dateFormats = new ArrayList<DateFormat>();
 		if (!_isInitialised) {
 			_cmdMap = new TreeMap<String, CommandType>();
 			populateCmdMap();
 			populateArgsMap();
+			populateDateTimeFormats();
+			populateDateFormats();
 			_isInitialised = true;
 		}
 	}
-
-	/* Private Methods */
 
 	/**
 	 * Checks if the input given by user is blank
@@ -196,6 +258,24 @@ public class ParserImpl implements Parser {
 		_argsMap.put("a", ArgumentType.DESCRIPTION);
 	}
 
+	private void populateDateTimeFormats() {
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yyyy HH:mm"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yy HH:mm"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MM yyyy HH:mm"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MM yy HH:mm"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yyyy hh:mm a"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yy hh:mm a"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MM yyyy hh:mm a"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MM yy hh:mm a"));
+	}
+
+	private void populateDateFormats() {
+		_dateFormats.add(new SimpleDateFormat("dd MMM yyyy"));
+		_dateFormats.add(new SimpleDateFormat("dd MMM yy"));
+		_dateFormats.add(new SimpleDateFormat("dd MM yyyy"));
+		_dateFormats.add(new SimpleDateFormat("dd MM yy"));
+	}
+
 	/**
 	 * Extracts the word representing the command type based on user input
 	 * 
@@ -256,11 +336,16 @@ public class ParserImpl implements Parser {
 	}
 
 	/**
+	 * Validates input for Command
 	 * 
 	 * @param cmdType
+	 *            Command Type
 	 * @param priOp
+	 *            Primary Operand
 	 * @param addArgs
+	 *            List of additional arguments
 	 * @throws Exception
+	 *             if any of the parameters do not clear the validation rules.
 	 */
 	private void validateInput(CommandType cmdType, String priOp,
 			List<AdditionalArgument> addArgs)
@@ -509,7 +594,8 @@ public class ParserImpl implements Parser {
 	 */
 	private boolean isUnaryCommand(CommandType cmdType) {
 		return (cmdType == CommandType.RETRIEVE || cmdType == CommandType.SYNC
-				|| cmdType == CommandType.UNDO || cmdType == CommandType.EXIT);
+				|| cmdType == CommandType.UNDO || cmdType == CommandType.EXIT
+				|| cmdType == CommandType.HELP || cmdType == CommandType.SEARCH);
 	}
 
 	/**
