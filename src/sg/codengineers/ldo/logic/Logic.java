@@ -2,6 +2,7 @@ package sg.codengineers.ldo.logic;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -27,8 +28,9 @@ public class Logic {
 	private Stack<List<Task>> _listStack;
 	private boolean _isInitialized = false;
 	
-	private Handler createHandler,retrieveHandler,updateHandler,deleteHandler;
+	private Handler createHandler,searchHandler,updateHandler,deleteHandler;
 	private HelpHandler helpHandler;
+	private ShowHandler showHandler;
 	
 	private static Logic instance = null;
 	public static final boolean DEBUG = true;
@@ -67,10 +69,11 @@ public class Logic {
 		}
 		
 		createHandler = new CreateHandler(_taskList);
-		retrieveHandler = new RetrieveHandler(_taskList);
+		searchHandler = new SearchHandler(_taskList);
 		updateHandler = new UpdateHandler(_taskList);
 		deleteHandler = new DeleteHandler(_taskList);
 		helpHandler = new HelpHandler(_taskList);
+		showHandler = new ShowHandler(_taskList);
 		_isInitialized = true;
 		_listStack = new Stack<List<Task>>();
 		_listStack.push(new ArrayList<Task>(_taskList));
@@ -81,7 +84,7 @@ public class Logic {
 			Iterator<AdditionalArgument> iterator) throws IOException{
 		Result result = null;
 		result = createHandler.execute(primaryOperand, iterator);
-		_dbConnector.create(result.getTasksIterator().next().toString(),TaskImpl.CLASS_NAME);
+		_dbConnector.create(result.getTasksIterator().next(),TaskImpl.CLASS_NAME);
 		_listStack.push(new ArrayList<Task>(_taskList));
 		return result;
 	}
@@ -89,7 +92,7 @@ public class Logic {
 	public Result deleteTask(String primaryOperand,
 			Iterator<AdditionalArgument> iterator) throws IOException{
 		Result result = deleteHandler.execute(primaryOperand, iterator);
-		_dbConnector.delete(result.getTasksIterator().next().toString(), TaskImpl.CLASS_NAME);
+		_dbConnector.delete(result.getTasksIterator().next(), TaskImpl.CLASS_NAME);
 		_listStack.push(new ArrayList<Task>(_taskList));
 		return result;
 	}
@@ -97,18 +100,18 @@ public class Logic {
 	public Result updateTask(String primaryOperand,
 			Iterator<AdditionalArgument> iterator) throws IOException{
 		Result result = updateHandler.execute(primaryOperand, iterator);
-		_dbConnector.update(result.getTasksIterator().next().toString(),TaskImpl.CLASS_NAME);
+		_dbConnector.update(result.getTasksIterator().next(),TaskImpl.CLASS_NAME);
 		_listStack.push(new ArrayList<Task>(_taskList));
 		return result;
 	}
 
-	public Result retrieveTask(String primaryOperand,
+	public Result searchTask(String primaryOperand,
 			Iterator<AdditionalArgument> iterator) {
-		return retrieveHandler.execute(primaryOperand, iterator);
+		return searchHandler.execute(primaryOperand, iterator);Date date;date.
 	}
 
-	public Result showTasks(Iterator<AdditionalArgument> iterator) {
-		return retrieveHandler.execute(null, iterator);
+	public Result showTasks(Integer index) {
+		return showHandler.execute(index);
 	}
 	
 	public Result undoTask(){
