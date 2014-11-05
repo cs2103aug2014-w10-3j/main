@@ -40,6 +40,7 @@ public class GCalDBConnector implements DBConnector {
 
 	// No way around this since there is a name clash in the imported libraries
 	private com.google.api.services.calendar.Calendar service = null;
+	private List<Event> gCalEvents = null;
 
 	@Override
 	public boolean create(Object data) {
@@ -58,9 +59,18 @@ public class GCalDBConnector implements DBConnector {
 	}
 
 	@Override
-	public boolean update(String data) {
-		// TODO Auto-generated method stub
-		return true;
+	public boolean update(Object data) {
+		try {			
+			Task task = convertToTask(data);			
+			Event event = taskToEvent(task);
+
+			Event updatedEvent = service.events().patch(CALENDAR_ID, event.getId(), event).execute();
+
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;	
+		}
 	}
 
 	@Override
