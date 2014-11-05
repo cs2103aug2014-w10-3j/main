@@ -40,6 +40,7 @@ public class ParserImpl implements Parser {
 	private static Map<String, ArgumentType>	_argsMap;
 	private static List<DateFormat>				_dateTimeFormats;
 	private static List<DateFormat>				_dateFormats;
+	private static List<DateFormat>				_timeFormats;
 	private static boolean						_isInitialised;
 
 	/* Member Variables */
@@ -162,6 +163,15 @@ public class ParserImpl implements Parser {
 			}
 		}
 
+		for (DateFormat format : _timeFormats) {
+			try {
+				resultingDate = format.parse(userInput);
+				return resultingDate;
+			} catch (Exception e) {
+				// Do nothing, fail to parse
+			}
+		}
+
 		return resultingDate;
 	}
 
@@ -176,12 +186,14 @@ public class ParserImpl implements Parser {
 		_isHelpRequest = false;
 		_dateTimeFormats = new ArrayList<DateFormat>();
 		_dateFormats = new ArrayList<DateFormat>();
+		_timeFormats = new ArrayList<DateFormat>();
 		if (!_isInitialised) {
 			_cmdMap = new TreeMap<String, CommandType>();
 			populateCmdMap();
 			populateArgsMap();
 			populateDateTimeFormats();
 			populateDateFormats();
+			populateTimeFormats();
 			_isInitialised = true;
 		}
 	}
@@ -259,21 +271,38 @@ public class ParserImpl implements Parser {
 	}
 
 	private void populateDateTimeFormats() {
-		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yyyy HH:mm"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yy hha"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yyyyy hha"));
+
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yy hh:mma"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yyyy hh:mma"));
 		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yy HH:mm"));
-		_dateTimeFormats.add(new SimpleDateFormat("dd MM yyyy HH:mm"));
-		_dateTimeFormats.add(new SimpleDateFormat("dd MM yy HH:mm"));
-		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yyyy hh:mm a"));
-		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yy hh:mm a"));
-		_dateTimeFormats.add(new SimpleDateFormat("dd MM yyyy hh:mm a"));
-		_dateTimeFormats.add(new SimpleDateFormat("dd MM yy hh:mm a"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yyyy HH:mm"));
+
+		// using slashes as delimiter
+		_dateTimeFormats.add(new SimpleDateFormat("dd/MM/yy hha"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd/MM/yyyy hha"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd/MM/yy hh:mma"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd/MM/yyyy hh:mma"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd/MM/yy HH:mm"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd/MM/yyyy HH:mm"));
 	}
 
 	private void populateDateFormats() {
-		_dateFormats.add(new SimpleDateFormat("dd MMM yyyy"));
 		_dateFormats.add(new SimpleDateFormat("dd MMM yy"));
-		_dateFormats.add(new SimpleDateFormat("dd MM yyyy"));
-		_dateFormats.add(new SimpleDateFormat("dd MM yy"));
+		_dateFormats.add(new SimpleDateFormat("dd MMM yyyy"));
+
+		_dateFormats.add(new SimpleDateFormat("dd-MM-yy"));
+		_dateFormats.add(new SimpleDateFormat("dd-MM-yyyy"));
+
+		_dateFormats.add(new SimpleDateFormat("dd/MM/yy"));
+		_dateFormats.add(new SimpleDateFormat("dd/MM/yyyy"));
+	}
+
+	private void populateTimeFormats() {
+		_timeFormats.add(new SimpleDateFormat("hha"));
+		_timeFormats.add(new SimpleDateFormat("hh:mma"));
+		_timeFormats.add(new SimpleDateFormat("HH:mm"));
 	}
 
 	/**
