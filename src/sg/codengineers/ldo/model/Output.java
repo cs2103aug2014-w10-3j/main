@@ -39,4 +39,9 @@ public interface Output {
 	 *            The list of task due today.
 	 */
 	public void displayWelcome(Result result);
+
+	/**
+	 * Displays an exit message to the user.
+	 */
+	public void displayExit();
 }

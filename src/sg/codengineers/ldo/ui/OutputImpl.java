@@ -21,6 +21,7 @@ public class OutputImpl implements Output {
 	private static final String	CREATED_MESSAGE	= "Added %1s\n";
 	private static final String	UPDATED_MESSAGE	= "Updated %1s\n";
 	private static final String	DELETED_MESSAGE	= "Deleted %1s\n";
+	private static final String	EXIT_MESSAGE	= "Bye! See you again.\n";
 	private static final String	STUB_MESSAGE	= "This module is still under development.\n";
 	private static final String	TASK			= "%1d. %1s\n";
 	private static final String	NAME			= "Name: %1s\n";
@@ -190,40 +191,40 @@ public class OutputImpl implements Output {
 				int month = toPrint.getDeadline().getMonth();
 				switch (month) {
 					case 0 :
-						sb.append("Jan");
+						sb.append("Jan ");
 						break;
 					case 1 :
-						sb.append("Feb");
+						sb.append("Feb ");
 						break;
 					case 2 :
-						sb.append("Mar");
+						sb.append("Mar ");
 						break;
 					case 3 :
-						sb.append("Apr");
+						sb.append("Apr ");
 						break;
 					case 4 :
-						sb.append("May");
+						sb.append("May ");
 						break;
 					case 5 :
-						sb.append("Jun");
+						sb.append("Jun ");
 						break;
 					case 6 :
-						sb.append("Jul");
+						sb.append("Jul ");
 						break;
 					case 7 :
-						sb.append("Aug");
+						sb.append("Aug ");
 						break;
 					case 8 :
-						sb.append("Sep");
+						sb.append("Sep ");
 						break;
 					case 9 :
-						sb.append("Oct");
+						sb.append("Oct ");
 						break;
 					case 10 :
-						sb.append("Nov");
+						sb.append("Nov ");
 						break;
 					case 11 :
-						sb.append("Dec");
+						sb.append("Dec ");
 						break;
 					default:
 				}
@@ -261,6 +262,11 @@ public class OutputImpl implements Output {
 		_result = result;
 		showToUser(PROGRAM_NAME + "\n");
 		displayTodaysTask();
+	}
+
+	@Override
+	public void displayExit() {
+		showToUser(EXIT_MESSAGE);
 	}
 
 	/**
