@@ -27,6 +27,8 @@ public class Controller {
 	// Logic instance
 	private static Logic logic;
 	
+	private static String COMMAND_SHOW_TODAY = "show today";
+	
 	// UI instances
 	private Input input;
 	private Output output;
@@ -71,16 +73,11 @@ public class Controller {
 	 * to the user.
 	 */
 	public void run() {
-		try {
-			String welcomeCommand = "show welcome";
-			processString(welcomeCommand);
-			
-			while (true) {
-				String userInput = input.readFromUser();
-				processString(userInput);
-			}
-		} catch (Exception e) {
-			output.displayException(e);
+		processWelcome();
+		
+		while (true) {
+			String userInput = input.readFromUser();
+			processCommand(userInput);
 		}
 	}
 	
@@ -91,16 +88,49 @@ public class Controller {
 	 * @param rawCommand
 	 * 			unprocessed command string
 	 */
-	public void processString(String rawCommand){
-		try{
-			Command command;
-			Result result;
-			
-			command = parser.parse(rawCommand);
+	public void processCommand(String rawCommand){
+		Command command;
+		Result result;
+		CommandType commandType;
+		
+		command = parser.parse(rawCommand);
+		commandType = command.getCommandType();
+		
+		if (isValidCommandType(commandType)){
 			result = executeCommand(command);
-			output.displayResult(result);
-		} catch (Exception e) {
-			output.displayException(e);
+			commandType = result.getCommandType();
+			
+			if (isValidCommandType(commandType)){
+				output.displayResult(result);
+			} else {
+				output.displayError(result.getMessage());
+			}
+		} else {
+			output.displayError(command.getMessage());
+		}
+	}
+	
+	public void processWelcome() {
+		Command command = parser.parse(COMMAND_SHOW_TODAY);
+		Result result = executeCommand(command);
+		output.displayWelcome(result);
+	}
+	
+	private boolean isValidCommandType(CommandType commandType){
+		switch (commandType){
+			case CREATE:
+			case DELETE:
+			case UPDATE:
+			case RETRIEVE:
+			case SEARCH:
+			case HELP:
+			case UNDO:
+			case EXIT:
+			case SYNC:
+				return true;
+			case INVALID:
+			default:
+				return false;
 		}
 	}
 	
@@ -108,8 +138,7 @@ public class Controller {
 	 * Shows exit message and exits the system
 	 */
 	private void terminate(){
-		String exitMessage = "show terminate";
-		processString(exitMessage);
+		output.displayExit();
 		System.exit(0);
 	}
 	
@@ -122,7 +151,7 @@ public class Controller {
 	 * @return result contains the information needed for feedback
 	 * @throws Exception
 	 */
-	Result executeCommand(Command command) throws Exception {
+	Result executeCommand(Command command) {
 		CommandType commandType = command.getCommandType();
 		String primaryOperand = command.getPrimaryOperand();
 		Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
@@ -143,8 +172,10 @@ public class Controller {
 				return logic.undoTask();
 			case EXIT:
 				terminate();
+			case SYNC:
+			case INVALID:
 			default:
-				throw new Exception("Invalid command.");
+				throw new Error("Invalid command type.");
 		}
 	}
 }
