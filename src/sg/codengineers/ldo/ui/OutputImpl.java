@@ -125,7 +125,7 @@ public class OutputImpl implements Output {
 	}
 
 	private void feedbackForHelp() {
-		showToUser(_result.getPrimaryOperand());
+		showToUser(_result.getMessage());
 	}
 
 	/**
@@ -237,11 +237,8 @@ public class OutputImpl implements Output {
 	}
 
 	@Override
-	public void displayException(Exception e) {
-		if (e.getMessage() != null) {
-			showToUser(e.getMessage() + "\n");
-		}
-		e.printStackTrace();
+	public void displayError(String errorMessage) {
+		showToUser(errorMessage);
 	}
 
 	@Override

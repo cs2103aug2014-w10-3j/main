@@ -30,7 +30,7 @@ public interface Output {
 	 *            The exception to be show to the user. Should contain the
 	 *            reason behind the exception.
 	 */
-	public void displayException(Exception e);
+	public void displayError(String errorMessage);
 
 	/**
 	 * Displays the welcome message to the user
