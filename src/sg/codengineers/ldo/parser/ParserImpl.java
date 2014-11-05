@@ -24,17 +24,16 @@ public class ParserImpl implements Parser {
 
 	/* Constants */
 	private static final int					PRIMARY_OPERAND_POSITION	= 0;
-	private static final int					EMPTY_VALUE					= -1;
 	private static final boolean				DEBUG_MODE					= false;
 
 	/* Messages to show to user for Exceptions */
-	private static String						CODE_FAULT					= "%1s in %2s component is not behaving according to how it should be";
-	private static String						BLANK_INPUT					= "Blank input not acceptable";
-	private static String						INVALID_COMMAND				= "%1s has an Invalid command type entered";
-	private static String						HELP_EXPECTED				= "Help argument expected";
-	private static String						NUMBER_EXPECTED				= "Primary operand should contain numbers!";
-	private static String						INVALID_ARGUMENT			= "Invalid additional argument entered";
-	private static String						OPERAND_EXPECTED			= "Operand should follow additional argument %1s";
+	private static String						CODE_FAULT					= "%1s in %2s component is not behaving according to how it should be.\n";
+	private static String						BLANK_INPUT					= "Blank input not acceptable\n";
+	private static String						INVALID_COMMAND				= "%1s has an Invalid command type entered\n";
+	private static String						HELP_EXPECTED				= "Help argument expected\n";
+	private static String						NUMBER_EXPECTED				= "Primary operand should contain numbers!\n";
+	private static String						INVALID_ARGUMENT			= "Invalid additional argument entered\n";
+	private static String						OPERAND_EXPECTED			= "Operand should follow additional argument %1s\n";
 
 	/* Static Variables */
 	private static Map<String, CommandType>		_cmdMap;
@@ -69,7 +68,7 @@ public class ParserImpl implements Parser {
 				e.printStackTrace();
 			}
 			return new CommandImpl(userInput, CommandType.INVALID,
-					e.getMessage(), new ArrayList<AdditionalArgument>());
+					e.getMessage());
 		}
 		CommandType cmdType = getCommandType();
 		String priOp = getPrimaryOperand();
@@ -82,7 +81,7 @@ public class ParserImpl implements Parser {
 				e.printStackTrace();
 			}
 			return new CommandImpl(userInput, CommandType.INVALID,
-					e.getMessage(), new ArrayList<AdditionalArgument>());
+					e.getMessage());
 		}
 		if (_isHelpRequest) {
 			cmdType = CommandType.HELP;
@@ -596,7 +595,7 @@ public class ParserImpl implements Parser {
 	private boolean isUnaryCommand(CommandType cmdType) {
 		return (cmdType == CommandType.RETRIEVE || cmdType == CommandType.SYNC
 				|| cmdType == CommandType.UNDO || cmdType == CommandType.EXIT
-				|| cmdType == CommandType.HELP);
+				|| cmdType == CommandType.HELP || cmdType == CommandType.SEARCH);
 	}
 
 	/**

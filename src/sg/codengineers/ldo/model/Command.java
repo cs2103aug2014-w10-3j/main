@@ -42,6 +42,17 @@ public interface Command {
 	public String getPrimaryOperand();
 
 	/**
+	 * Gets the message field of the command.
+	 * 
+	 * The message field should only be used when the commandType is INVALID.
+	 * The message will then contain the error message explaining why is the
+	 * command invalid.
+	 * 
+	 * @return A string containing the message
+	 */
+	public String getMessage();
+
+	/**
 	 * Gets an iterator to iterate through all the additional arguments received
 	 * from the user.
 	 * 

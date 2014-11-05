@@ -23,6 +23,7 @@ public class CommandImpl implements Command {
 	private String						_userInput;
 	private CommandType					_commandType;
 	private String						_primaryOperand;
+	private String						_message;
 	private List<AdditionalArgument>	_additionalArguments;
 
 	/* Constructors */
@@ -32,7 +33,16 @@ public class CommandImpl implements Command {
 		setUserInput(userInput);
 		setCommandType(commandType);
 		setPrimaryOperand(primaryOperand);
+		setMessage("");
 		setAdditionalArguments(additionalArguments);
+	}
+
+	public CommandImpl(String userInput, CommandType commandType, String message) {
+		setUserInput(userInput);
+		setCommandType(commandType);
+		setPrimaryOperand("");
+		setMessage(message);
+		setAdditionalArguments(new ArrayList<AdditionalArgument>());
 	}
 
 	/* Public Methods */
@@ -66,6 +76,16 @@ public class CommandImpl implements Command {
 	@Override
 	public String getPrimaryOperand() {
 		return _primaryOperand;
+	}
+
+	/**
+	 * Gets the message field of this command.
+	 * 
+	 * @return a String containing the message.
+	 */
+	@Override
+	public String getMessage() {
+		return _message;
 	}
 
 	/**
@@ -117,6 +137,10 @@ public class CommandImpl implements Command {
 
 	protected void setPrimaryOperand(String priOp) {
 		_primaryOperand = priOp;
+	}
+
+	protected void setMessage(String message) {
+		_message = message;
 	}
 
 	protected void setAdditionalArguments(List<AdditionalArgument> addArgs) {
