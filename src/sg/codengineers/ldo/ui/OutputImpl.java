@@ -55,29 +55,29 @@ public class OutputImpl implements Output {
 			feedbackForUndo();
 			return;
 		}
-		if (_result.getMessage() != null) {
-			displayWelcome(result);
-		} else {
-			switch (commandType) {
-				case CREATE :
-					feedbackForCreate();
-					break;
-				case UPDATE :
-					feedbackForUpdate();
-					break;
-				case DELETE :
-					feedbackForDelete();
-					break;
-				case RETRIEVE :
-					feedbackForRetrieve();
-					break;
-				case SEARCH :
-					feedbackForSearch();
-					break;
-				default:
-					throw new IllegalArgumentException(
-							"Command Type Invalid");
-			}
+
+		switch (commandType) {
+			case CREATE :
+				feedbackForCreate();
+				break;
+			case UPDATE :
+				feedbackForUpdate();
+				break;
+			case DELETE :
+				feedbackForDelete();
+				break;
+			case RETRIEVE :
+				feedbackForRetrieve();
+				break;
+			case SEARCH :
+				feedbackForSearch();
+				break;
+			case HELP :
+				feedbackForHelp();
+				break;
+			default:
+				throw new IllegalArgumentException(
+						"Command Type Invalid");
 		}
 	}
 
@@ -121,6 +121,10 @@ public class OutputImpl implements Output {
 
 	private void feedbackForUndo() {
 		showToUser("Undone last command");
+	}
+
+	private void feedbackForHelp() {
+		showToUser(_result.getPrimaryOperand());
 	}
 
 	/**
