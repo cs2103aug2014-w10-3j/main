@@ -4,7 +4,9 @@ package sg.codengineers.ldo.db;
  * This class is the implementation of the DBConnector
  * interface. Specifically, it is the connection between
  * the program and google calendar. It handles the synchronization 
- * of data between the program and google calendar.
+ * of data between the program and google calendar. It is only able
+ * handle objects of type "Task". This breaks a little abstraction but
+ * we are left clear components
  * 
  * @author Sean
  */
