@@ -15,6 +15,12 @@ public class ShowHandler {
 	}
 	
 	public Result execute(int index){
+		if(index == -1){
+			return new ResultImpl(CommandType.RETRIEVE, 
+					"all",
+					new Time(System.currentTimeMillis()), 
+					_taskList);	 
+		}
 		Task task = null;
 		try{
 			task = _taskList.get(index - 1);
@@ -26,7 +32,6 @@ public class ShowHandler {
 					"Task "+index+" doesn't exist.",
 					new Time(System.currentTimeMillis()));
 		}
-		
 		return new ResultImpl(CommandType.RETRIEVE, 
 				String.valueOf(index),
 				new Time(System.currentTimeMillis()), 

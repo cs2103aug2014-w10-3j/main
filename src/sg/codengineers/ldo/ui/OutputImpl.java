@@ -23,7 +23,7 @@ public class OutputImpl implements Output {
 	private static final String	DELETED_MESSAGE	= "Deleted %s\n";
 	private static final String	EXIT_MESSAGE	= "Bye! See you again.\n";
 	private static final String	STUB_MESSAGE	= "This module is still under development.\n";
-	private static final String	TASK			= "[%d]. %s%s%s%s%s\n";
+	private static final String	TASK			= "[%d] %s %s %s %s %s\n";
 	private static final String	NAME			= "Name: %s\n";
 	private static final String	DESCRIPTION		= "Description: %s\n";
 	private static final String	TAG				= "Tag: %s\n";
@@ -121,6 +121,11 @@ public class OutputImpl implements Output {
 	@Override
 	public void displayExit() {
 		showToUser(EXIT_MESSAGE);
+	}
+	
+	@Override
+	public void displayMessage(String message){
+		showToUser(message);
 	}
 
 	/* Private methods */

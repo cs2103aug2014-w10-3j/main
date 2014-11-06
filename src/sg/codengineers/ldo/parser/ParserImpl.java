@@ -40,6 +40,7 @@ public class ParserImpl implements Parser {
 	private static Map<String, ArgumentType>	_argsMap;
 	private static List<DateFormat>				_dateTimeFormats;
 	private static List<DateFormat>				_dateFormats;
+	private static List<DateFormat>				_timeFormats;
 	private static boolean						_isInitialised;
 
 	/* Member Variables */
@@ -61,6 +62,7 @@ public class ParserImpl implements Parser {
 	@Override
 	public Command parse(String userInput) {
 		initialise(userInput);
+
 		try {
 			checkForBlankInput();
 		} catch (Exception e) {
@@ -70,10 +72,12 @@ public class ParserImpl implements Parser {
 			return new CommandImpl(userInput, CommandType.INVALID,
 					e.getMessage());
 		}
+
 		CommandType cmdType = getCommandType();
 		String priOp = getPrimaryOperand();
 		String[] splitInput = splitToArguments(removePrimaryArgument(priOp));
 		List<AdditionalArgument> addArgs = populateAdditionalArguments(splitInput);
+
 		try {
 			validateInput(cmdType, priOp, addArgs);
 		} catch (Exception e) {
@@ -83,11 +87,13 @@ public class ParserImpl implements Parser {
 			return new CommandImpl(userInput, CommandType.INVALID,
 					e.getMessage());
 		}
+
 		if (_isHelpRequest) {
 			cmdType = CommandType.HELP;
 			priOp = getFirstWord(userInput).toLowerCase();
 			addArgs = new ArrayList<AdditionalArgument>();
 		}
+
 		_resultingCommand = new CommandImpl(_userInput, cmdType, priOp, addArgs);
 		return _resultingCommand;
 	}
@@ -112,8 +118,10 @@ public class ParserImpl implements Parser {
 			return new AdditionalArgumentImpl(ArgumentType.INVALID,
 					e.getMessage());
 		}
+
 		ArgumentType argType = getArgumentType(getFirstWord(userInput));
 		String operand = getOperand();
+
 		try {
 			validateArgument(new AdditionalArgumentImpl(argType, operand));
 		} catch (Exception e) {
@@ -123,11 +131,14 @@ public class ParserImpl implements Parser {
 			return new AdditionalArgumentImpl(ArgumentType.INVALID,
 					e.getMessage());
 		}
+
 		return new AdditionalArgumentImpl(argType, operand);
 	}
 
 	/**
-	 * Parses an input string to a Date object.
+	 * Parses an input string to a Date object. The list of acceptable formats
+	 * is specified by the lists _dateFormats, _dateTimeFormats and
+	 * _timeFormats.
 	 * 
 	 * In the event of an unsuccessful parse, a null object is returned instead.
 	 */
@@ -135,6 +146,7 @@ public class ParserImpl implements Parser {
 	public Date parseToDate(String userInput) {
 		initialise(userInput);
 		Date resultingDate = null;
+
 		try {
 			checkForBlankInput();
 		} catch (Exception e) {
@@ -162,13 +174,22 @@ public class ParserImpl implements Parser {
 			}
 		}
 
+		for (DateFormat format : _timeFormats) {
+			try {
+				resultingDate = format.parse(userInput);
+				return resultingDate;
+			} catch (Exception e) {
+				// Do nothing, fail to parse
+			}
+		}
+
 		return resultingDate;
 	}
 
 	/* Private Methods */
 
 	/**
-	 * Initialises the command map if it has yet to be done.
+	 * Initialises the static variables if it has yet to be done.
 	 */
 	private void initialise(String userInput) {
 		_userInput = userInput;
@@ -176,12 +197,14 @@ public class ParserImpl implements Parser {
 		_isHelpRequest = false;
 		_dateTimeFormats = new ArrayList<DateFormat>();
 		_dateFormats = new ArrayList<DateFormat>();
+		_timeFormats = new ArrayList<DateFormat>();
 		if (!_isInitialised) {
 			_cmdMap = new TreeMap<String, CommandType>();
 			populateCmdMap();
 			populateArgsMap();
 			populateDateTimeFormats();
 			populateDateFormats();
+			populateTimeFormats();
 			_isInitialised = true;
 		}
 	}
@@ -258,22 +281,48 @@ public class ParserImpl implements Parser {
 		_argsMap.put("a", ArgumentType.DESCRIPTION);
 	}
 
+	/**
+	 * Populates the list with all acceptable date time formats
+	 */
 	private void populateDateTimeFormats() {
-		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yyyy HH:mm"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yy hha"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yyyyy hha"));
+
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yy hh:mma"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yyyy hh:mma"));
 		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yy HH:mm"));
-		_dateTimeFormats.add(new SimpleDateFormat("dd MM yyyy HH:mm"));
-		_dateTimeFormats.add(new SimpleDateFormat("dd MM yy HH:mm"));
-		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yyyy hh:mm a"));
-		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yy hh:mm a"));
-		_dateTimeFormats.add(new SimpleDateFormat("dd MM yyyy hh:mm a"));
-		_dateTimeFormats.add(new SimpleDateFormat("dd MM yy hh:mm a"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yyyy HH:mm"));
+
+		// using slashes as delimiter
+		_dateTimeFormats.add(new SimpleDateFormat("dd/MM/yy hha"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd/MM/yyyy hha"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd/MM/yy hh:mma"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd/MM/yyyy hh:mma"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd/MM/yy HH:mm"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd/MM/yyyy HH:mm"));
 	}
 
+	/**
+	 * Populates the list with all acceptable date formats
+	 */
 	private void populateDateFormats() {
-		_dateFormats.add(new SimpleDateFormat("dd MMM yyyy"));
 		_dateFormats.add(new SimpleDateFormat("dd MMM yy"));
-		_dateFormats.add(new SimpleDateFormat("dd MM yyyy"));
-		_dateFormats.add(new SimpleDateFormat("dd MM yy"));
+		_dateFormats.add(new SimpleDateFormat("dd MMM yyyy"));
+
+		_dateFormats.add(new SimpleDateFormat("dd-MM-yy"));
+		_dateFormats.add(new SimpleDateFormat("dd-MM-yyyy"));
+
+		_dateFormats.add(new SimpleDateFormat("dd/MM/yy"));
+		_dateFormats.add(new SimpleDateFormat("dd/MM/yyyy"));
+	}
+
+	/**
+	 * populates the list with all acceptable time formats
+	 */
+	private void populateTimeFormats() {
+		_timeFormats.add(new SimpleDateFormat("hha"));
+		_timeFormats.add(new SimpleDateFormat("hh:mma"));
+		_timeFormats.add(new SimpleDateFormat("HH:mm"));
 	}
 
 	/**
@@ -290,8 +339,6 @@ public class ParserImpl implements Parser {
 		return commandType;
 	}
 
-	/* Private methods */
-
 	/**
 	 * Gets the primary operand of the command from the user input
 	 * 
@@ -304,8 +351,6 @@ public class ParserImpl implements Parser {
 	private String removePrimaryArgument(String priOp) {
 		return removeFirstWord(_userInput).replaceFirst(priOp, "").trim();
 	}
-
-	/* Private methods */
 
 	/**
 	 * Gets the parameters input by user. This parameters encompasses all values
@@ -336,7 +381,13 @@ public class ParserImpl implements Parser {
 	}
 
 	/**
-	 * Validates input for Command
+	 * Validates input from user to be parsed into a Command object. The list of
+	 * acceptable commandTypes is specified by the commands in the cmdMap. The
+	 * list of acceptable argumentTypes is specified by the arguments in the
+	 * argsMap. Depending on each command type, the acceptable primary operands
+	 * are specified. The acceptable additional arguments are also verified
+	 * depending on the command types. The acceptable additional operands are
+	 * dependent on the argument types.
 	 * 
 	 * @param cmdType
 	 *            Command Type
@@ -356,7 +407,8 @@ public class ParserImpl implements Parser {
 	}
 
 	/**
-	 * Checks that a valid command type is entered by the user
+	 * Checks that a valid command type is entered by the user. The list of
+	 * acceptable command types is specified by the cmdMap
 	 * 
 	 * @param cmdType
 	 *            String object containing command type entered by user
@@ -382,13 +434,12 @@ public class ParserImpl implements Parser {
 	 * Checks that a valid primary operand is entered by the user. For all
 	 * commands, an empty primary command is acceptable if it is followed by a
 	 * --help or -h argument. Otherwise, only unary commands such as RETRIEVE,
-	 * UNDO, SYNC or EXIT will be acceptable for empty primary commands. CREATE
-	 * and RETRIEVE will also be the only CommandTypes that accepts non digits
-	 * for its primary operand.
+	 * SYNC, SEARCH, HELP, UNDO, EXIT will be acceptable for empty primary
+	 * commands. CREATE, RETRIEVE, SEARCH and HELP will also be the only
+	 * CommandTypes that accepts non digits for its primary operand.
 	 * 
 	 * @param cmdType
 	 *            commandType of current command.
-	 * 
 	 * @param priOp
 	 *            primary operand from user to be checked.
 	 * @param addArgs
@@ -420,6 +471,7 @@ public class ParserImpl implements Parser {
 				throw new IllegalArgumentException(HELP_EXPECTED);
 			}
 		}
+
 		if (cmdType == CommandType.UPDATE) {
 			for (char c : priOp.toCharArray()) {
 				if (!Character.isDigit(c)) {
@@ -427,6 +479,7 @@ public class ParserImpl implements Parser {
 				}
 			}
 		}
+
 		if (cmdType == CommandType.DELETE && !priOp.equalsIgnoreCase("all")) {
 			for (char c : priOp.toCharArray()) {
 				if (!Character.isDigit(c)) {
@@ -463,19 +516,18 @@ public class ParserImpl implements Parser {
 	}
 
 	/**
-	 * Checks if the user entered the help argument as the first argument
+	 * Checks if the user entered the help argument.
 	 * 
 	 * @param addArgs
 	 *            Additional Arguments of this command.
 	 * 
-	 * @return True if the first additional argument is of ArgumentType HELP
-	 *         false otherwise
+	 * @return True if the list of additional arguments has an argument of
+	 *         ArgumentType HELP false otherwise
 	 * @throws Exception
 	 *             If the AdditionalArgument Iterator is null, throws an
 	 *             exception to indicate errors in code.
-	 *             If the firstArg is a null with a .next() call to the
-	 *             Iterator, throws an exception to indicate errors
-	 *             in the code.
+	 *             If any of the arguments is a null, throws an exception to
+	 *             indicate errorsin the code.
 	 */
 	private boolean hasHelpArgument(List<AdditionalArgument> addArgs)
 			throws Exception {
@@ -486,15 +538,17 @@ public class ParserImpl implements Parser {
 		if (addArgs.size() == 0) {
 			return false;
 		}
-		AdditionalArgument firstArg = addArgs.get(0);
-		if (firstArg == null) {
-			throw new Exception(String.format(CODE_FAULT, "hasHelpArgument",
-					"ParserImpl"));
+
+		for (AdditionalArgument arg : addArgs) {
+			if (arg == null) {
+				throw new Exception(String.format(CODE_FAULT,
+						"hasHelpArgument", "ParserImpl"));
+			}
+			if (arg.getArgumentType() == ArgumentType.HELP) {
+				return true;
+			}
 		}
-		if (firstArg.getArgumentType() != ArgumentType.HELP) {
-			return false;
-		}
-		return true;
+		return false;
 	}
 
 	/**
@@ -581,6 +635,17 @@ public class ParserImpl implements Parser {
 		return argumentType;
 	}
 
+	/**
+	 * Helper method to get the operand from a string.
+	 * 
+	 * This is assuming that the operand will be the remaining of the string
+	 * after removing the first word.
+	 * Used to extract the operand from a string representing the additional
+	 * argument.
+	 * 
+	 * @return a String object representing the operand in an additional
+	 *         argument.
+	 */
 	private String getOperand() {
 		return removeFirstWord(_userInput);
 	}
@@ -588,14 +653,15 @@ public class ParserImpl implements Parser {
 	/**
 	 * Validates if the command is a unary Command.
 	 * Unary commands are commands that do not require a primary operand.
-	 * Commands that are unary are: retrieve/show/view, sync and exit
+	 * Commands that are unary are: retrieve/show/view, sync, search, help, undo
+	 * and exit
 	 * 
 	 * @return true if the command type is unary, false otherwise
 	 */
 	private boolean isUnaryCommand(CommandType cmdType) {
 		return (cmdType == CommandType.RETRIEVE || cmdType == CommandType.SYNC
-				|| cmdType == CommandType.UNDO || cmdType == CommandType.EXIT
-				|| cmdType == CommandType.HELP || cmdType == CommandType.SEARCH);
+				|| cmdType == CommandType.SEARCH || cmdType == CommandType.HELP
+				|| cmdType == CommandType.UNDO || cmdType == CommandType.EXIT);
 	}
 
 	/**

@@ -10,6 +10,8 @@ import java.util.Iterator;
  * 
  */
 public interface Command {
+
+	// The list of acceptable Command types
 	public enum CommandType {
 		CREATE, UPDATE, DELETE, RETRIEVE, SYNC, SEARCH, HELP, UNDO, EXIT,
 		INVALID
