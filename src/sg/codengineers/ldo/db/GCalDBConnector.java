@@ -83,8 +83,8 @@ public class GCalDBConnector implements DBConnector {
 	
 	@Override
 	public boolean create(Object data) {
-		try {			
-			Task task = convertToTask(data);			
+		try {
+			Task task = convertToTask(data);
 			Event event = taskToEvent(task);
 
 			Event createdEvent = service.events().insert(CALENDAR_ID, event).execute();
@@ -93,17 +93,17 @@ public class GCalDBConnector implements DBConnector {
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
-			return false;	
+			return false;
 		}
 	}
 
 	@Override
 	public boolean update(Object data) {
-		try {			
-			Task task = convertToTask(data);			
+		try {
+			Task task = convertToTask(data);
 			Event event = taskToEvent(task);
 
-			Event updatedEvent = service.events().patch(CALENDAR_ID, event.getId(), event).execute();
+			service.events().patch(CALENDAR_ID, event.getId(), event).execute();
 
 			return true;
 		} catch (IOException e) {
