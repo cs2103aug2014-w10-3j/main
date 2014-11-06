@@ -39,7 +39,7 @@ public class Logic {
 	private ShowHandler showHandler;
 	
 	private static Logic instance = null;
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG = false;
 	
 	public static Logic getInstance(){
 		try{
@@ -88,13 +88,23 @@ public class Logic {
 	
 
 	public Result createTask(Command command) throws IOException{
-		String primaryOperand = command.getPrimaryOperand();
-		Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
 		Result result = null;
-		result = createHandler.execute(primaryOperand, iterator);
-		_dbConnector.create(result.getTasksIterator().next(),TaskImpl.CLASS_NAME);
-		_listStack.push(new ArrayList<Task>(_taskList));
-		_commandStack.push(command);
+		try{
+			String primaryOperand = command.getPrimaryOperand();
+			Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
+			result = createHandler.execute(primaryOperand, iterator);
+			_dbConnector.create(result.getTasksIterator().next(),TaskImpl.CLASS_NAME);
+			_listStack.push(new ArrayList<Task>(_taskList));
+			_commandStack.push(command);
+		} catch(Exception e){
+			if(DEBUG){
+				e.printStackTrace();
+			}
+			result =  new ResultImpl(CommandType.INVALID, 
+					"Can't create task with "+command.getUserInput(),
+					new Time(System.currentTimeMillis()));
+		}
+		
 		return result;
 	}
 
@@ -119,14 +129,21 @@ public class Logic {
 	}
 
 	public Result searchTask(Command command){
-		String primaryOperand = command.getPrimaryOperand();
-		Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
-		return searchHandler.execute(primaryOperand, iterator);
+		try{
+			String primaryOperand = command.getPrimaryOperand();
+			Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
+			return searchHandler.execute(primaryOperand, iterator);			
+		} catch(Exception e) {
+			return  new ResultImpl(CommandType.INVALID, 
+					"Cannot search for task with "+command.getUserInput(),
+					new Time(System.currentTimeMillis()));
+		}
+
 	}
 
 	public Result showTask(Command command) {
 		int index = -1;
-		if(command.getPrimaryOperand() == null || command.getPrimaryOperand().isEmpty()){
+		if(command.getPrimaryOperand() == null || command.getPrimaryOperand().isEmpty() || command.getPrimaryOperand().equalsIgnoreCase("all")){
 			return showHandler.execute(index);
 		}
 		try{
@@ -135,6 +152,9 @@ public class Logic {
 			if(DEBUG){
 				e.printStackTrace();
 			}
+			return new ResultImpl(CommandType.INVALID, 
+					"Task "+command.getPrimaryOperand()+" doesn't exist.",
+					new Time(System.currentTimeMillis()));
 		}
 		return showHandler.execute(index);
 	}
