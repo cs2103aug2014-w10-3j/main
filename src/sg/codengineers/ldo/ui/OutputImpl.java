@@ -23,7 +23,7 @@ public class OutputImpl implements Output {
 	private static final String	DELETED_MESSAGE	= "Deleted %s\n";
 	private static final String	EXIT_MESSAGE	= "Bye! See you again.\n";
 	private static final String	STUB_MESSAGE	= "This module is still under development.\n";
-	private static final String	TASK			= "[%d]. %s\n";
+	private static final String	TASK			= "[%d]. %s%s%s%s%s\n";
 	private static final String	NAME			= "Name: %s\n";
 	private static final String	DESCRIPTION		= "Description: %s\n";
 	private static final String	TAG				= "Tag: %s\n";
@@ -39,26 +39,19 @@ public class OutputImpl implements Output {
 	private Result				_result;
 	private Iterator<Task>		_taskItr;
 
+	/* Public Methods */
+
 	/**
 	 * Displays the result to user
 	 * 
 	 * @param result
 	 *            Result from the executed command
-	 * @throws Exception
-	 *             Throws an IllegalArgumentException when the commandType of
-	 *             the result is INVALID
 	 */
 	@Override
 	public void displayResult(Result result) {
 		_result = result;
 		_taskItr = result.getTasksIterator();
 		CommandType commandType = _result.getCommandType();
-
-		// TODO remove after result is properly implemented
-		if (_result == null) {
-			feedbackForUndo();
-			return;
-		}
 
 		switch (commandType) {
 			case CREATE :
@@ -83,35 +76,95 @@ public class OutputImpl implements Output {
 				feedbackForUndo();
 				break;
 			default:
-				throw new IllegalArgumentException(
-						"Command Type Invalid");
+				// Nothing to do
 		}
 	}
 
+	/**
+	 * Displays the error message to the user. The method simply shows the
+	 * message without any further formatting to the message.
+	 * 
+	 * @param errorMessage
+	 *            String object containing the error message.
+	 * @precondition String must already be properly formatted for output to
+	 *               user
+	 */
+	@Override
+	public void displayError(String errorMessage) {
+		showToUser(errorMessage);
+	}
+
+	@Override
+	/**
+	 * Displays the welcome message upon running of program
+	 * It will display the program name followed by the day's task in the
+	 * following format:
+	 * <Program Name>
+	 * Here are today's tasks:
+	 * 1. <Task 1>
+	 * 2. <Task 2>
+	 * 
+	 * If there are no tasks due today, the display will be replaced to
+	 * <Program Name>
+	 * <NO_TASK_TODAY_MESSAGE>
+	 */
+	public void displayWelcome(Result result) {
+		clearScreen();
+		_result = result;
+		showToUser(PROGRAM_NAME + "\n");
+		displayTodaysTask();
+	}
+
+	/**
+	 * Displays the exit message to the user upon receiving the exit command.
+	 */
+	@Override
+	public void displayExit() {
+		showToUser(EXIT_MESSAGE);
+	}
+
+	/* Private methods */
+
+	/**
+	 * Gives the feedback for a CREATE Command Type.
+	 * Shows user that the command was successfully executed and prints out the
+	 * details of the new task added.
+	 */
 	private void feedbackForCreate() {
 		Task completedTask = _result.getTasksIterator().next();
 		showToUser(String.format(CREATED_MESSAGE, completedTask.getName()));
 		showOneTaskToUser();
 	}
 
+	/**
+	 * Gives the feedback for an UPDATE CommandType.
+	 * Shows the user that the command was successfully executed and prints out
+	 * the details of the newly updated task.
+	 */
 	private void feedbackForUpdate() {
 		Task completedTask = _result.getTasksIterator().next();
 		showToUser(String.format(UPDATED_MESSAGE, completedTask.getName()));
 		showOneTaskToUser();
 	}
 
+	/**
+	 * Gives the feedback for a DELETE CommandType.
+	 * Shows the user that the command was successfully executed and prints out
+	 * the name of the deleted task.
+	 */
 	private void feedbackForDelete() {
 		Task completedTask = _taskItr.next();
 		showToUser(String.format(DELETED_MESSAGE, completedTask.getName()));
 	}
 
 	/**
+	 * Gives the feedback for a RETRIEVE Command Type.
 	 * Method will display all the tasks as requested by user. The format for
 	 * display will be as dictated by the showOneTaskToUser method or the
 	 * showMultipleTasksToUser method.
-	 * 
 	 */
 	private void feedbackForRetrieve() {
+		clearScreen();
 		if (!_result.getTasksIterator().hasNext()) {
 			showToUser("Task list is empty.\n");
 		}
@@ -126,12 +179,39 @@ public class OutputImpl implements Output {
 		}
 	}
 
-	private void feedbackForUndo() {
-		showToUser("Undone last command");
+	/**
+	 * Gives the feedback for a SEARCH CommandType.
+	 * Method will display all the tasks that meets the search criteria provided
+	 * by the user.
+	 * The format for display will be as dictated by the showMultipleTasksToUser
+	 * method.
+	 */
+	private void feedbackForSearch() {
+		clearScreen();
+		showToUser("Showing all tasks containing \""
+				+ _result.getPrimaryOperand() + "\":\n");
+		showMultipleTasksToUser();
 	}
 
+	/**
+	 * Gives the feedback for a HELP CommandType.
+	 * 
+	 * Method will display the help message associated with what the user
+	 * requests.
+	 * The format of the message will already be decided.
+	 */
 	private void feedbackForHelp() {
 		showToUser(_result.getMessage());
+	}
+
+	/**
+	 * Gives the feedback for an UNDO CommandType.
+	 * 
+	 * Shows the user that the command was successfully executed and tells the
+	 * user which command was undone.
+	 */
+	private void feedbackForUndo() {
+		showToUser("Undone last command");
 	}
 
 	/**
@@ -143,16 +223,73 @@ public class OutputImpl implements Output {
 	 * [3] <Task Name>
 	 * 
 	 */
+	@SuppressWarnings("deprecation")
 	private void showMultipleTasksToUser() {
 		int counter = 1;
 		String priOp = _result.getPrimaryOperand();
+		StringBuilder sb = new StringBuilder();
 		if (priOp.isEmpty()) {
 			priOp = "all";
 		}
 		showToUser("Showing " + priOp + "\n");
 		while (_taskItr.hasNext()) {
+			sb = new StringBuilder();
 			Task toPrint = _taskItr.next();
-			showToUser(String.format(TASK, counter, toPrint.getName()));
+			sb.append(String.format("%02d", toPrint.getDeadline()
+					.getHours()));
+			sb.append(":");
+			sb.append(String.format("%02d", toPrint.getDeadline()
+					.getMinutes()));
+			sb.append(" ");
+			sb.append(String
+					.format("%02d", toPrint.getDeadline().getDate()));
+			sb.append(" ");
+			int month = toPrint.getDeadline().getMonth();
+			switch (month) {
+				case 0 :
+					sb.append("Jan");
+					break;
+				case 1 :
+					sb.append("Feb");
+					break;
+				case 2 :
+					sb.append("Mar");
+					break;
+				case 3 :
+					sb.append("Apr");
+					break;
+				case 4 :
+					sb.append("May");
+					break;
+				case 5 :
+					sb.append("Jun");
+					break;
+				case 6 :
+					sb.append("Jul");
+					break;
+				case 7 :
+					sb.append("Aug");
+					break;
+				case 8 :
+					sb.append("Sep");
+					break;
+				case 9 :
+					sb.append("Oct");
+					break;
+				case 10 :
+					sb.append("Nov");
+					break;
+				case 11 :
+					sb.append("Dec");
+					break;
+				default:
+			}
+			sb.append(" ");
+			sb.append(String.format("%04d",
+					toPrint.getDeadline().getYear() + 1900));
+			showToUser(String.format(TASK, counter, toPrint.getName(),
+					toPrint.getDescription(), toPrint.getTag(),
+					sb.toString(), toPrint.getPriority()));
 			counter++;
 		}
 	}
@@ -196,49 +333,51 @@ public class OutputImpl implements Output {
 						.getMinutes()));
 				String time = sb.toString();
 				sb = new StringBuilder();
+				sb.append(" ");
 				sb.append(String
 						.format("%02d", toPrint.getDeadline().getDate()));
 				sb.append(" ");
 				int month = toPrint.getDeadline().getMonth();
 				switch (month) {
 					case 0 :
-						sb.append("Jan ");
+						sb.append("Jan");
 						break;
 					case 1 :
-						sb.append("Feb ");
+						sb.append("Feb");
 						break;
 					case 2 :
-						sb.append("Mar ");
+						sb.append("Mar");
 						break;
 					case 3 :
-						sb.append("Apr ");
+						sb.append("Apr");
 						break;
 					case 4 :
-						sb.append("May ");
+						sb.append("May");
 						break;
 					case 5 :
-						sb.append("Jun ");
+						sb.append("Jun");
 						break;
 					case 6 :
-						sb.append("Jul ");
+						sb.append("Jul");
 						break;
 					case 7 :
-						sb.append("Aug ");
+						sb.append("Aug");
 						break;
 					case 8 :
-						sb.append("Sep ");
+						sb.append("Sep");
 						break;
 					case 9 :
-						sb.append("Oct ");
+						sb.append("Oct");
 						break;
 					case 10 :
-						sb.append("Nov ");
+						sb.append("Nov");
 						break;
 					case 11 :
-						sb.append("Dec ");
+						sb.append("Dec");
 						break;
 					default:
 				}
+				sb.append(" ");
 				sb.append(String.format("%04d",
 						toPrint.getDeadline().getYear() + 1900));
 				String date = sb.toString();
@@ -260,36 +399,6 @@ public class OutputImpl implements Output {
 				}
 			}
 		}
-	}
-
-	@Override
-	public void displayError(String errorMessage) {
-		showToUser(errorMessage);
-	}
-
-	@Override
-	/**
-	 * Displays the welcome message upon running of program
-	 * It will display the program name followed by the day's task in the
-	 * following format:
-	 * <Program Name>
-	 * Here are today's tasks:
-	 * 1. <Task 1>
-	 * 2. <Task 2>
-	 * 
-	 * If there are no tasks due today, the display will be replaced to
-	 * <Program Name>
-	 * <NO_TASK_TODAY_MESSAGE>
-	 */
-	public void displayWelcome(Result result) {
-		_result = result;
-		showToUser(PROGRAM_NAME + "\n");
-		displayTodaysTask();
-	}
-
-	@Override
-	public void displayExit() {
-		showToUser(EXIT_MESSAGE);
 	}
 
 	/**
@@ -316,12 +425,6 @@ public class OutputImpl implements Output {
 		}
 	}
 
-	private void feedbackForSearch() {
-		showToUser("Showing all tasks containing \""
-				+ _result.getPrimaryOperand() + "\":\n");
-		showMultipleTasksToUser();
-	}
-
 	/**
 	 * Method to inform user that module has not been fully developed. Only
 	 * used during development, not in the final product.
@@ -331,7 +434,42 @@ public class OutputImpl implements Output {
 		showToUser(STUB_MESSAGE);
 	}
 
+	/**
+	 * Helper method to clear the screen.
+	 * 
+	 * Used to help provide a cleaner user interface.
+	 */
+	private void clearScreen() {
+		try
+		{
+			final String os = System.getProperty("os.name");
+
+			if (os.contains("Windows"))
+			{
+				Runtime.getRuntime().exec("cls");
+			}
+			else
+			{
+				Runtime.getRuntime().exec("clear");
+			}
+		} catch (final Exception e)
+		{
+			// Do nothing.
+		}
+	}
+
+	/**
+	 * Helper method to check if the contents of a string is numeric.
+	 * 
+	 * @param str
+	 *            String to check
+	 * @return True if all the values within the string are digits. False
+	 *         otherwise. Also returns false for empty strings or blank strings.
+	 */
 	private boolean isNumeric(String str) {
+		if (str == null) {
+			return false;
+		}
 		if (str.trim().isEmpty()) {
 			return false;
 		}
