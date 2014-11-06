@@ -173,6 +173,21 @@ public class GCalDBConnector implements DBConnector {
 		}
 	}
 	
+	public boolean isCalendarCreated(List<CalendarListEntry> list) {
+		boolean isCreated = false;
+		String calendarId;
+		
+		for (CalendarListEntry entry : list) {
+			calendarId = entry.getId();
+
+			if (calendarId.equals(CALENDAR_ID)) {
+				isCreated = true;
+			}
+		}
+		
+		return isCreated;
+	}
+	
 	/**
 	 * Convert the object passed in to a task object
 	 * This breaks some abstraction and might seem unclean
