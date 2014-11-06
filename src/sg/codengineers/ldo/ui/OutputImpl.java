@@ -28,6 +28,7 @@ public class OutputImpl implements Output {
 	private static final String	DESCRIPTION		= "Description: %s\n";
 	private static final String	TAG				= "Tag: %s\n";
 	private static final String	DEADLINE		= "Deadline: %s %s\n";
+	private static final String	PRIORITY		= "Priority: %s\n";
 
 	/* Welcome messages */
 	private static final String	PROGRAM_NAME	= "L'Do";
@@ -88,13 +89,13 @@ public class OutputImpl implements Output {
 	}
 
 	private void feedbackForCreate() {
-		Task completedTask = _taskItr.next();
+		Task completedTask = _result.getTasksIterator().next();
 		showToUser(String.format(CREATED_MESSAGE, completedTask.getName()));
 		showOneTaskToUser();
 	}
 
 	private void feedbackForUpdate() {
-		Task completedTask = _taskItr.next();
+		Task completedTask = _result.getTasksIterator().next();
 		showToUser(String.format(UPDATED_MESSAGE, completedTask.getName()));
 		showOneTaskToUser();
 	}
@@ -111,7 +112,7 @@ public class OutputImpl implements Output {
 	 * 
 	 */
 	private void feedbackForRetrieve() {
-		if (!_taskItr.hasNext()) {
+		if (!_result.getTasksIterator().hasNext()) {
 			showToUser("Task list is empty.\n");
 		}
 		else {
@@ -164,23 +165,28 @@ public class OutputImpl implements Output {
 	 * <Task Description>
 	 * <Task Tag(s)>
 	 * <Task Deadline>
+	 * <Priority>
 	 * 
 	 * All fields will only show if they are not empty.
 	 * For deadline, the format will be hh:mm dd mmm yyyy
 	 * An example:
-	 * 20:59 Jan 2015
+	 * 20:59 11 Jan 2015
 	 */
 	@SuppressWarnings("deprecation")
 	private void showOneTaskToUser() {
 		while (_taskItr.hasNext()) {
 			Task toPrint = _taskItr.next();
+
 			showToUser(String.format(NAME, toPrint.getName()));
+
 			if (!toPrint.getDescription().isEmpty()) {
 				showToUser(String.format(DESCRIPTION, toPrint.getDescription()));
 			}
+
 			if (!toPrint.getTag().isEmpty()) {
 				showToUser(String.format(TAG, toPrint.getTag()));
 			}
+
 			if (toPrint.getDeadline() != null) {
 				StringBuilder sb = new StringBuilder();
 				sb.append(String.format("%02d", toPrint.getDeadline()
@@ -237,6 +243,21 @@ public class OutputImpl implements Output {
 						toPrint.getDeadline().getYear() + 1900));
 				String date = sb.toString();
 				showToUser(String.format(DEADLINE, time, date));
+			}
+
+			if (toPrint.getPriority() != null) {
+				switch (toPrint.getPriority()) {
+					case HIGH :
+						showToUser(String.format(PRIORITY, "high"));
+						break;
+					case MEDIUM :
+						showToUser(String.format(PRIORITY, "medium"));
+						break;
+					case LOW :
+						showToUser(String.format(PRIORITY, "low"));
+						break;
+					default:
+				}
 			}
 		}
 	}
