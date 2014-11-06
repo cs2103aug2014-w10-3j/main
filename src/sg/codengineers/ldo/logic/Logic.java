@@ -25,6 +25,8 @@ import sg.codengineers.ldo.parser.ResultImpl;
  *
  */
 public class Logic {
+	private static String MSG_SYNC_SUCCESS = "Sync to Google Calendar successful.\n";
+	private static String MSG_SYNC_FAIL = "Sync to Google Calendar failed.\n";
 	
 	private Database _dbConnector;
 	private List<Task> _taskList;
@@ -153,4 +155,16 @@ public class Logic {
 		return helpHandler.execute(type);
 	}
 	
+	public String getGCalAuthURL(){
+		return _dbConnector.getGCalAuthURL();
+	}
+	
+	public Result syncGCal(String userGCalAuthKey){
+		boolean successSync = _dbConnector.loginGCal(userGCalAuthKey);
+		if (successSync == true) {
+			return new ResultImpl(CommandType.SYNC, MSG_SYNC_SUCCESS, new Time(System.currentTimeMillis()));
+		} else {
+			return new ResultImpl(CommandType.SYNC, MSG_SYNC_FAIL, new Time(System.currentTimeMillis()));
+		}
+	}
 }
