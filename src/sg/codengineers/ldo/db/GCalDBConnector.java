@@ -51,6 +51,36 @@ public class GCalDBConnector implements DBConnector {
 	private com.google.api.services.calendar.Calendar service = null;
 	private List<Event> gCalEvents = null;
 
+	public GCalDBConnector(GoogleCredential credential) {
+		// Create a new authorized API client
+		service = new com.google.api.services.calendar.Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY,
+				credential).build();
+		
+		if (initCalendar()) {
+			read();
+		}
+	}
+	
+	private boolean initCalendar() {
+		try {
+			List<CalendarListEntry> calendarList = service.calendarList().list().execute().getItems();
+			
+			if (!isCalendarCreated(calendarList)) {
+				Calendar calendar = new Calendar();
+	
+				calendar.setSummary(CALENDAR_SUMMARY);
+				calendar.setId(CALENDAR_ID);
+				
+				service.calendars().insert(calendar).execute();
+			}
+
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	@Override
 	public boolean create(Object data) {
 		try {			
