@@ -112,5 +112,49 @@ public class GCalDBConnector implements DBConnector {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	/**
+	 * Convert the object passed in to a task object
+	 * This breaks some abstraction and might seem unclean
+	 * but it is a good way of really separating the components
+	 * and make the database layer really able to handle any
+	 * model class
+	 * 
+	 * @param obj
+	 * @return
+	 */
+	private static Task convertToTask(Object obj) {
+		assert(obj instanceof Task);
+		Task task = (Task) obj;
+		return task;
+	}
+	
+	private static Event taskToEvent(Task task) {
+		Event event = new Event();
+		
+		event.setId(String.valueOf(task.getId()));
+		event.setSummary(task.getName());
+		event.setDescription(task.getDescription());
+		
+	    DateTime start = new DateTime(task.getStartTime(), TimeZone.getTimeZone("UTC"));
+	    DateTime end = new DateTime(task.getEndTime(), TimeZone.getTimeZone("UTC"));
 
+		event.setStart(new EventDateTime().setDateTime(start));
+		event.setEnd(new EventDateTime().setDateTime(end));
+		
+		return event;
+	}
+	
+	private static Task eventToTask(Event event) {
+		Task task = new TaskImpl();
+		
+		task.setId(Integer.parseInt(event.getId()));
+		task.setName(event.getSummary());
+		task.setDescription(event.getDescription());
+		
+		task.setTimeStart(new Date(event.getStart().getDateTime().getValue()));
+		task.setTimeStart(new Date(event.getEnd().getDateTime().getValue()));
+		
+		return task;
+	}
 }
