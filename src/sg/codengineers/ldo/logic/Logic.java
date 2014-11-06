@@ -39,7 +39,7 @@ public class Logic {
 	private ShowHandler showHandler;
 	
 	private static Logic instance = null;
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG = false;
 	
 	public static Logic getInstance(){
 		try{
@@ -126,7 +126,7 @@ public class Logic {
 
 	public Result showTask(Command command) {
 		int index = -1;
-		if(command.getPrimaryOperand() == null || command.getPrimaryOperand().isEmpty()){
+		if(command.getPrimaryOperand() == null || command.getPrimaryOperand().isEmpty() || command.getPrimaryOperand().equalsIgnoreCase("all")){
 			return showHandler.execute(index);
 		}
 		try{
@@ -135,6 +135,9 @@ public class Logic {
 			if(DEBUG){
 				e.printStackTrace();
 			}
+			return new ResultImpl(CommandType.INVALID, 
+					"Task "+command.getPrimaryOperand()+" doesn't exist.",
+					new Time(System.currentTimeMillis()));
 		}
 		return showHandler.execute(index);
 	}

@@ -17,7 +17,7 @@ public class ShowHandler {
 	public Result execute(int index){
 		if(index == -1){
 			return new ResultImpl(CommandType.RETRIEVE, 
-					String.valueOf(index),
+					"all",
 					new Time(System.currentTimeMillis()), 
 					_taskList);	 
 		}
