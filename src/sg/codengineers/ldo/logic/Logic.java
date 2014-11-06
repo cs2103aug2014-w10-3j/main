@@ -153,4 +153,11 @@ public class Logic {
 		return helpHandler.execute(type);
 	}
 	
+	public String getGCalAuthURL(){
+		return _dbConnector.getGCalAuthURL();
+	}
+	
+	public void syncGCal(String userGCalAuthKey){
+		_dbConnector.loginGCal(userGCalAuthKey);
+	}
 }
