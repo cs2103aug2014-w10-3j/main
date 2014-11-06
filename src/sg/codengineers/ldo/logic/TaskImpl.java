@@ -45,6 +45,13 @@ public class TaskImpl implements Task {
 	}
 	
 	/**
+	 * Constructs a Task object for manipulation
+	 */
+	public TaskImpl() {
+		
+	}
+	
+	/**
 	 * Generate a unique ID for a new task.
 	 * @return the unique ID in integer format.
 	 */
@@ -87,6 +94,10 @@ public class TaskImpl implements Task {
 	public Date getDeadline() {
 		// Deadline tasks have the same start and end time
 		return _timeStart;
+	}
+	
+	public void setId(int id) {
+		_id = id;	
 	}
 	
 	public void setName(String name){
