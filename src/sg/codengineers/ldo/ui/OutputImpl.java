@@ -122,6 +122,11 @@ public class OutputImpl implements Output {
 	public void displayExit() {
 		showToUser(EXIT_MESSAGE);
 	}
+	
+	@Override
+	public void displayMessage(String message){
+		showToUser(message);
+	}
 
 	/* Private methods */
 

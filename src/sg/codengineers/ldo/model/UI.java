@@ -56,4 +56,6 @@ public interface UI {
 	 * Shows the Exit message to the user
 	 */
 	public void displayExit();
+	
+	public void displayMessage(String message);
 }
