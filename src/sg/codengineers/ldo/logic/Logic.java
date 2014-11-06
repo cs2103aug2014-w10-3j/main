@@ -126,6 +126,9 @@ public class Logic {
 
 	public Result showTask(Command command) {
 		int index = -1;
+		if(command.getPrimaryOperand() == null || command.getPrimaryOperand().isEmpty()){
+			return showHandler.execute(index);
+		}
 		try{
 			index = Integer.valueOf(command.getPrimaryOperand());
 		} catch (Exception e){
