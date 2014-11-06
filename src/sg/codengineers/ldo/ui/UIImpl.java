@@ -34,4 +34,9 @@ public class UIImpl implements UI {
 	public void displayExit() {
 		_output.displayExit();
 	}
+	
+	@Override
+	public void displayMessage(String message){
+		_output.displayMessage(message);
+	}
 }
