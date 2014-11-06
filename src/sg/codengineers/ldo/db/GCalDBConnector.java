@@ -34,9 +34,18 @@ public class GCalDBConnector implements DBConnector {
 	// Console
 	private static final String CLIENT_ID = "300670791643-aqcjcpka4r18bnr53rl5vtvj2h88l9ga.apps.googleusercontent.com";
 	private static final String CLIENT_SECRET = "pp9dS5SHzSEl_pu5hXw0ZFDk";
-
 	private static final String CALENDAR_SUMMARY = "L'Do";
 	private static final String CALENDAR_ID = "L-DO@cs2103.nus.edu.sg";
+	private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+	private static final JacksonFactory JSON_FACTORY = new JacksonFactory();
+	
+	// Or your redirect URL for web based applications.
+	private static final String REDIRECT_URL = "urn:ietf:wg:oauth:2.0:oob";
+	private static final String SCOPE = "https://www.googleapis.com/auth/calendar";
+	private static final GoogleAuthorizationCodeFlow FLOW = new GoogleAuthorizationCodeFlow.Builder(
+			HTTP_TRANSPORT, JSON_FACTORY, CLIENT_ID, CLIENT_SECRET,
+			Arrays.asList(CalendarScopes.CALENDAR))
+			.setAccessType("online").setApprovalPrompt("auto").build();
 
 	// No way around this since there is a name clash in the imported libraries
 	private com.google.api.services.calendar.Calendar service = null;
