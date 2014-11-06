@@ -122,6 +122,12 @@ public class GCalDBConnector implements DBConnector {
 		return false;
 	}
 	
+	public static String getAuthURL() {
+		String url = FLOW.newAuthorizationUrl().setRedirectUri(REDIRECT_URL)
+				.build();
+		return url;
+	}
+	
 	/**
 	 * Convert the object passed in to a task object
 	 * This breaks some abstraction and might seem unclean
