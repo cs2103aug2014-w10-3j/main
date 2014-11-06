@@ -23,7 +23,7 @@ public class OutputImpl implements Output {
 	private static final String	DELETED_MESSAGE	= "Deleted %s\n";
 	private static final String	EXIT_MESSAGE	= "Bye! See you again.\n";
 	private static final String	STUB_MESSAGE	= "This module is still under development.\n";
-	private static final String	TASK			= "[%d] %s %s %s %s %s\n";
+	private static final String	TASK			= "[%d] %s%s%s%s%s\n";
 	private static final String	NAME			= "Name: %s\n";
 	private static final String	DESCRIPTION		= "Description: %s\n";
 	private static final String	TAG				= "Tag: %s\n";
@@ -122,9 +122,9 @@ public class OutputImpl implements Output {
 	public void displayExit() {
 		showToUser(EXIT_MESSAGE);
 	}
-	
+
 	@Override
-	public void displayMessage(String message){
+	public void displayMessage(String message) {
 		showToUser(message);
 	}
 
@@ -237,10 +237,28 @@ public class OutputImpl implements Output {
 			priOp = "all";
 		}
 		showToUser("Showing " + priOp + "\n");
+
+		String name = new String();
+		String description = new String();
+		String tag = new String();
+		String deadline = new String();
+		String priority = new String();
+
 		while (_taskItr.hasNext()) {
 			Task toPrint = _taskItr.next();
+			sb = new StringBuilder();
+
+			name = toPrint.getName();
+
+			if (!toPrint.getDescription().isEmpty()) {
+				description = " " + toPrint.getDescription();
+			}
+
+			if (!toPrint.getTag().isEmpty()) {
+				tag = " " + toPrint.getTag();
+			}
+
 			if (toPrint.getDeadline() != null) {
-				sb = new StringBuilder();
 
 				sb.append(String.format("%02d", toPrint.getDeadline()
 						.getHours()));
@@ -294,10 +312,24 @@ public class OutputImpl implements Output {
 				sb.append(" ");
 				sb.append(String.format("%04d",
 						toPrint.getDeadline().getYear() + 1900));
+				deadline = " " + sb.toString();
 			}
-			showToUser(String.format(TASK, counter, toPrint.getName(),
-					toPrint.getDescription(), toPrint.getTag(),
-					sb.toString(), toPrint.getPriority()));
+
+			if (toPrint.getPriority() != null) {
+				switch (toPrint.getPriority()) {
+					case HIGH :
+						priority = " high";
+						break;
+					case MEDIUM :
+						priority = " medium";
+					case LOW :
+						priority = " low";
+					default:
+				}
+			}
+
+			showToUser(String.format(TASK, counter, name, description, tag,
+					deadline, priority));
 			counter++;
 		}
 	}
