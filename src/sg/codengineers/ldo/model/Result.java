@@ -6,7 +6,7 @@ import java.util.Iterator;
 import sg.codengineers.ldo.model.Command.CommandType;
 
 /**
- * This interface specifies the available public methods to the Result Class
+ * This interface specifies the available public methods of the Result Class
  * 
  * @author Victor Hazali
  * 

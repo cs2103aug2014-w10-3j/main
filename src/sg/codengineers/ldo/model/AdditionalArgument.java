@@ -1,6 +1,14 @@
 package sg.codengineers.ldo.model;
 
+/**
+ * This interface specifies the public methods of the Additional Argument.
+ * 
+ * @author Victor Hazali
+ * 
+ */
 public interface AdditionalArgument {
+
+	// List of acceptable argument types
 	enum ArgumentType {
 		HELP, NAME, DEADLINE, TIME, TAG, DONE, PRIORITY, DESCRIPTION, INVALID
 	};

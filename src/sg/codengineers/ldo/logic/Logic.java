@@ -116,12 +116,21 @@ public class Logic {
 		return result;
 	}
 
-	public Result searchTask(String primaryOperand,
-			Iterator<AdditionalArgument> iterator) {
+	public Result searchTask(Command command){
+		String primaryOperand = command.getPrimaryOperand();
+		Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
 		return searchHandler.execute(primaryOperand, iterator);
 	}
 
-	public Result showTasks(Integer index) {
+	public Result showTask(Command command) {
+		int index = -1;
+		try{
+			index = Integer.valueOf(command.getPrimaryOperand());
+		} catch (Exception e){
+			if(DEBUG){
+				e.printStackTrace();
+			}
+		}
 		return showHandler.execute(index);
 	}
 	
