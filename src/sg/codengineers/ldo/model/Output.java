@@ -44,4 +44,6 @@ public interface Output {
 	 * Displays an exit message to the user.
 	 */
 	public void displayExit();
+	
+	public void displayMessage(String message);
 }

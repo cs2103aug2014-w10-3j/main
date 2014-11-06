@@ -28,7 +28,7 @@ public class TaskImpl implements Task {
 		_id = getNextId();
 		_name = name;
 		_description = _tag = "";
-		_timeStart = _timeEnd = new Date();
+		_timeStart = _timeEnd = null;
 	}
 	
 	/**
@@ -42,6 +42,13 @@ public class TaskImpl implements Task {
 		this._timeStart = task.getStartTime();
 		this._timeEnd = task.getEndTime();
 		this._description = task.getDescription();
+	}
+	
+	/**
+	 * Constructs a Task object for manipulation
+	 */
+	public TaskImpl() {
+		
 	}
 	
 	/**
@@ -89,6 +96,10 @@ public class TaskImpl implements Task {
 		return _timeStart;
 	}
 	
+	public void setId(int id) {
+		_id = id;	
+	}
+	
 	public void setName(String name){
 		_name = name;
 	}
@@ -121,8 +132,14 @@ public class TaskImpl implements Task {
 		builder.append(_name+"<;>");
 		builder.append(_description+"<;>");
 		builder.append(_tag+"<;>");
-		builder.append(Handler.FORMATTER.format(_timeStart)+"<;>");
-		builder.append(Handler.FORMATTER.format(_timeEnd)+"<;>");
+		if(_timeStart != null && _timeEnd !=null){
+			builder.append(Handler.FORMATTER.format(_timeStart)+"<;>");
+			builder.append(Handler.FORMATTER.format(_timeEnd)+"<;>");		
+		}else{
+			builder.append("<;>");
+			builder.append("<;>");
+		}
+
 		builder.append(_priority);
 		return builder.toString();
 	}

@@ -54,8 +54,8 @@ public class TextDBConnector implements DBConnector {
 	}
 
 	@Override
-	public boolean create(String data) {
-		return write(data);
+	public boolean create(Object data) {
+		return write(data.toString());
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class TextDBConnector implements DBConnector {
 	 * @param data The data to be written
 	 * @return true if the operation succeeds
 	 */
-	public boolean write(String data) {
+	private boolean write(String data) {
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
 			
@@ -90,10 +90,10 @@ public class TextDBConnector implements DBConnector {
 	}
 
 	@Override
-	public boolean update(String data) {
-		int id = Integer.parseInt(data.trim().split("<;>")[0]);
+	public boolean update(Object data) {
+		int id = Integer.parseInt(data.toString().trim().split("<;>")[0]);
 		dataList.remove(id);
-		dataList.add(id, data);
+		dataList.add(id, data.toString());
 		return writeList();
 	}
 
@@ -146,8 +146,8 @@ public class TextDBConnector implements DBConnector {
 	}
 
 	@Override
-	public boolean delete(String data) {
-		return update(data + "<;>deleted");
+	public boolean delete(Object data) {
+		return update(data.toString() + "<;>deleted");
 	}
 
 	@Override

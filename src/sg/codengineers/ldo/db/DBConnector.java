@@ -20,7 +20,7 @@ public interface DBConnector {
 	 * the toString implementation within the model
 	 * @return true if the operation succeeds
 	 */
-	public boolean create(String data);
+	public boolean create(Object data);
 
 	/**
 	 * An update method that allows each entry in the
@@ -31,7 +31,7 @@ public interface DBConnector {
 	 * the toString implementation within the model
 	 * @return true if the operation succeeds
 	 */
-	public boolean update(String data);
+	public boolean update(Object data);
 	
 	/**
 	 * A method that retrieves all entries from the
@@ -48,7 +48,7 @@ public interface DBConnector {
 	 * @param id The unique identifier of the entry
 	 * @return true if the operation succeeds
 	 */
-	public boolean delete(String data);
+	public boolean delete(Object data);
 	
 	/**
 	 * This method is used to clear the database of entries

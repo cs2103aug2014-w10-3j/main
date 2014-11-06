@@ -1,7 +1,7 @@
 package sg.codengineers.ldo.model;
 
 /**
- * This interface specifies all the available methods for the UI component
+ * This interface specifies all the public methods for the UI component
  * 
  * @author Victor Hazali
  * 
@@ -21,20 +21,17 @@ public interface UI {
 	 * 
 	 * @param result
 	 *            a Result object representing the results of execution
-	 * @throws Exception
-	 *             throws an IllegalArgumentException when the CommandType of
-	 *             the result is INVALID
 	 * 
 	 */
-	public void showToUser(Result result) throws Exception;
+	public void displayResult(Result result);
 
 	/**
-	 * Shows the user a message
+	 * Shows the user an error message detailing the rationale of the error.
 	 * 
 	 * @param message
 	 *            String object containing the message to be shown to user
 	 */
-	public void showToUser(String message);
+	public void displayError(String message);
 
 	/**
 	 * Shows the Welcome message to the user.
@@ -53,5 +50,12 @@ public interface UI {
 	 * @param result
 	 *            The list of task due today
 	 */
-	public void showWelcomeMessage(Result result);
+	public void displayWelcome(Result result);
+
+	/**
+	 * Shows the Exit message to the user
+	 */
+	public void displayExit();
+	
+	public void displayMessage(String message);
 }

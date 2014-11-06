@@ -43,7 +43,7 @@ public class Database {
 	 * @param data The data to be saved
 	 * @param className The name of the model in question
 	 */
-	public boolean create(String data, String className) {
+	public boolean create(Object data, String className) {
 		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
 		boolean success = true;
 		
@@ -77,7 +77,7 @@ public class Database {
 	 * @param data The data to be updated
 	 * @param className The name of the model in question
 	 */
-	public boolean update(String data, String className) {
+	public boolean update(Object data, String className) {
 		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
 		boolean success = true;
 
@@ -94,7 +94,7 @@ public class Database {
 	 * @param id The id of the entry to be deleted
 	 * @param className The name of the model in question
 	 */
-	public boolean delete(String data, String className) {
+	public boolean delete(Object data, String className) {
 		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
 		boolean success = true;
 		
@@ -123,5 +123,18 @@ public class Database {
 			success = success && connector.clear();
 		}
 		return success;
+	}
+	
+	public String getGCalAuthURL() {
+		return GCalDBConnector.getAuthURL();
+	}
+	
+	public boolean loginGCal(String authCode) {
+		GCalDBConnector gCal = GCalDBConnector.setup(authCode);
+		List<DBConnector> connectorList = classToConnector.get("task");
+		connectorList.add(gCal);
+		classToConnector.put("task", connectorList);
+		
+		return (gCal == null);
 	}
 }
