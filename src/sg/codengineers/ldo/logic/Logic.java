@@ -88,13 +88,23 @@ public class Logic {
 	
 
 	public Result createTask(Command command) throws IOException{
-		String primaryOperand = command.getPrimaryOperand();
-		Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
 		Result result = null;
-		result = createHandler.execute(primaryOperand, iterator);
-		_dbConnector.create(result.getTasksIterator().next(),TaskImpl.CLASS_NAME);
-		_listStack.push(new ArrayList<Task>(_taskList));
-		_commandStack.push(command);
+		try{
+			String primaryOperand = command.getPrimaryOperand();
+			Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
+			result = createHandler.execute(primaryOperand, iterator);
+			_dbConnector.create(result.getTasksIterator().next(),TaskImpl.CLASS_NAME);
+			_listStack.push(new ArrayList<Task>(_taskList));
+			_commandStack.push(command);
+		} catch(Exception e){
+			if(DEBUG){
+				e.printStackTrace();
+			}
+			result =  new ResultImpl(CommandType.INVALID, 
+					"Can't create task with "+command.getUserInput(),
+					new Time(System.currentTimeMillis()));
+		}
+		
 		return result;
 	}
 
@@ -119,9 +129,16 @@ public class Logic {
 	}
 
 	public Result searchTask(Command command){
-		String primaryOperand = command.getPrimaryOperand();
-		Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
-		return searchHandler.execute(primaryOperand, iterator);
+		try{
+			String primaryOperand = command.getPrimaryOperand();
+			Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
+			return searchHandler.execute(primaryOperand, iterator);			
+		} catch(Exception e) {
+			return  new ResultImpl(CommandType.INVALID, 
+					"Cannot search for task with "+command.getUserInput(),
+					new Time(System.currentTimeMillis()));
+		}
+
 	}
 
 	public Result showTask(Command command) {

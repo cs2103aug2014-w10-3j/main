@@ -32,7 +32,6 @@ public class ShowHandler {
 					"Task "+index+" doesn't exist.",
 					new Time(System.currentTimeMillis()));
 		}
-		
 		return new ResultImpl(CommandType.RETRIEVE, 
 				String.valueOf(index),
 				new Time(System.currentTimeMillis()), 
