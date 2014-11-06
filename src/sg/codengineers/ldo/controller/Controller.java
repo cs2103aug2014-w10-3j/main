@@ -26,6 +26,7 @@ public class Controller {
 	private static String MSG_ERROR_UNABLE_TO_START_LDO = "Sorry!"
 														+ "There is an error when starting the program.\n"
 														+ "Please restart the program.\n";
+	private static String MSG_GCAL_AUTH_URL = "Open this URL from your web browser to login to Google Calendar:\n%s";
 	
 	// UI instances
 	private UI ui;
@@ -146,6 +147,14 @@ public class Controller {
 		System.exit(0);
 	}
 	
+	private Result GCal(){
+		String GCalAuthURL = logic.getGCalAuthURL();
+		ui.displayMessage(String.format(MSG_GCAL_AUTH_URL, GCalAuthURL));
+		
+		String userGCalAuthKey = ui.readFromUser();
+		return logic.syncGCal(userGCalAuthKey);
+	}
+	
 	/**
 	 * This function is the control flow of data in L'Do.
 	 * It passes data to be processed by the Logic component
@@ -176,6 +185,7 @@ public class Controller {
 			case EXIT:
 				terminate();
 			case SYNC:
+				return GCal();
 			case INVALID:
 			default:
 				throw new Error("Invalid command type.");
