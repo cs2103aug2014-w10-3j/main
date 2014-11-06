@@ -1,19 +1,14 @@
 package sg.codengineers.ldo.controller;
 
-import java.util.Iterator;
-
 import sg.codengineers.ldo.logic.Logic;
 import sg.codengineers.ldo.logic.LogicStub;
-import sg.codengineers.ldo.model.AdditionalArgument;
 import sg.codengineers.ldo.model.Command;
-import sg.codengineers.ldo.model.Input;
-import sg.codengineers.ldo.model.Output;
 import sg.codengineers.ldo.model.Parser;
 import sg.codengineers.ldo.model.Result;
 import sg.codengineers.ldo.model.Command.CommandType;
+import sg.codengineers.ldo.model.UI;
 import sg.codengineers.ldo.parser.ParserImpl;
-import sg.codengineers.ldo.ui.InputImpl;
-import sg.codengineers.ldo.ui.OutputImpl;
+import sg.codengineers.ldo.ui.UIImpl;
 
 /**
  * Controller controls the execution of L'Do.
@@ -33,8 +28,7 @@ public class Controller {
 														+ "Please restart the program.\n";
 	
 	// UI instances
-	private Input input;
-	private Output output;
+	private UI ui;
 	
 	// Parser instance
 	private Parser parser;
@@ -44,8 +38,7 @@ public class Controller {
 	 */
 	public Controller(){
 		logic = Logic.getInstance();
-		input = new InputImpl();
-		output = new OutputImpl();
+		ui = new UIImpl();
 		parser = new ParserImpl();
 	}
 	
@@ -79,7 +72,7 @@ public class Controller {
 		processWelcome();
 		
 		while (true) {
-			String userInput = input.readFromUser();
+			String userInput = ui.readFromUser();
 			processCommand(userInput);
 		}
 	}
@@ -105,15 +98,15 @@ public class Controller {
 				commandType = result.getCommandType();
 				
 				if (isValidCommandType(commandType)){
-					output.displayResult(result);
+					ui.displayResult(result);
 				} else {
-					output.displayError(result.getMessage());
+					ui.displayError(result.getMessage());
 				}
 			} else {
-				output.displayError(command.getMessage());
+				ui.displayError(command.getMessage());
 			}
 		} catch (Exception e) {
-			output.displayError(MSG_ERROR_UNABLE_TO_START_LDO);
+			ui.displayError(MSG_ERROR_UNABLE_TO_START_LDO);
 		}
 	}
 	
@@ -121,9 +114,9 @@ public class Controller {
 		try {
 			Command command = parser.parse(COMMAND_SHOW_TODAY);
 			Result result = executeCommand(command);
-			output.displayWelcome(result);
+			ui.displayWelcome(result);
 		} catch (Exception e) {
-			output.displayError(MSG_ERROR_UNABLE_TO_START_LDO);
+			ui.displayError(MSG_ERROR_UNABLE_TO_START_LDO);
 		}
 	}
 	
@@ -149,7 +142,7 @@ public class Controller {
 	 * Shows exit message and exits the system
 	 */
 	private void terminate(){
-		output.displayExit();
+		ui.displayExit();
 		System.exit(0);
 	}
 	
