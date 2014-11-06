@@ -127,6 +127,21 @@ public class GCalDBConnector implements DBConnector {
 				.build();
 		return url;
 	}
+
+	public static GCalDBConnector setup(String authCode) {
+		try {
+			GoogleTokenResponse response = FLOW.newTokenRequest(authCode)
+					.setRedirectUri(REDIRECT_URL).execute();
+			GoogleCredential credential = new GoogleCredential()
+					.setFromTokenResponse(response);
+
+			
+			return new GCalDBConnector(credential);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
 	/**
 	 * Convert the object passed in to a task object
