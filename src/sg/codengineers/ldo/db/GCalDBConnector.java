@@ -93,9 +93,18 @@ public class GCalDBConnector implements DBConnector {
 	}
 
 	@Override
-	public boolean delete(String data) {
-		// TODO Auto-generated method stub
-		return true;
+	public boolean delete(Object data) {
+		try {			
+			Task task = convertToTask(data);			
+			Event event = taskToEvent(task);
+
+			service.events().delete(CALENDAR_ID, event.getId()).execute();
+
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;	
+		}
 	}
 
 	@Override
