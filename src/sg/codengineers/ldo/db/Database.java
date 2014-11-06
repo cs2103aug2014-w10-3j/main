@@ -125,7 +125,16 @@ public class Database {
 		return success;
 	}
 	
-	public boolean loginGCal(String username, String password) {
-		return true;
+	public String getGCalAuthURL() {
+		return GCalDBConnector.getAuthURL();
+	}
+	
+	public boolean loginGCal(String authCode) {
+		GCalDBConnector gCal = GCalDBConnector.setup(authCode);
+		List<DBConnector> connectorList = classToConnector.get("task");
+		connectorList.add(gCal);
+		classToConnector.put("task", connectorList);
+		
+		return (gCal == null);
 	}
 }
