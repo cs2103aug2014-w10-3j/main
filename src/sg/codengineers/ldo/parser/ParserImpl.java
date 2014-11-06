@@ -34,6 +34,7 @@ public class ParserImpl implements Parser {
 	private static String						NUMBER_EXPECTED				= "Primary operand should contain numbers!\n";
 	private static String						INVALID_ARGUMENT			= "Invalid additional argument entered\n";
 	private static String						OPERAND_EXPECTED			= "Operand should follow additional argument %1s\n";
+	private static String						INVALID_INDEX				= "Primary operand should not be less than 1!\n";
 
 	/* Static Variables */
 	private static Map<String, CommandType>		_cmdMap;
@@ -89,8 +90,9 @@ public class ParserImpl implements Parser {
 		}
 
 		if (_isHelpRequest) {
+			// priOp = getFirstWord(userInput).toLowerCase();
+			priOp = cmdType.toString();
 			cmdType = CommandType.HELP;
-			priOp = getFirstWord(userInput).toLowerCase();
 			addArgs = new ArrayList<AdditionalArgument>();
 		}
 
@@ -345,7 +347,8 @@ public class ParserImpl implements Parser {
 	 * @return a String object representing the primary operand entered by user.
 	 */
 	private String getPrimaryOperand() {
-		return removeFirstWord(_userInput).split("--|-", 2)[PRIMARY_OPERAND_POSITION];
+		return removeFirstWord(_userInput).split("--|-", 2)[PRIMARY_OPERAND_POSITION]
+				.trim();
 	}
 
 	private String removePrimaryArgument(String priOp) {
@@ -381,6 +384,32 @@ public class ParserImpl implements Parser {
 	}
 
 	/**
+	 * Populates the list of additional arguments for this command
+	 * 
+	 * @param additionalArguments
+	 *            Parameters input by user from which the additional arguments
+	 *            and operands are extracted
+	 */
+	private List<AdditionalArgument> populateAdditionalArguments(
+			String[] additionalArguments) {
+		List<AdditionalArgument> toReturn = new ArrayList<AdditionalArgument>();
+		String[] argument = new String[2];
+		int length = additionalArguments.length;
+		for (int i = 0; i < length; i++) {
+			argument = additionalArguments[i].split(" ", 2);
+			if (argument.length == 1) {
+				toReturn.add(new AdditionalArgumentImpl(
+						getArgumentType(argument[0]), ""));
+			} else {
+				toReturn.add(new AdditionalArgumentImpl(
+						getArgumentType(argument[0]), argument[1]));
+			}
+		}
+
+		return toReturn;
+	}
+
+	/**
 	 * Validates input from user to be parsed into a Command object. The list of
 	 * acceptable commandTypes is specified by the commands in the cmdMap. The
 	 * list of acceptable argumentTypes is specified by the arguments in the
@@ -402,8 +431,8 @@ public class ParserImpl implements Parser {
 			List<AdditionalArgument> addArgs)
 			throws Exception {
 		validateCommandType(cmdType);
-		validatePrimaryOperand(cmdType, priOp, addArgs);
 		validateAdditionalArguments(addArgs);
+		validatePrimaryOperand(cmdType, priOp, addArgs);
 	}
 
 	/**
@@ -467,88 +496,52 @@ public class ParserImpl implements Parser {
 		}
 
 		if (_isEmptyPriOp) {
-			if (!hasHelpArgument(addArgs) && !isUnaryCommand(cmdType)) {
+			if (!_isHelpRequest && !isUnaryCommand(cmdType)) {
 				throw new IllegalArgumentException(HELP_EXPECTED);
 			}
 		}
 
-		if (cmdType == CommandType.UPDATE) {
-			for (char c : priOp.toCharArray()) {
-				if (!Character.isDigit(c)) {
-					throw new IllegalArgumentException(NUMBER_EXPECTED);
-				}
+		if (cmdType == CommandType.UPDATE && !_isHelpRequest) {
+			if (!isDigit(priOp)) {
+				throw new IllegalArgumentException(NUMBER_EXPECTED);
+			}
+
+			int index = Integer.parseInt(priOp);
+			if (index <= 0) {
+				throw new IllegalArgumentException(INVALID_INDEX);
 			}
 		}
 
-		if (cmdType == CommandType.DELETE && !priOp.equalsIgnoreCase("all")) {
-			for (char c : priOp.toCharArray()) {
-				if (!Character.isDigit(c)) {
-					throw new IllegalArgumentException(NUMBER_EXPECTED);
+		if (cmdType == CommandType.DELETE && !priOp.equalsIgnoreCase("all")
+				&& !_isHelpRequest) {
+
+			if (!isDigit(priOp)) {
+				throw new IllegalArgumentException(NUMBER_EXPECTED);
+			}
+
+			int index = Integer.parseInt(priOp);
+			if (index <= 0) {
+				throw new IllegalArgumentException(INVALID_INDEX);
+			}
+		}
+
+		if (cmdType == CommandType.RETRIEVE && !_isEmptyPriOp) {
+			if (isDigit(priOp)) {
+				int i = Integer.parseInt(priOp);
+				if (i <= 0) {
+					throw new IllegalArgumentException(INVALID_INDEX);
 				}
 			}
 		}
 	}
 
-	/**
-	 * Populates the list of additional arguments for this command
-	 * 
-	 * @param additionalArguments
-	 *            Parameters input by user from which the additional arguments
-	 *            and operands are extracted
-	 */
-	private List<AdditionalArgument> populateAdditionalArguments(
-			String[] additionalArguments) {
-		List<AdditionalArgument> toReturn = new ArrayList<AdditionalArgument>();
-		String[] argument = new String[2];
-		int length = additionalArguments.length;
-		for (int i = 0; i < length; i++) {
-			argument = additionalArguments[i].split(" ", 2);
-			if (argument.length == 1) {
-				toReturn.add(new AdditionalArgumentImpl(
-						getArgumentType(argument[0]), ""));
-			} else {
-				toReturn.add(new AdditionalArgumentImpl(
-						getArgumentType(argument[0]), argument[1]));
+	private boolean isDigit(String message) {
+		for (char c : message.toCharArray()) {
+			if (!Character.isDigit(c)) {
+				return false;
 			}
 		}
-
-		return toReturn;
-	}
-
-	/**
-	 * Checks if the user entered the help argument.
-	 * 
-	 * @param addArgs
-	 *            Additional Arguments of this command.
-	 * 
-	 * @return True if the list of additional arguments has an argument of
-	 *         ArgumentType HELP false otherwise
-	 * @throws Exception
-	 *             If the AdditionalArgument Iterator is null, throws an
-	 *             exception to indicate errors in code.
-	 *             If any of the arguments is a null, throws an exception to
-	 *             indicate errorsin the code.
-	 */
-	private boolean hasHelpArgument(List<AdditionalArgument> addArgs)
-			throws Exception {
-		if (addArgs == null) {
-			throw new Exception(String.format(CODE_FAULT,
-					"populateAdditionalArguments", "ParserImpl"));
-		}
-		if (addArgs.size() == 0) {
-			return false;
-		}
-
-		for (AdditionalArgument arg : addArgs) {
-			if (arg == null) {
-				throw new Exception(String.format(CODE_FAULT,
-						"hasHelpArgument", "ParserImpl"));
-			}
-			if (arg.getArgumentType() == ArgumentType.HELP) {
-				return true;
-			}
-		}
-		return false;
+		return true;
 	}
 
 	/**
