@@ -22,8 +22,8 @@ public class Controller {
 	// Logic instance
 	private static Logic logic;
 	
-	private static String COMMAND_SHOW_TODAY = "show today";
-	private static String MSG_ERROR_UNABLE_TO_START_LDO = "Sorry!"
+	private static String COMMAND_SHOW_TODAY = "show";
+	private static String MSG_ERROR_UNABLE_TO_START_LDO = "Sorry!\n"
 														+ "There is an error when starting the program.\n"
 														+ "Please restart the program.\n";
 	private static String MSG_GCAL_AUTH_URL = "Open this URL from your web browser to login to Google Calendar:\n%s";
