@@ -11,7 +11,7 @@ public interface Task {
 	
 	public enum Priority {
 		  LOW("low"),
-		  MEDIUM("medium"),
+		  NORMAL("normal"),
 		  HIGH("high");
 
 		  private String text;
