@@ -62,4 +62,21 @@ public interface Command {
 	 *         arguments
 	 */
 	public Iterator<AdditionalArgument> getAdditionalArguments();
+
+	/**
+	 * Displays the contents of the command class in the following format:
+	 * 
+	 * user input:\t <userInput>
+	 * command type:\t<commandType>
+	 * primary operand:\t<primaryOp>
+	 * message:\t<message>
+	 * additional arguments:
+	 * <additional argument>
+	 * <additional argument>
+	 * 
+	 * @return a string object containing the contents of the command object in
+	 *         the format specified
+	 */
+	@Override
+	public String toString();
 }
