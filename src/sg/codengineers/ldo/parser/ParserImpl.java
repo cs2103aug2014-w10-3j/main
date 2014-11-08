@@ -402,6 +402,12 @@ public class ParserImpl implements Parser {
 		for (int i = 0; i < length; i++) {
 			argument = additionalArguments[i].split(" ", 2);
 			if (argument.length == 1) {
+
+				if (argument[0].equalsIgnoreCase("done")) {
+					toReturn.add(new AdditionalArgumentImpl(
+							getArgumentType(argument[0]), "done"));
+				}
+
 				toReturn.add(new AdditionalArgumentImpl(
 						getArgumentType(argument[0]), ""));
 			} else {
