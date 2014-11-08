@@ -148,6 +148,7 @@ public class ParserImpl implements Parser {
 	 * 
 	 * In the event of an unsuccessful parse, a null object is returned instead.
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	public Date parseToDate(String userInput) {
 		initialise(userInput);
@@ -413,10 +414,10 @@ public class ParserImpl implements Parser {
 				if (argument[0].equalsIgnoreCase("done")) {
 					toReturn.add(new AdditionalArgumentImpl(
 							getArgumentType(argument[0]), "done"));
+				} else {
+					toReturn.add(new AdditionalArgumentImpl(
+							getArgumentType(argument[0]), ""));
 				}
-
-				toReturn.add(new AdditionalArgumentImpl(
-						getArgumentType(argument[0]), ""));
 			} else {
 				toReturn.add(new AdditionalArgumentImpl(
 						getArgumentType(argument[0]), argument[1]));
@@ -542,12 +543,16 @@ public class ParserImpl implements Parser {
 			}
 		}
 
-		if (cmdType == CommandType.RETRIEVE && !_isEmptyPriOp) {
-			if (isDigit(priOp)) {
-				int i = Integer.parseInt(priOp);
-				if (i <= 0) {
-					throw new IllegalArgumentException(INVALID_INDEX);
-				}
+		if (cmdType == CommandType.RETRIEVE && !priOp.equalsIgnoreCase("all")
+				&& !_isHelpRequest && !_isEmptyPriOp) {
+
+			if (!isDigit(priOp)) {
+				throw new IllegalArgumentException(NUMBER_EXPECTED);
+			}
+
+			int i = Integer.parseInt(priOp);
+			if (i <= 0) {
+				throw new IllegalArgumentException(INVALID_INDEX);
 			}
 		}
 	}
@@ -635,7 +640,6 @@ public class ParserImpl implements Parser {
 			_isHelpRequest = true;
 		}
 		else {
-			// Only help addArg should have empty operand
 			if (operand.isEmpty()) {
 				throw new Exception(String.format(OPERAND_EXPECTED, argType
 						.toString().toLowerCase()));
@@ -693,13 +697,29 @@ public class ParserImpl implements Parser {
 				}
 			}
 
-			// Checking for acceptable additional argument for each command type
+			/* Checking for acceptable additional argument for each command type */
+			// CREATE
 			if (cmdType == CommandType.CREATE) {
 				if (argType == ArgumentType.NAME) {
 					throw new Exception(String.format(INVALID_ARG_FOR_CMD,
 							argType.toString().toLowerCase(), cmdType
 									.toString().toLowerCase()));
 				}
+			}
+			// UPDATE accepts all
+
+			// DELETE accepts only help
+			if (cmdType == CommandType.DELETE) {
+				throw new Exception(String.format(INVALID_ARG_FOR_CMD, argType
+						.toString().toLowerCase(), cmdType.toString()
+						.toLowerCase()));
+			}
+
+			// RETRIEVE accepts only help
+			if (cmdType == CommandType.RETRIEVE) {
+				throw new Exception(String.format(INVALID_ARG_FOR_CMD, argType
+						.toString().toLowerCase(), cmdType.toString()
+						.toLowerCase()));
 			}
 		}
 	}
