@@ -86,7 +86,6 @@ public abstract class Handler {
 				throw new IllegalArgumentException();
 			}
 			break;
-		case DONE:		
 		case TAG:
 			task.setTag(operand);
 			break;
@@ -183,8 +182,7 @@ public abstract class Handler {
 						}
 					});					
 				}
-				break;				
-			case DONE:		
+				break;
 			case TAG:
 				newList = filter(newList, new Filter<Task>(){
 					@Override
