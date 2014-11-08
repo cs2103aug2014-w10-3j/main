@@ -10,7 +10,7 @@ public interface AdditionalArgument {
 
 	// List of acceptable argument types
 	enum ArgumentType {
-		HELP, NAME, DEADLINE, TIME, TAG, DONE, PRIORITY, DESCRIPTION, INVALID
+		HELP, NAME, DEADLINE, TIME, TAG, PRIORITY, DESCRIPTION, INVALID
 	};
 
 	/**
