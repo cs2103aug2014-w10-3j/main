@@ -503,8 +503,8 @@ public class ParserImplTest {
 		assertEquals("checking for day", 1, obtainedDate.getDate());
 		assertEquals("checking for month", 3, obtainedDate.getMonth());
 		assertEquals("checking for year", 2028 - 1900, obtainedDate.getYear());
-		assertEquals("checking for hour", 0, obtainedDate.getHours());
-		assertEquals("checking for minute", 0, obtainedDate.getMinutes());
+		assertEquals("checking for hour", 23, obtainedDate.getHours());
+		assertEquals("checking for minute", 59, obtainedDate.getMinutes());
 	}
 
 	// dd MMM yyyy
@@ -515,8 +515,8 @@ public class ParserImplTest {
 		assertEquals("checking for day", 1, obtainedDate.getDate());
 		assertEquals("checking for month", 4, obtainedDate.getMonth());
 		assertEquals("checking for year", 2195 - 1900, obtainedDate.getYear());
-		assertEquals("checking for hour", 0, obtainedDate.getHours());
-		assertEquals("checking for minute", 0, obtainedDate.getMinutes());
+		assertEquals("checking for hour", 23, obtainedDate.getHours());
+		assertEquals("checking for minute", 59, obtainedDate.getMinutes());
 	}
 
 	// dd/MM/yy
@@ -527,8 +527,8 @@ public class ParserImplTest {
 		assertEquals("checking for day", 1, obtainedDate.getDate());
 		assertEquals("checking for month", 5, obtainedDate.getMonth());
 		assertEquals("checking for year", 2034 - 1900, obtainedDate.getYear());
-		assertEquals("checking for hour", 0, obtainedDate.getHours());
-		assertEquals("checking for minute", 0, obtainedDate.getMinutes());
+		assertEquals("checking for hour", 23, obtainedDate.getHours());
+		assertEquals("checking for minute", 59, obtainedDate.getMinutes());
 	}
 
 	// dd/MM/yyyy
@@ -539,8 +539,8 @@ public class ParserImplTest {
 		assertEquals("checking for day", 1, obtainedDate.getDate());
 		assertEquals("checking for month", 6, obtainedDate.getMonth());
 		assertEquals("checking for year", 5672 - 1900, obtainedDate.getYear());
-		assertEquals("checking for hour", 0, obtainedDate.getHours());
-		assertEquals("checking for minute", 0, obtainedDate.getMinutes());
+		assertEquals("checking for hour", 23, obtainedDate.getHours());
+		assertEquals("checking for minute", 59, obtainedDate.getMinutes());
 	}
 
 	// hha
