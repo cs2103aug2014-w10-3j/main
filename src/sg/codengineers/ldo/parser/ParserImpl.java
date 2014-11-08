@@ -35,6 +35,7 @@ public class ParserImpl implements Parser {
 	private static String						INVALID_ARGUMENT			= "Invalid additional argument entered\n";
 	private static String						OPERAND_EXPECTED			= "Operand should follow additional argument %1s\n";
 	private static String						INVALID_INDEX				= "Primary operand should not be less than 1!\n";
+	private static String						INVALID_OPERAND				= "%s is not a valid operand for %s\n";
 
 	/* Static Variables */
 	private static Map<String, CommandType>		_cmdMap;
@@ -197,11 +198,7 @@ public class ParserImpl implements Parser {
 		_userInput = userInput;
 		_isEmptyPriOp = false;
 		_isHelpRequest = false;
-		_dateTimeFormats = new ArrayList<DateFormat>();
-		_dateFormats = new ArrayList<DateFormat>();
-		_timeFormats = new ArrayList<DateFormat>();
 		if (!_isInitialised) {
-			_cmdMap = new TreeMap<String, CommandType>();
 			populateCmdMap();
 			populateArgsMap();
 			populateDateTimeFormats();
@@ -229,6 +226,8 @@ public class ParserImpl implements Parser {
 	 * their corresponding command types
 	 */
 	private void populateCmdMap() {
+		_cmdMap = new TreeMap<String, CommandType>();
+
 		_cmdMap.put("add", CommandType.CREATE);
 		_cmdMap.put("update", CommandType.UPDATE);
 		_cmdMap.put("delete", CommandType.DELETE);
@@ -287,6 +286,8 @@ public class ParserImpl implements Parser {
 	 * Populates the list with all acceptable date time formats
 	 */
 	private void populateDateTimeFormats() {
+		_dateTimeFormats = new ArrayList<DateFormat>();
+
 		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yy hha"));
 		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yyyyy hha"));
 
@@ -308,12 +309,12 @@ public class ParserImpl implements Parser {
 	 * Populates the list with all acceptable date formats
 	 */
 	private void populateDateFormats() {
+		_dateFormats = new ArrayList<DateFormat>();
+
 		_dateFormats.add(new SimpleDateFormat("dd MMM yy"));
 		_dateFormats.add(new SimpleDateFormat("dd MMM yyyy"));
 
-		_dateFormats.add(new SimpleDateFormat("dd-MM-yy"));
-		_dateFormats.add(new SimpleDateFormat("dd-MM-yyyy"));
-
+		// using slashes as delimiter
 		_dateFormats.add(new SimpleDateFormat("dd/MM/yy"));
 		_dateFormats.add(new SimpleDateFormat("dd/MM/yyyy"));
 	}
@@ -322,6 +323,8 @@ public class ParserImpl implements Parser {
 	 * populates the list with all acceptable time formats
 	 */
 	private void populateTimeFormats() {
+		_timeFormats = new ArrayList<DateFormat>();
+
 		_timeFormats.add(new SimpleDateFormat("hha"));
 		_timeFormats.add(new SimpleDateFormat("hh:mma"));
 		_timeFormats.add(new SimpleDateFormat("HH:mm"));
@@ -535,6 +538,15 @@ public class ParserImpl implements Parser {
 		}
 	}
 
+	/**
+	 * Helper method to check if all the characters in a string is numeric
+	 * 
+	 * @param message
+	 *            String to be checked
+	 * @return True if all the contents are numeric and false otherwise. Note
+	 *         that method returns false for negative values as the character
+	 *         '-' is considered not numeric
+	 */
 	private boolean isDigit(String message) {
 		for (char c : message.toCharArray()) {
 			if (!Character.isDigit(c)) {
