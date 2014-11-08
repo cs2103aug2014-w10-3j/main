@@ -174,6 +174,8 @@ public class ParserImpl implements Parser {
 		for (DateFormat format : _dateFormats) {
 			try {
 				resultingDate = format.parse(userInput);
+				resultingDate.setHours(23);
+				resultingDate.setMinutes(59);
 				return resultingDate;
 			} catch (Exception e) {
 				// Do nothing, move to next format.
