@@ -36,6 +36,8 @@ public class ParserImpl implements Parser {
 	private static String						OPERAND_EXPECTED			= "Operand should follow additional argument %1s\n";
 	private static String						INVALID_INDEX				= "Primary operand should not be less than 1!\n";
 	private static String						INVALID_OPERAND				= "%s is not a valid operand for %s\n";
+	private static String						INVALID_ARG_FOR_CMD			= "%s argument is invalid for %s command type\n";
+	private static final String					DEADLINE_AND_TIME			= "Not possible to set both deadline and time range!\n";
 
 	/* Static Variables */
 	private static Map<String, CommandType>		_cmdMap;
@@ -50,6 +52,8 @@ public class ParserImpl implements Parser {
 	private Command								_resultingCommand;
 	private boolean								_isEmptyPriOp;
 	private boolean								_isHelpRequest;
+	private boolean								_hasDeadline;
+	private boolean								_hasTimeRange;
 
 	/* Public methods */
 
@@ -91,8 +95,7 @@ public class ParserImpl implements Parser {
 		}
 
 		if (_isHelpRequest) {
-			// priOp = getFirstWord(userInput).toLowerCase();
-			priOp = cmdType.toString();
+			priOp = cmdType.toString().toLowerCase();
 			cmdType = CommandType.HELP;
 			addArgs = new ArrayList<AdditionalArgument>();
 		}
@@ -198,6 +201,8 @@ public class ParserImpl implements Parser {
 		_userInput = userInput;
 		_isEmptyPriOp = false;
 		_isHelpRequest = false;
+		_hasDeadline = false;
+		_hasTimeRange = false;
 		if (!_isInitialised) {
 			populateCmdMap();
 			populateArgsMap();
@@ -441,7 +446,7 @@ public class ParserImpl implements Parser {
 			List<AdditionalArgument> addArgs)
 			throws Exception {
 		validateCommandType(cmdType);
-		validateAdditionalArguments(addArgs);
+		validateAdditionalArguments(addArgs, cmdType);
 		validatePrimaryOperand(cmdType, priOp, addArgs);
 	}
 
@@ -574,14 +579,126 @@ public class ParserImpl implements Parser {
 	 *             exception to indicate error in code.
 	 * 
 	 */
-	private void validateAdditionalArguments(List<AdditionalArgument> addArgs)
+	private void validateAdditionalArguments(List<AdditionalArgument> addArgs,
+			CommandType cmdType)
 			throws Exception {
 		if (addArgs == null) {
 			throw new Exception(String.format(CODE_FAULT,
 					"populateAdditionalArguments", "ParserImpl"));
 		}
 		for (AdditionalArgument addArg : addArgs) {
-			validateArgument(addArg);
+			validateArgument(addArg, cmdType);
+		}
+	}
+
+	/**
+	 * Validates each additional argument entered by user
+	 * 
+	 * @param arg
+	 *            The argument to be validated
+	 * @throws Exception
+	 *             If the argument is null, throws an exception to indicate
+	 *             error in code.
+	 *             If the ArgumentType is null, throws an exception to indicate
+	 *             error in code.
+	 *             If the ArgumentType is INVALID, throws an
+	 *             IllegalArgumentException.
+	 *             If the operand is null, throws an exception to indicate
+	 *             error in code.
+	 *             If the operand is empty, throws an IllegalArgumentException
+	 *             if it's not help.
+	 *             If the ArgumentType is HELP, and there is an operand, throws
+	 *             an IllegalArgumentException
+	 */
+	private void validateArgument(AdditionalArgument arg, CommandType cmdType)
+			throws Exception {
+		if (arg == null) {
+			throw new Exception(String.format(CODE_FAULT,
+					"getAdditionalArguments", "commandImpl"));
+		}
+		ArgumentType argType = arg.getArgumentType();
+		String operand = arg.getOperand();
+		if (argType == null) {
+			throw new Exception(String.format(CODE_FAULT,
+					"getAdditionalArguments", "ParserImpl"));
+		}
+		if (argType == ArgumentType.INVALID) {
+			throw new IllegalArgumentException(INVALID_ARGUMENT);
+		}
+		if (operand == null) {
+			throw new Exception(String.format(CODE_FAULT,
+					"assignMemberVariables", "commandImpl"));
+		}
+		if (argType == ArgumentType.HELP) {
+			_isHelpRequest = true;
+		}
+		else {
+			// Only help addArg should have empty operand
+			if (operand.isEmpty()) {
+				throw new Exception(String.format(OPERAND_EXPECTED, argType
+						.toString().toLowerCase()));
+			}
+
+			// Parsing priority to enums
+			if (argType == ArgumentType.PRIORITY) {
+				if (!operand.equalsIgnoreCase("low")
+						&& !operand.equalsIgnoreCase("normal")
+						&& !operand.equalsIgnoreCase("high")) {
+					throw new Exception(String.format(INVALID_OPERAND, operand,
+							argType.toString().toLowerCase()));
+				}
+			}
+
+			// Parsing deadline
+			if (argType == ArgumentType.DEADLINE) {
+				if (_hasTimeRange) {
+					throw new Exception(DEADLINE_AND_TIME);
+				}
+				_hasDeadline = true;
+				Date date = parseToDate(operand);
+				if (date == null) {
+					throw new Exception(String.format(INVALID_OPERAND, operand,
+							argType.toString().toLowerCase()));
+				}
+			}
+
+			// Parsing time range
+			if (argType == ArgumentType.TIME) {
+				if (_hasDeadline) {
+					throw new Exception(DEADLINE_AND_TIME);
+				}
+				_hasTimeRange = true;
+				String temp = operand;
+				// check for "from" and remove if present
+				if (operand.contains("from")) {
+					temp = operand.replace("from", " ").trim();
+				}
+				String[] time = temp.split("to");
+
+				if (time.length == 1) {	// only end time
+					Date endTime = parseToDate(time[0].trim());
+					if (endTime == null) {
+						throw new Exception(String.format(INVALID_OPERAND,
+								operand, argType.toString().toLowerCase()));
+					}
+				} else if (time.length == 2) {	// start and end time
+					Date startTime = parseToDate(time[0]);
+					Date endTime = parseToDate(time[1]);
+					if (startTime == null || endTime == null) {
+						throw new Exception(String.format(INVALID_OPERAND,
+								operand, argType.toString().toLowerCase()));
+					}
+				}
+			}
+
+			// Checking for acceptable additional argument for each command type
+			if (cmdType == CommandType.CREATE) {
+				if (argType == ArgumentType.NAME) {
+					throw new Exception(String.format(INVALID_ARG_FOR_CMD,
+							argType.toString().toLowerCase(), cmdType
+									.toString().toLowerCase()));
+				}
+			}
 		}
 	}
 
@@ -626,27 +743,31 @@ public class ParserImpl implements Parser {
 			_isHelpRequest = true;
 		}
 		else {
+			// Only help addArg should have empty operand
 			if (operand.isEmpty()) {
 				throw new Exception(String.format(OPERAND_EXPECTED, argType));
 			}
 
+			// Parsing priority to enums
 			if (argType == ArgumentType.PRIORITY) {
 				if (!operand.equalsIgnoreCase("low")
 						&& !operand.equalsIgnoreCase("normal")
 						&& !operand.equalsIgnoreCase("high")) {
 					throw new Exception(String.format(INVALID_OPERAND, operand,
-							argType.toString()));
+							argType.toString().toLowerCase()));
 				}
 			}
 
+			// Parsing deadline or time
 			if (argType == ArgumentType.DEADLINE
 					|| argType == ArgumentType.TIME) {
 				Date date = parseToDate(operand);
 				if (date == null) {
 					throw new Exception(String.format(INVALID_OPERAND, operand,
-							argType.toString()));
+							argType.toString().toLowerCase()));
 				}
 			}
+
 		}
 	}
 
