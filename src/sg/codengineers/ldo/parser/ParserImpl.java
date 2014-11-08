@@ -257,11 +257,11 @@ public class ParserImpl implements Parser {
 		_argsMap.put("n", ArgumentType.NAME);
 
 		// Possible keywords for Deadline
-		_argsMap.put("d", ArgumentType.DEADLINE);
 		_argsMap.put("deadline", ArgumentType.DEADLINE);
+		_argsMap.put("dd", ArgumentType.DEADLINE);
+		_argsMap.put("dl", ArgumentType.DEADLINE);
 
 		// Possible keywords for Time
-		_argsMap.put("t", ArgumentType.TIME);
 		_argsMap.put("time", ArgumentType.TIME);
 
 		// Possible keywords for Tag
@@ -279,6 +279,7 @@ public class ParserImpl implements Parser {
 		_argsMap.put("information", ArgumentType.DESCRIPTION);
 		_argsMap.put("info", ArgumentType.DESCRIPTION);
 		_argsMap.put("note", ArgumentType.DESCRIPTION);
+		_argsMap.put("ds", ArgumentType.DESCRIPTION);
 		_argsMap.put("a", ArgumentType.DESCRIPTION);
 	}
 
