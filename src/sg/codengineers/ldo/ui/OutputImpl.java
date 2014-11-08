@@ -23,11 +23,12 @@ public class OutputImpl implements Output {
 	private static final String	DELETED_MESSAGE	= "Deleted %s\n";
 	private static final String	EXIT_MESSAGE	= "Bye! See you again.\n";
 	private static final String	STUB_MESSAGE	= "This module is still under development.\n";
-	private static final String	TASK			= "[%d] %s%s%s%s%s\n";
+	private static final String	TASK			= "[%d] %s%s%s%s%s%s\n";
 	private static final String	NAME			= "Name: %s\n";
 	private static final String	DESCRIPTION		= "Description: %s\n";
 	private static final String	TAG				= "Tag: %s\n";
 	private static final String	DEADLINE		= "Deadline: %s %s\n";
+	private static final String	TIME			= "Time: %s\n";
 	private static final String	PRIORITY		= "Priority: %s\n";
 
 	/* Welcome messages */
@@ -242,6 +243,7 @@ public class OutputImpl implements Output {
 		String description = new String();
 		String tag = new String();
 		String deadline = new String();
+		String time = new String();
 		String priority = new String();
 
 		while (_taskItr.hasNext()) {
@@ -314,13 +316,29 @@ public class OutputImpl implements Output {
 						toPrint.getDeadline().getYear() + 1900));
 				deadline = " " + sb.toString();
 			}
-
-			if (toPrint.getPriority() != null) {
-				priority = toPrint.getPriority().getText();
+			if (!toPrint.getStartTime().equals(toPrint.getEndTime())) {
+				sb = new StringBuilder();
+				sb.append(" from ");
+				sb.append(String.format("%02d", toPrint.getStartTime()
+						.getHours()));
+				sb.append(":");
+				sb.append(String.format("%02d", toPrint.getStartTime()
+						.getMinutes()));
+				sb.append(" to ");
+				sb.append(String
+						.format("%02d", toPrint.getEndTime().getHours()));
+				sb.append(":");
+				sb.append(String.format("%02d", toPrint.getEndTime()
+						.getMinutes()));
+				time = sb.toString();
 			}
 
-			showToUser(String.format(TASK, counter, name, description, tag,
-					deadline, priority));
+			if (toPrint.getPriority() != null) {
+				priority = " " + toPrint.getPriority().getText();
+			}
+
+			showToUser(String.format(TASK, counter, name, description, time,
+					tag, deadline, priority));
 			counter++;
 		}
 	}
@@ -344,6 +362,7 @@ public class OutputImpl implements Output {
 	private void showOneTaskToUser() {
 		while (_taskItr.hasNext()) {
 			Task toPrint = _taskItr.next();
+			StringBuilder sb = new StringBuilder();
 
 			showToUser(String.format(NAME, toPrint.getName()));
 
@@ -356,7 +375,6 @@ public class OutputImpl implements Output {
 			}
 
 			if (toPrint.getDeadline() != null) {
-				StringBuilder sb = new StringBuilder();
 				sb.append(String.format("%02d", toPrint.getDeadline()
 						.getHours()));
 				sb.append(":");
@@ -415,13 +433,31 @@ public class OutputImpl implements Output {
 				showToUser(String.format(DEADLINE, time, date));
 			}
 
+			if (!toPrint.getStartTime().equals(toPrint.getEndTime())) {
+				sb = new StringBuilder();
+				sb.append("from ");
+				sb.append(String.format("%02d", toPrint.getStartTime()
+						.getHours()));
+				sb.append(":");
+				sb.append(String.format("%02d", toPrint.getStartTime()
+						.getMinutes()));
+				sb.append(" to ");
+				sb.append(String
+						.format("%02d", toPrint.getEndTime().getHours()));
+				sb.append(":");
+				sb.append(String.format("%02d", toPrint.getEndTime()
+						.getMinutes()));
+				String timeRange = sb.toString();
+				showToUser(String.format(TIME, timeRange));
+			}
+
 			if (toPrint.getPriority() != null) {
 				switch (toPrint.getPriority()) {
 					case HIGH :
 						showToUser(String.format(PRIORITY, "high"));
 						break;
-					case MEDIUM :
-						showToUser(String.format(PRIORITY, "medium"));
+					case NORMAL :
+						showToUser(String.format(PRIORITY, "normal"));
 						break;
 					case LOW :
 						showToUser(String.format(PRIORITY, "low"));
