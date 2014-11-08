@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Date;
 
 import org.junit.After;
 import org.junit.Before;
@@ -44,17 +45,18 @@ public class ParserImplTest {
 
 	@Test
 	public void testGetUserInputWithAddArg() {
-		Command obtainedCommand = testClass.parse("add test -d tester");
+		Command obtainedCommand = testClass.parse("add test -ds tester");
 		assertEquals("Checking getUserInput with 1 additional argument",
-				"add test -d tester", obtainedCommand.getUserInput());
+				"add test -ds tester", obtainedCommand.getUserInput());
 	}
 
 	@Test
 	public void testGetUserInputWithAddArgs() {
 		Command obtainedCommand = testClass
-				.parse("add test -d testing -t cs2103");
+				.parse("add test -ds testing -t cs2103");
 		assertEquals("checking getUserInput with additional arguments",
-				"add test -d testing -t cs2103", obtainedCommand.getUserInput());
+				"add test -ds testing -t cs2103",
+				obtainedCommand.getUserInput());
 	}
 
 	@Test
@@ -475,21 +477,22 @@ public class ParserImplTest {
 
 	@Test
 	public void testGetPrimaryOperandForAddWithAddArg() {
-		Command obtainedCommand = testClass.parse("add test -d tester");
+		Command obtainedCommand = testClass.parse("add test -ds tester");
 		assertEquals("get primary operand for add with 1 additional argument",
 				"test", obtainedCommand.getPrimaryOperand());
 	}
 
 	@Test
 	public void testGetPrimaryOperandForAddWithAddArgs() {
-		Command obtainedCommand = testClass.parse("add test -d tester -t test");
+		Command obtainedCommand = testClass
+				.parse("add test -a tester -tag test");
 		assertEquals("get primary operand for add with additional arguments",
 				"test", obtainedCommand.getPrimaryOperand());
 	}
 
 	@Test
 	public void testGetPrimaryOperandForBlankAddWithAddArg() {
-		Command obtainedCommand = testClass.parse("add -d tester");
+		Command obtainedCommand = testClass.parse("add -ds tester");
 		assertEquals(
 				"get primary operand for blank add with additional arguments",
 				"", obtainedCommand.getPrimaryOperand());
@@ -505,7 +508,7 @@ public class ParserImplTest {
 
 	@Test
 	public void testGetPrimaryOperandForUpdateWithAddArg() {
-		Command obtainedCommand = testClass.parse("update 1 -d tester");
+		Command obtainedCommand = testClass.parse("update 1 -ds tester");
 		assertEquals(
 				"get primary operand for update with 1 additional argument",
 				"1", obtainedCommand.getPrimaryOperand());
@@ -514,7 +517,7 @@ public class ParserImplTest {
 	@Test
 	public void testGetPrimaryOperandForUpdateWithAddArgs() {
 		Command obtainedCommand = testClass
-				.parse("update 1 -d tester -tag test");
+				.parse("update 1 -ds tester -tag test");
 		assertEquals(
 				"get primary operand for update with additional arguments",
 				"1", obtainedCommand.getPrimaryOperand());
@@ -792,6 +795,238 @@ public class ParserImplTest {
 		assertTrue(
 				"Checking if equals compares correctly with same object for saerch",
 				obtainedCommand.equals(testClass.parse("search hello")));
+	}
+
+	/**
+	 * Test for parsing to date
+	 */
+
+	// dd MMM yy hha
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate() {
+		Date obtainedDate = testClass.parseToDate("1 Jan 14 2pm");
+		assertEquals("checking for day", 1, obtainedDate.getDate());
+		assertEquals("checking for month", 0, obtainedDate.getMonth());
+		assertEquals("checking for year", 2014 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 14, obtainedDate.getHours());
+		assertEquals("checking for minute", 00, obtainedDate.getMinutes());
+	}
+
+	// dd MMM yyyy hha
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate1() {
+		Date obtainedDate = testClass.parseToDate("11 jan 1993 3am");
+		assertEquals("checking for day", 11, obtainedDate.getDate());
+		assertEquals("checking for month", 0, obtainedDate.getMonth());
+		assertEquals("checking for year", 1993 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 03, obtainedDate.getHours());
+		assertEquals("checking for minute", 00, obtainedDate.getMinutes());
+	}
+
+	// dd MMM yy hh:mma
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate2() {
+		Date obtainedDate = testClass.parseToDate("17 aug 92 6:03am");
+		assertEquals("checking for day", 17, obtainedDate.getDate());
+		assertEquals("checking for month", 7, obtainedDate.getMonth());
+		assertEquals("checking for year", 1992 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 06, obtainedDate.getHours());
+		assertEquals("checking for minute", 03, obtainedDate.getMinutes());
+	}
+
+	// dd MMM yyyy hh:mma
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate3() {
+		Date obtainedDate = testClass.parseToDate("17 Aug 1993 4:03pm");
+		assertEquals("checking for day", 17, obtainedDate.getDate());
+		assertEquals("checking for month", 7, obtainedDate.getMonth());
+		assertEquals("checking for year", 1993 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 16, obtainedDate.getHours());
+		assertEquals("checking for minute", 03, obtainedDate.getMinutes());
+	}
+
+	// dd MMM yy HH:mm
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate4() {
+		Date obtainedDate = testClass.parseToDate("16 oct 1996 18:38");
+		assertEquals("checking for day", 16, obtainedDate.getDate());
+		assertEquals("checking for month", 9, obtainedDate.getMonth());
+		assertEquals("checking for year", 1996 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 18, obtainedDate.getHours());
+		assertEquals("checking for minute", 38, obtainedDate.getMinutes());
+	}
+
+	// dd MMM yyyy HH:mm
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate5() {
+		Date obtainedDate = testClass.parseToDate("11 nov 2014 14:40");
+		assertEquals("checking for day", 11, obtainedDate.getDate());
+		assertEquals("checking for month", 10, obtainedDate.getMonth());
+		assertEquals("checking for year", 2014 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 14, obtainedDate.getHours());
+		assertEquals("checking for minute", 40, obtainedDate.getMinutes());
+	}
+
+	// dd/MM/yy hha
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate6() {
+		Date obtainedDate = testClass.parseToDate("26/11/68 9pm");
+		assertEquals("checking for day", 26, obtainedDate.getDate());
+		assertEquals("checking for month", 10, obtainedDate.getMonth());
+		assertEquals("checking for year", 1968 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 21, obtainedDate.getHours());
+		assertEquals("checking for minute", 00, obtainedDate.getMinutes());
+	}
+
+	// dd/MM/yyyy hha
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate7() {
+		Date obtainedDate = testClass.parseToDate("26/08/1968 5am");
+		assertEquals("checking for day", 26, obtainedDate.getDate());
+		assertEquals("checking for month", 07, obtainedDate.getMonth());
+		assertEquals("checking for year", 1968 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 05, obtainedDate.getHours());
+		assertEquals("checking for minute", 00, obtainedDate.getMinutes());
+	}
+
+	// dd/MM/yy hh:mma
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate8() {
+		Date obtainedDate = testClass.parseToDate("15/2/32 7:32am");
+		assertEquals("checking for day", 15, obtainedDate.getDate());
+		assertEquals("checking for month", 1, obtainedDate.getMonth());
+		assertEquals("checking for year", 2032 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 07, obtainedDate.getHours());
+		assertEquals("checking for minute", 32, obtainedDate.getMinutes());
+	}
+
+	// dd/MM/yyyy hh:mma
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate9() {
+		Date obtainedDate = testClass.parseToDate("29/02/2012 3:33pm");
+		assertEquals("checking for day", 29, obtainedDate.getDate());
+		assertEquals("checking for month", 1, obtainedDate.getMonth());
+		assertEquals("checking for year", 2012 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 15, obtainedDate.getHours());
+		assertEquals("checking for minute", 33, obtainedDate.getMinutes());
+	}
+
+	// dd/MM/yy HH:mm
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate10() {
+		Date obtainedDate = testClass.parseToDate("29/02/13 15:55");
+		assertEquals("checking for day", 1, obtainedDate.getDate());
+		assertEquals("checking for month", 2, obtainedDate.getMonth());
+		assertEquals("checking for year", 2013 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 15, obtainedDate.getHours());
+		assertEquals("checking for minute", 55, obtainedDate.getMinutes());
+	}
+
+	// dd/MM/yyyy HH:mm
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate11() {
+		Date obtainedDate = testClass.parseToDate("32/1/54 16:61");
+		assertEquals("checking for day", 1, obtainedDate.getDate());
+		assertEquals("checking for month", 1, obtainedDate.getMonth());
+		assertEquals("checking for year", 1954 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 17, obtainedDate.getHours());
+		assertEquals("checking for minute", 01, obtainedDate.getMinutes());
+	}
+
+	// dd MMM yy
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate12() {
+		Date obtainedDate = testClass.parseToDate("32 mar 28");
+		assertEquals("checking for day", 1, obtainedDate.getDate());
+		assertEquals("checking for month", 3, obtainedDate.getMonth());
+		assertEquals("checking for year", 2028 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 0, obtainedDate.getHours());
+		assertEquals("checking for minute", 0, obtainedDate.getMinutes());
+	}
+
+	// dd MMM yyyy
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate13() {
+		Date obtainedDate = testClass.parseToDate("31 apr 2195");
+		assertEquals("checking for day", 1, obtainedDate.getDate());
+		assertEquals("checking for month", 4, obtainedDate.getMonth());
+		assertEquals("checking for year", 2195 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 0, obtainedDate.getHours());
+		assertEquals("checking for minute", 0, obtainedDate.getMinutes());
+	}
+
+	// dd/MM/yy
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate14() {
+		Date obtainedDate = testClass.parseToDate("32/5/34 ");
+		assertEquals("checking for day", 1, obtainedDate.getDate());
+		assertEquals("checking for month", 5, obtainedDate.getMonth());
+		assertEquals("checking for year", 2034 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 0, obtainedDate.getHours());
+		assertEquals("checking for minute", 0, obtainedDate.getMinutes());
+	}
+
+	// dd/MM/yyyy
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate15() {
+		Date obtainedDate = testClass.parseToDate("31/6/5672");
+		assertEquals("checking for day", 1, obtainedDate.getDate());
+		assertEquals("checking for month", 6, obtainedDate.getMonth());
+		assertEquals("checking for year", 5672 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 0, obtainedDate.getHours());
+		assertEquals("checking for minute", 0, obtainedDate.getMinutes());
+	}
+
+	// hha
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate16() {
+		Date obtainedDate = testClass.parseToDate("12pm");
+		assertEquals("checking for day", 1, obtainedDate.getDate());
+		assertEquals("checking for month", 0, obtainedDate.getMonth());
+		assertEquals("checking for year", 1970 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 12, obtainedDate.getHours());
+		assertEquals("checking for minute", 0, obtainedDate.getMinutes());
+	}
+
+	// hh:mma
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate17() {
+		Date obtainedDate = testClass.parseToDate("12:00am");
+		assertEquals("checking for day", 1, obtainedDate.getDate());
+		assertEquals("checking for month", 0, obtainedDate.getMonth());
+		assertEquals("checking for year", 1970 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 0, obtainedDate.getHours());
+		assertEquals("checking for minute", 0, obtainedDate.getMinutes());
+	}
+
+	// HH:mm
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate18() {
+		Date obtainedDate = testClass.parseToDate("24:01");
+		assertEquals("checking for day", 2, obtainedDate.getDate());
+		assertEquals("checking for month", 0, obtainedDate.getMonth());
+		assertEquals("checking for year", 1970 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 0, obtainedDate.getHours());
+		assertEquals("checking for minute", 1, obtainedDate.getMinutes());
 	}
 
 	/**
