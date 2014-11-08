@@ -26,4 +26,16 @@ public interface AdditionalArgument {
 	 * @return an ArgumentType of the field.
 	 */
 	public ArgumentType getArgumentType();
+
+	/**
+	 * Displays the contents of the command class in the following format:
+	 * 
+	 * argument type:\t<argumentType>
+	 * operand:\t<operand>
+	 * 
+	 * @return a string object containing the contents of the additional
+	 *         argument object in the format specified
+	 */
+	@Override
+	public String toString();
 }
