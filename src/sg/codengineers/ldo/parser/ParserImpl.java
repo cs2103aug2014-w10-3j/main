@@ -610,6 +610,24 @@ public class ParserImpl implements Parser {
 			if (operand.isEmpty()) {
 				throw new Exception(String.format(OPERAND_EXPECTED, argType));
 			}
+
+			if (argType == ArgumentType.PRIORITY) {
+				if (!operand.equalsIgnoreCase("low")
+						&& !operand.equalsIgnoreCase("normal")
+						&& !operand.equalsIgnoreCase("high")) {
+					throw new Exception(String.format(INVALID_OPERAND, operand,
+							argType.toString()));
+				}
+			}
+
+			if (argType == ArgumentType.DEADLINE
+					|| argType == ArgumentType.TIME) {
+				Date date = parseToDate(operand);
+				if (date == null) {
+					throw new Exception(String.format(INVALID_OPERAND, operand,
+							argType.toString()));
+				}
+			}
 		}
 	}
 
