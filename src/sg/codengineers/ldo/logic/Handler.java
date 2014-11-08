@@ -85,6 +85,7 @@ public abstract class Handler {
 			} else {
 				throw new IllegalArgumentException();
 			}
+			break;
 		case DONE:		
 		case TAG:
 			task.setTag(operand);
