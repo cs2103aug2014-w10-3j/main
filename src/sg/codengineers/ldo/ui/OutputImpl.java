@@ -316,16 +316,7 @@ public class OutputImpl implements Output {
 			}
 
 			if (toPrint.getPriority() != null) {
-				switch (toPrint.getPriority()) {
-					case HIGH :
-						priority = " high";
-						break;
-					case MEDIUM :
-						priority = " medium";
-					case LOW :
-						priority = " low";
-					default:
-				}
+				priority = toPrint.getPriority().getText();
 			}
 
 			showToUser(String.format(TASK, counter, name, description, tag,
