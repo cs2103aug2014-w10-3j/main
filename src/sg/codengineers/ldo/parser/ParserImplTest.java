@@ -271,6 +271,297 @@ public class ParserImplTest {
 	}
 
 	@Test
+	public void testParseToCommandUpdate6() {
+		Command obtainedCommand = testClass.parse("update 3 --done");
+		assertEquals("checking command type", CommandType.UPDATE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "3",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+		Iterator<AdditionalArgument> toCheck = obtainedCommand
+				.getAdditionalArguments();
+		AdditionalArgument addArg = toCheck.next();
+		assertEquals("checking argument type", ArgumentType.TAG,
+				addArg.getArgumentType());
+		assertEquals("checking argument operand", "done",
+				addArg.getOperand());
+	}
+
+	@Test
+	public void testParseToCommandUpdate7() {
+		Command obtainedCommand = testClass.parse("update a");
+		assertEquals("Checking user input", "update a",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Primary operand should contain numbers!\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandUpdate8() {
+		Command obtainedCommand = testClass.parse("update ");
+		assertEquals("Checking user input", "update ",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Help argument expected\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandUpdate9() {
+		Command obtainedCommand = testClass.parse("update -1");
+		assertEquals("Checking user input", "update -1",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Invalid additional argument entered\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandUpdate10() {
+		Command obtainedCommand = testClass.parse("update 0");
+		assertEquals("Checking user input", "update 0",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Primary operand should not be less than 1!\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandDelete() {
+		Command obtainedCommand = testClass.parse("delete 1");
+		assertEquals("checking user input", "delete 1",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.DELETE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "1",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandDelete1() {
+		Command obtainedCommand = testClass.parse("delete all");
+		assertEquals("checking user input", "delete all",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.DELETE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "all",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandDelete2() {
+		Command obtainedCommand = testClass.parse("delete a");
+		assertEquals("checking user input", "delete a",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Primary operand should contain numbers!\n",
+				obtainedCommand.getMessage());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandDelete3() {
+		Command obtainedCommand = testClass.parse("delete ");
+		assertEquals("Checking user input", "delete ",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Help argument expected\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandDelete4() {
+		Command obtainedCommand = testClass.parse("delete -3");
+		assertEquals("Checking user input", "delete -3",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Invalid additional argument entered\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandDelete5() {
+		Command obtainedCommand = testClass.parse("delete 0");
+		assertEquals("Checking user input", "delete 0",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Primary operand should not be less than 1!\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandDelete6() {
+		Command obtainedCommand = testClass.parse("delete --name hello");
+		assertEquals("Checking user input", "delete --name hello",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"name argument is invalid for delete command type\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve() {
+		Command obtainedCommand = testClass.parse("retrieve 1");
+		assertEquals("checking user input", "retrieve 1",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.RETRIEVE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "1",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve1() {
+		Command obtainedCommand = testClass.parse("show 11");
+		assertEquals("checking user input", "show 11",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.RETRIEVE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "11",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve2() {
+		Command obtainedCommand = testClass.parse("view 50");
+		assertEquals("checking user input", "view 50",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.RETRIEVE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "50",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve3() {
+		Command obtainedCommand = testClass.parse("retrieve all");
+		assertEquals("checking user input", "retrieve all",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.RETRIEVE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "all",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve4() {
+		Command obtainedCommand = testClass.parse("view all");
+		assertEquals("checking user input", "view all",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.RETRIEVE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "all",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve5() {
+		Command obtainedCommand = testClass.parse("show all");
+		assertEquals("checking user input", "show all",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.RETRIEVE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "all",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve6() {
+		Command obtainedCommand = testClass.parse("show");
+		assertEquals("checking user input", "show",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.RETRIEVE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve7() {
+		Command obtainedCommand = testClass.parse("show --tag hello");
+		assertEquals("Checking user input", "show --tag hello",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"tag argument is invalid for retrieve command type\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve8() {
+		Command obtainedCommand = testClass.parse("retrieve a");
+		assertEquals("checking user input", "retrieve a",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Primary operand should contain numbers!\n",
+				obtainedCommand.getMessage());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
 	public void testEqualsWithNull() {
 		Command obtainedCommand = testClass.parse("add test");
 		assertFalse("Checking if equals compares correctly with null",
