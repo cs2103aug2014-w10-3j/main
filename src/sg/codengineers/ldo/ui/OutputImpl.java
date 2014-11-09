@@ -38,7 +38,7 @@ public class OutputImpl implements Output {
 														" for all tasks containing\"%s\":\n");
 	private static final String	UNDO_MESSAGE	= String.format(KEYWORD_COLOR,
 														"Undone",
-														" command: \"s\".\n");
+														" command: \"%s\".\n");
 	private static final String	EXIT_MESSAGE	= "Bye! See you again.\n";
 	private static final String	STUB_MESSAGE	= "This module is still under development.\n";
 	private static final String	EMPTY_TASK_LIST	= "Task list is empty.\n";
@@ -291,7 +291,7 @@ public class OutputImpl implements Output {
 			}
 
 			if (toPrint.getDeadline() != null) {
-
+				sb.append("by ");
 				sb.append(String.format("%02d", toPrint.getDeadline()
 						.getHours()));
 				sb.append(":");
@@ -426,7 +426,6 @@ public class OutputImpl implements Output {
 						.getMinutes()));
 				String time = sb.toString();
 				sb = new StringBuilder();
-				sb.append(" ");
 				sb.append(String
 						.format("%02d", toPrint.getDeadline().getDate()));
 				sb.append(" ");
