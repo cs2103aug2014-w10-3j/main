@@ -332,6 +332,39 @@ public class ParserImplTest {
 	}
 
 	@Test
+	public void testParseToCommandUpdate11() {
+		Command obtainedCommand = testClass.parse("update 300 --time 3pm 4pm");
+		assertEquals("checking command type", CommandType.UPDATE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "300",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+		Iterator<AdditionalArgument> toCheck = obtainedCommand
+				.getAdditionalArguments();
+		AdditionalArgument addArg = toCheck.next();
+		assertEquals("checking argument type", ArgumentType.TIME,
+				addArg.getArgumentType());
+		assertEquals("checking argument operand", "3pm 4pm",
+				addArg.getOperand());
+	}
+
+	@Test
+	public void testParseToCommandUpdate12() {
+		Command obtainedCommand = testClass
+				.parse("update 300 --time 3pm 4pm --deadline 10 Nov 2014");
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Not possible to set both deadline and time range.\n",
+				obtainedCommand.getMessage());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
 	public void testParseToCommandDelete() {
 		Command obtainedCommand = testClass.parse("delete 1");
 		assertEquals("checking user input", "delete 1",

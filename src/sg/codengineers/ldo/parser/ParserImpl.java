@@ -716,12 +716,12 @@ public class ParserImpl implements Parser {
 				if (_hasTimeRange) {
 					throw new Exception(DEADLINE_AND_TIME);
 				}
-				_hasDeadline = true;
 				Date date = parseToDate(operand);
 				if (date == null) {
 					throw new Exception(String.format(INVALID_OPERAND, operand,
 							argType.toString().toLowerCase()));
 				}
+				_hasDeadline = true;
 			}
 
 			// Parsing time range
@@ -729,7 +729,6 @@ public class ParserImpl implements Parser {
 				if (_hasDeadline) {
 					throw new Exception(DEADLINE_AND_TIME);
 				}
-				_hasTimeRange = true;
 				String temp = operand;
 				String[] time = temp.split("\\s+");
 
@@ -750,6 +749,7 @@ public class ParserImpl implements Parser {
 					throw new Exception(String.format(INVALID_OPERAND, operand,
 							argType.toString().toLowerCase()));
 				}
+				_hasTimeRange = true;
 			}
 
 			/* Checking for acceptable additional argument for each command type */
