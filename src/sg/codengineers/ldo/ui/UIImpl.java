@@ -28,7 +28,7 @@ public class UIImpl implements UI {
 
 	@Override
 	public void displayError(String message) {
-		System.out.println(message);
+		_output.displayError(message);
 	}
 
 	@Override
