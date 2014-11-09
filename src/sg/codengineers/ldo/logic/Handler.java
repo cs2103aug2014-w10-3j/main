@@ -165,7 +165,7 @@ public abstract class Handler {
 								}
 							}							
 							if(ts != null && te != null){
-								if(te.compareTo(date)>=0 && te.compareTo(date)<=0){
+								if(te.compareTo(date)>=0 && ts.compareTo(date)<=0){
 									return true;
 								}
 							}

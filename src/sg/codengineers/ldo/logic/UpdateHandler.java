@@ -55,7 +55,7 @@ public class UpdateHandler extends Handler {
 					task);
 		} else {
 			_taskList.remove(taskId);
-			_taskList.add(task);
+			_taskList.add(taskId, task);
 		}
 		
 		Result result = new ResultImpl(CommandType.CREATE, 

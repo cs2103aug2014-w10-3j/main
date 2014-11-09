@@ -43,6 +43,7 @@ public class TaskImpl implements Task {
 		this._timeStart = task.getStartTime();
 		this._timeEnd = task.getEndTime();
 		this._description = task.getDescription();
+		this._priority = task.getPriority();
 	}
 	
 	/**
