@@ -211,6 +211,7 @@ public class ParserImpl implements Parser {
 	 * @return a String object containing the hour, minute, date, month and year
 	 *         of the date object.
 	 */
+	@Override
 	@SuppressWarnings("deprecation")
 	public String parseDateToString(Date date) {
 		StringBuilder sb = new StringBuilder();
@@ -730,11 +731,7 @@ public class ParserImpl implements Parser {
 				}
 				_hasTimeRange = true;
 				String temp = operand;
-				// check for "from" and remove if present
-				if (operand.contains("from")) {
-					temp = operand.replace("from", " ").trim();
-				}
-				String[] time = temp.split("to");
+				String[] time = temp.split("\\s+");
 
 				if (time.length == 1) {	// only end time
 					Date endTime = parseToDate(time[0].trim());
@@ -749,6 +746,9 @@ public class ParserImpl implements Parser {
 						throw new Exception(String.format(INVALID_OPERAND,
 								operand, argType.toString().toLowerCase()));
 					}
+				} else {
+					throw new Exception(String.format(INVALID_OPERAND, operand,
+							argType.toString().toLowerCase()));
 				}
 			}
 
