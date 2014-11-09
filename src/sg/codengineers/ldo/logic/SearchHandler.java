@@ -32,40 +32,35 @@ public class SearchHandler extends Handler {
 		
 		if(!isOpEmpty && isItEmpty){
 			List<Task> resultList = new ArrayList<Task>(_taskList);
-			resultList = searchTask(resultList, new AdditionalArgumentImpl(AdditionalArgument.ArgumentType.NAME, primaryOperand));
-			result = constructResult(primaryOperand, resultList);
-			
+			AdditionalArgument arg = new AdditionalArgumentImpl(AdditionalArgument.ArgumentType.NAME, primaryOperand);
+			resultList = searchTask(resultList, arg);
+			String opString = populateAddArg("", arg);
+			result = constructResult(opString, resultList);
 		} 
 		
 		if(!isOpEmpty && !isItEmpty){
 			List<Task> resultList = new ArrayList<Task>(_taskList);
-			resultList = searchTask(resultList, new AdditionalArgumentImpl(AdditionalArgument.ArgumentType.NAME, primaryOperand));
+			AdditionalArgument arg = new AdditionalArgumentImpl(AdditionalArgument.ArgumentType.NAME, primaryOperand);
+			resultList = searchTask(resultList, arg);
+			String opString = populateAddArg("", arg);
 			while(iterator.hasNext()){
-				resultList = searchTask(resultList, iterator.next());
+				arg =  iterator.next();
+				resultList = searchTask(resultList, arg);
+				opString = populateAddArg(opString, arg);
 			}
-			result = constructResult(primaryOperand, resultList);
+			result = constructResult(opString, resultList);
 		} 		
 		
 		if(isOpEmpty && !isItEmpty){
 			List<Task> resultList = new ArrayList<Task>(_taskList);
+			AdditionalArgument arg;
+			String opString = "";
 			while(iterator.hasNext()){
-				resultList = searchTask(resultList, iterator.next());
+				arg =  iterator.next();
+				resultList = searchTask(resultList, arg);
+				opString = populateAddArg(opString, arg);
 			}
-			result = constructResult(primaryOperand, resultList);
-		}
-		
-		if(Logic.DEBUG){
-			if(result.getTasksIterator().hasNext()){
-				Iterator<Task> debugIter = result.getTasksIterator();
-				int cnt = 0;
-				while(debugIter.hasNext()){
-					System.out.print("Task No."+cnt+": ");
-					System.out.println(debugIter.next().getDeadline());
-					cnt++;
-				}
-				System.out.println("The length of the result list is "+ cnt);
-				
-			}	
+			result = constructResult(opString, resultList);
 		}
 		
 		return result;
@@ -84,5 +79,13 @@ public class SearchHandler extends Handler {
 				operand,
 				new Time(System.currentTimeMillis())
 				);
+	}
+	
+	private String populateAddArg(String accString, AdditionalArgument arg){
+		if(!accString.isEmpty()){
+			accString+=" and ";
+		}
+		accString += arg.getArgumentType().toString() + " "+arg.getOperand();
+		return accString;
 	}
 }

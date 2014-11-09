@@ -3,13 +3,10 @@ package sg.codengineers.ldo.logic;
 import java.io.IOException;
 import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
-import sg.codengineers.ldo.db.DBConnector;
 import sg.codengineers.ldo.db.Database;
 import sg.codengineers.ldo.model.AdditionalArgument;
 import sg.codengineers.ldo.model.Command;
@@ -55,8 +52,16 @@ public class Logic {
 	}
 	
 	private Logic()throws Exception{
-		this._dbConnector = Database.initDatabase();
-		initialize();
+		try{
+			this._dbConnector = Database.initDatabase();
+			initialize();			
+		} catch(Exception e){
+			if(Logic.DEBUG){
+				e.printStackTrace();
+			}
+			throw e;
+		}
+
 	}
 	
 	protected Logic (boolean stub){
