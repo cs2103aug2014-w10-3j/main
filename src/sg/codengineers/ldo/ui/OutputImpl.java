@@ -160,6 +160,9 @@ public class OutputImpl implements Output {
 	 * the name of the deleted task.
 	 */
 	private void feedbackForDelete() {
+		if (_result.getPrimaryOperand().equalsIgnoreCase("all")) {
+			showToUser(String.format(DELETED_MESSAGE, "all"));
+		}
 		Task completedTask = _taskItr.next();
 		showToUser(String.format(DELETED_MESSAGE, completedTask.getName()));
 	}
