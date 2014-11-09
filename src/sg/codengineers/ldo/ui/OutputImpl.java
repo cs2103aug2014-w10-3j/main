@@ -2,6 +2,8 @@ package sg.codengineers.ldo.ui;
 
 import java.util.Iterator;
 
+import org.fusesource.jansi.AnsiConsole;
+
 import sg.codengineers.ldo.model.Command.CommandType;
 import sg.codengineers.ldo.model.Output;
 import sg.codengineers.ldo.model.Result;
@@ -17,6 +19,8 @@ public class OutputImpl implements Output {
 
 	/* Constants */
 	private static final boolean	DEBUG_MODE		= false;
+	public static final String		ANSI_CLS		= "\u001b[2J";
+	public static final String		ANSI_HOME		= "\u001b[H";
 
 	/* Message Strings */
 	private static final String		CREATED_MESSAGE	= "Added %s\n";
@@ -509,25 +513,8 @@ public class OutputImpl implements Output {
 	 * Used to help provide a cleaner user interface.
 	 */
 	private void clearScreen() {
-		try
-		{
-			final String os = System.getProperty("os.name");
-
-			if (os.contains("Windows"))
-			{
-				Runtime.getRuntime().exec("cls");
-			}
-			else
-			{
-				Runtime.getRuntime().exec("clear");
-			}
-		} catch (final Exception e)
-		{
-			if (DEBUG_MODE) {
-				e.printStackTrace();
-			}
-			// Do nothing.
-		}
+		showToUser(ANSI_CLS);
+		showToUser(ANSI_HOME);
 	}
 
 	/**
@@ -560,7 +547,8 @@ public class OutputImpl implements Output {
 	 *            Message to be shown
 	 */
 	private void showToUser(String message) {
-		System.out.print(message);
+		AnsiConsole.systemInstall();
+		AnsiConsole.out.print(message);
 	}
 
 }
