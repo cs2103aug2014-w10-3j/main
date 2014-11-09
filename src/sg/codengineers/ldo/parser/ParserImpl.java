@@ -186,6 +186,10 @@ public class ParserImpl implements Parser {
 		for (DateFormat format : _timeFormats) {
 			try {
 				resultingDate = format.parse(userInput);
+				Date today = new Date();
+				resultingDate.setDate(today.getDate());
+				resultingDate.setMonth(today.getMonth());
+				resultingDate.setYear(today.getYear());
 				return resultingDate;
 			} catch (Exception e) {
 				if (DEBUG_MODE) {
@@ -196,6 +200,26 @@ public class ParserImpl implements Parser {
 		}
 
 		return resultingDate;
+	}
+
+	/**
+	 * parses a Date object into a string format in the following format:
+	 * "dd/mm/yyyy HH:mm"
+	 * 
+	 * @param date
+	 *            Date object to be parsed
+	 * @return a String object containing the hour, minute, date, month and year
+	 *         of the date object.
+	 */
+	@SuppressWarnings("deprecation")
+	public String parseDateToString(Date date) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(date.getDate());
+		sb.append("/" + (date.getMonth() + 1));
+		sb.append("/" + (date.getYear() + 1900));
+		sb.append(" " + date.getHours());
+		sb.append(":" + date.getMinutes());
+		return sb.toString();
 	}
 
 	/* Private Methods */
@@ -301,7 +325,7 @@ public class ParserImpl implements Parser {
 		_dateTimeFormats = new ArrayList<DateFormat>();
 
 		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yy hha"));
-		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yyyyy hha"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yyyy hha"));
 
 		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yy hh:mma"));
 		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yyyy hh:mma"));

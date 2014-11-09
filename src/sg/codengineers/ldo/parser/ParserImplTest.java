@@ -1336,9 +1336,13 @@ public class ParserImplTest {
 	@Test
 	public void testParseToDate16() {
 		Date obtainedDate = testClass.parseToDate("12pm");
-		assertEquals("checking for day", 1, obtainedDate.getDate());
-		assertEquals("checking for month", 0, obtainedDate.getMonth());
-		assertEquals("checking for year", 1970 - 1900, obtainedDate.getYear());
+		Date today = new Date();
+		assertEquals("checking for day", today.getDate(),
+				obtainedDate.getDate());
+		assertEquals("checking for month", today.getMonth(),
+				obtainedDate.getMonth());
+		assertEquals("checking for year", today.getYear(),
+				obtainedDate.getYear());
 		assertEquals("checking for hour", 12, obtainedDate.getHours());
 		assertEquals("checking for minute", 0, obtainedDate.getMinutes());
 	}
@@ -1348,9 +1352,13 @@ public class ParserImplTest {
 	@Test
 	public void testParseToDate17() {
 		Date obtainedDate = testClass.parseToDate("12:00am");
-		assertEquals("checking for day", 1, obtainedDate.getDate());
-		assertEquals("checking for month", 0, obtainedDate.getMonth());
-		assertEquals("checking for year", 1970 - 1900, obtainedDate.getYear());
+		Date today = new Date();
+		assertEquals("checking for day", today.getDate(),
+				obtainedDate.getDate());
+		assertEquals("checking for month", today.getMonth(),
+				obtainedDate.getMonth());
+		assertEquals("checking for year", today.getYear(),
+				obtainedDate.getYear());
 		assertEquals("checking for hour", 0, obtainedDate.getHours());
 		assertEquals("checking for minute", 0, obtainedDate.getMinutes());
 	}
@@ -1360,9 +1368,13 @@ public class ParserImplTest {
 	@Test
 	public void testParseToDate18() {
 		Date obtainedDate = testClass.parseToDate("24:01");
-		assertEquals("checking for day", 2, obtainedDate.getDate());
-		assertEquals("checking for month", 0, obtainedDate.getMonth());
-		assertEquals("checking for year", 1970 - 1900, obtainedDate.getYear());
+		Date today = new Date();
+		assertEquals("checking for day", today.getDate(),
+				obtainedDate.getDate());
+		assertEquals("checking for month", today.getMonth(),
+				obtainedDate.getMonth());
+		assertEquals("checking for year", today.getYear(),
+				obtainedDate.getYear());
 		assertEquals("checking for hour", 0, obtainedDate.getHours());
 		assertEquals("checking for minute", 1, obtainedDate.getMinutes());
 	}
