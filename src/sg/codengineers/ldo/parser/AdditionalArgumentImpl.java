@@ -42,4 +42,21 @@ public class AdditionalArgumentImpl implements AdditionalArgument {
 	public ArgumentType getArgumentType() {
 		return _argumentType;
 	}
+
+	/**
+	 * Displays the contents of the command class in the following format:
+	 * 
+	 * argument type:\t<argumentType>
+	 * operand:\t<operand>
+	 * 
+	 * @return a string object containing the contents of the additional
+	 *         argument object in the format specified
+	 */
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("argument type:\t" + getArgumentType().toString());
+		sb.append("operand:\t" + getOperand());
+		return sb.toString();
+	}
 }

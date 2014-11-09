@@ -126,6 +126,32 @@ public class CommandImpl implements Command {
 
 	}
 
+	/**
+	 * Displays the contents of the command class in the following format:
+	 * 
+	 * user input:\t <userInput>
+	 * command type:\t<commandType>
+	 * primary operand:\t<primaryOp>
+	 * message:\t<message>
+	 * additional arguments:
+	 * <additional argument>
+	 * <additional argument>
+	 * 
+	 * @return a string object containing the contents of the command object in
+	 *         the format specified
+	 */
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("user input:\t" + getUserInput() + "\n");
+		sb.append("command type:\t" + getCommandType().toString() + "\n");
+		sb.append("primary op:\t" + getPrimaryOperand() + "\n");
+		sb.append("message:\t" + getMessage() + "\n");
+		sb.append("additional arguments:\n" + _additionalArguments.toString());
+
+		return sb.toString();
+	}
+
 	/* Protected Methods */
 	protected void setUserInput(String userInput) {
 		_userInput = userInput;

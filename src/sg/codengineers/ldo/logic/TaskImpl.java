@@ -29,6 +29,7 @@ public class TaskImpl implements Task {
 		_name = name;
 		_description = _tag = "";
 		_timeStart = _timeEnd = null;
+		_priority = Priority.NORMAL;
 	}
 	
 	/**
