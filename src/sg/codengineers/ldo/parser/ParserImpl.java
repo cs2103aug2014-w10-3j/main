@@ -188,6 +188,9 @@ public class ParserImpl implements Parser {
 				resultingDate = format.parse(userInput);
 				return resultingDate;
 			} catch (Exception e) {
+				if (DEBUG_MODE) {
+					e.printStackTrace();
+				}
 				// Do nothing, fail to parse
 			}
 		}
@@ -571,9 +574,18 @@ public class ParserImpl implements Parser {
 			}
 		}
 
-		// SEARCH
-		// UNDO
-		// EXIT
+		// SEARCH accepts all
+
+		// UNDO accepts none
+		if (cmdType == CommandType.UNDO && !_isEmptyPriOp) {
+			throw new IllegalArgumentException(String.format(INVALID_OPERAND,
+					priOp, cmdType.toString().toLowerCase()));
+		}
+		// EXIT accepts none
+		if (cmdType == CommandType.EXIT && !_isEmptyPriOp) {
+			throw new IllegalArgumentException(String.format(INVALID_OPERAND,
+					priOp, cmdType.toString().toLowerCase()));
+		}
 	}
 
 	/**
