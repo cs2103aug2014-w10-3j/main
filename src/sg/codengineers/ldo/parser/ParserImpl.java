@@ -36,7 +36,7 @@ public class ParserImpl implements Parser {
 	private static final String					OPERAND_EXPECTED			= "Operand should follow additional argument %s.\n";
 	private static final String					INVALID_INDEX				= "Primary operand should not be less than 1.\n";
 	private static final String					INVALID_OPERAND				= "\"%s\" is not a valid operand for %s.\n";
-	private static final String					INVALID_ARG_FOR_CMD			= "\"%s\" argument is invalid for %s command type.\n";
+	private static final String					INVALID_ARG_FOR_CMD			= "%s argument is invalid for %s command type.\n";
 	private static final String					DEADLINE_AND_TIME			= "Not possible to set both deadline and time range for the same task.\n";
 
 	/* Static Variables */
