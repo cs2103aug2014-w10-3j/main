@@ -252,27 +252,6 @@ public class ParserImplTest {
 
 	@Test
 	public void testParseToCommandUpdate5() {
-		Command obtainedCommand = testClass
-				.parse("update 300 -time from 3pm to 4pm");
-		assertEquals("checking command type", CommandType.UPDATE,
-				obtainedCommand.getCommandType());
-		assertEquals("checking primary operand", "300",
-				obtainedCommand.getPrimaryOperand());
-		assertTrue("checking empty message", obtainedCommand.getMessage()
-				.isEmpty());
-		assertNotNull("checking for null iterator",
-				obtainedCommand.getAdditionalArguments());
-		Iterator<AdditionalArgument> toCheck = obtainedCommand
-				.getAdditionalArguments();
-		AdditionalArgument addArg = toCheck.next();
-		assertEquals("checking argument type", ArgumentType.TIME,
-				addArg.getArgumentType());
-		assertEquals("checking argument operand", "from 3pm to 4pm",
-				addArg.getOperand());
-	}
-
-	@Test
-	public void testParseToCommandUpdate6() {
 		Command obtainedCommand = testClass.parse("update 3 --done");
 		assertEquals("checking command type", CommandType.UPDATE,
 				obtainedCommand.getCommandType());
@@ -289,6 +268,19 @@ public class ParserImplTest {
 				addArg.getArgumentType());
 		assertEquals("checking argument operand", "done",
 				addArg.getOperand());
+	}
+
+	@Test
+	public void testParseToCommandUpdate6() {
+		Command obtainedCommand = testClass
+				.parse("update 1 --time from 3pm to 4pm");
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"from 3pm to 4pm is not a valid operand for time.\n",
+				obtainedCommand.getMessage());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
 	}
 
 	@Test
@@ -337,6 +329,39 @@ public class ParserImplTest {
 		assertEquals("checking invalid message",
 				"Primary operand should not be less than 1.\n",
 				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandUpdate11() {
+		Command obtainedCommand = testClass.parse("update 300 --time 3pm 4pm");
+		assertEquals("checking command type", CommandType.UPDATE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "300",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+		Iterator<AdditionalArgument> toCheck = obtainedCommand
+				.getAdditionalArguments();
+		AdditionalArgument addArg = toCheck.next();
+		assertEquals("checking argument type", ArgumentType.TIME,
+				addArg.getArgumentType());
+		assertEquals("checking argument operand", "3pm 4pm",
+				addArg.getOperand());
+	}
+
+	@Test
+	public void testParseToCommandUpdate12() {
+		Command obtainedCommand = testClass
+				.parse("update 300 --time 3pm 4pm --deadline 10 Nov 2014");
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Not possible to set both deadline and time range.\n",
+				obtainedCommand.getMessage());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
 	}
 
 	@Test

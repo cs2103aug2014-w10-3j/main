@@ -61,5 +61,19 @@ public class SearchHandler extends Handler {
 		
 		return result;
 	}
-
+	
+	@Override
+	protected Result constructResult(String operand, List<Task> list){
+		return 	new ResultImpl(CommandType.RETRIEVE, 
+				operand,
+				new Time(System.currentTimeMillis()), 
+				list);
+	}
+	@Override
+	protected Result constructResult(String operand){
+		return new ResultImpl(CommandType.RETRIEVE,
+				operand,
+				new Time(System.currentTimeMillis())
+				);
+	}
 }
