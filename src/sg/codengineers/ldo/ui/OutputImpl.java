@@ -186,6 +186,7 @@ public class OutputImpl implements Output {
 						+ ": \n");
 				showOneTaskToUser();
 			} else {
+				showToUser("Showing all tasks\n");
 				showMultipleTasksToUser();
 			}
 		}
@@ -235,13 +236,113 @@ public class OutputImpl implements Output {
 	 * [3] <Task Name>
 	 * 
 	 */
+	@SuppressWarnings("deprecation")
 	private void showMultipleTasksToUser() {
-		String priOp = _result.getPrimaryOperand();
-		if (priOp.isEmpty()) {
-			priOp = "all";
+		int counter = 1;
+
+		while (_taskItr.hasNext()) {
+			Task toPrint = _taskItr.next();
+			StringBuilder sb = new StringBuilder();
+			String name = new String();
+			String description = new String();
+			String tag = new String();
+			String deadline = new String();
+			String time = new String();
+			String priority = new String();
+
+			name = toPrint.getName();
+
+			if (!toPrint.getDescription().isEmpty()) {
+				description = " " + toPrint.getDescription();
+			}
+
+			if (!toPrint.getTag().isEmpty()) {
+				tag = " " + toPrint.getTag();
+			}
+
+			if (toPrint.getDeadline() != null) {
+
+				sb.append(String.format("%02d", toPrint.getDeadline()
+						.getHours()));
+				sb.append(":");
+				sb.append(String.format("%02d", toPrint.getDeadline()
+						.getMinutes()));
+				sb.append(" ");
+				sb.append(String
+						.format("%02d", toPrint.getDeadline().getDate()));
+				sb.append(" ");
+				int month = toPrint.getDeadline().getMonth();
+				switch (month) {
+					case 0 :
+						sb.append("Jan");
+						break;
+					case 1 :
+						sb.append("Feb");
+						break;
+					case 2 :
+						sb.append("Mar");
+						break;
+					case 3 :
+						sb.append("Apr");
+						break;
+					case 4 :
+						sb.append("May");
+						break;
+					case 5 :
+						sb.append("Jun");
+						break;
+					case 6 :
+						sb.append("Jul");
+						break;
+					case 7 :
+						sb.append("Aug");
+						break;
+					case 8 :
+						sb.append("Sep");
+						break;
+					case 9 :
+						sb.append("Oct");
+						break;
+					case 10 :
+						sb.append("Nov");
+						break;
+					case 11 :
+						sb.append("Dec");
+						break;
+					default:
+				}
+				sb.append(" ");
+				sb.append(String.format("%04d",
+						toPrint.getDeadline().getYear() + 1900));
+				deadline = " " + sb.toString();
+			}
+			if (toPrint.getStartTime() != null
+					&& toPrint.getEndTime() != null
+					&& !toPrint.getStartTime().equals(toPrint.getEndTime())) {
+				sb = new StringBuilder();
+				sb.append(" from ");
+				sb.append(String.format("%02d", toPrint.getStartTime()
+						.getHours()));
+				sb.append(":");
+				sb.append(String.format("%02d", toPrint.getStartTime()
+						.getMinutes()));
+				sb.append(" to ");
+				sb.append(String
+						.format("%02d", toPrint.getEndTime().getHours()));
+				sb.append(":");
+				sb.append(String.format("%02d", toPrint.getEndTime()
+						.getMinutes()));
+				time = sb.toString();
+			}
+
+			if (toPrint.getPriority() != null) {
+				priority = " " + toPrint.getPriority().getText();
+			}
+
+			showToUser(String.format(TASK, counter, name, description,
+					time, tag, deadline, priority));
+			counter++;
 		}
-		showToUser("Showing " + priOp + "\n");
-		printTaskList();
 	}
 
 	/**
@@ -385,119 +486,10 @@ public class OutputImpl implements Output {
 
 		if (hasTasksToday) {
 			showToUser(TODAYS_TASK);
-			printTaskList();
+			showMultipleTasksToUser();
 		}
 		else {
 			showToUser(NO_TASK_TODAY);
-		}
-	}
-
-	@SuppressWarnings("deprecation")
-	private void printTaskList() {
-		int counter = 1;
-
-		while (_taskItr.hasNext()) {
-			Task toPrint = _taskItr.next();
-			StringBuilder sb = new StringBuilder();
-			String name = new String();
-			String description = new String();
-			String tag = new String();
-			String deadline = new String();
-			String time = new String();
-			String priority = new String();
-
-			name = toPrint.getName();
-
-			if (!toPrint.getDescription().isEmpty()) {
-				description = " " + toPrint.getDescription();
-			}
-
-			if (!toPrint.getTag().isEmpty()) {
-				tag = " " + toPrint.getTag();
-			}
-
-			if (toPrint.getDeadline() != null) {
-
-				sb.append(String.format("%02d", toPrint.getDeadline()
-						.getHours()));
-				sb.append(":");
-				sb.append(String.format("%02d", toPrint.getDeadline()
-						.getMinutes()));
-				sb.append(" ");
-				sb.append(String
-						.format("%02d", toPrint.getDeadline().getDate()));
-				sb.append(" ");
-				int month = toPrint.getDeadline().getMonth();
-				switch (month) {
-					case 0 :
-						sb.append("Jan");
-						break;
-					case 1 :
-						sb.append("Feb");
-						break;
-					case 2 :
-						sb.append("Mar");
-						break;
-					case 3 :
-						sb.append("Apr");
-						break;
-					case 4 :
-						sb.append("May");
-						break;
-					case 5 :
-						sb.append("Jun");
-						break;
-					case 6 :
-						sb.append("Jul");
-						break;
-					case 7 :
-						sb.append("Aug");
-						break;
-					case 8 :
-						sb.append("Sep");
-						break;
-					case 9 :
-						sb.append("Oct");
-						break;
-					case 10 :
-						sb.append("Nov");
-						break;
-					case 11 :
-						sb.append("Dec");
-						break;
-					default:
-				}
-				sb.append(" ");
-				sb.append(String.format("%04d",
-						toPrint.getDeadline().getYear() + 1900));
-				deadline = " " + sb.toString();
-			}
-			if (toPrint.getStartTime() != null
-					&& toPrint.getEndTime() != null
-					&& !toPrint.getStartTime().equals(toPrint.getEndTime())) {
-				sb = new StringBuilder();
-				sb.append(" from ");
-				sb.append(String.format("%02d", toPrint.getStartTime()
-						.getHours()));
-				sb.append(":");
-				sb.append(String.format("%02d", toPrint.getStartTime()
-						.getMinutes()));
-				sb.append(" to ");
-				sb.append(String
-						.format("%02d", toPrint.getEndTime().getHours()));
-				sb.append(":");
-				sb.append(String.format("%02d", toPrint.getEndTime()
-						.getMinutes()));
-				time = sb.toString();
-			}
-
-			if (toPrint.getPriority() != null) {
-				priority = " " + toPrint.getPriority().getText();
-			}
-
-			showToUser(String.format(TASK, counter, name, description,
-					time, tag, deadline, priority));
-			counter++;
 		}
 	}
 
