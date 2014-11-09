@@ -162,9 +162,10 @@ public class OutputImpl implements Output {
 	private void feedbackForDelete() {
 		if (_result.getPrimaryOperand().equalsIgnoreCase("all")) {
 			showToUser(String.format(DELETED_MESSAGE, "all"));
+		} else {
+			Task completedTask = _taskItr.next();
+			showToUser(String.format(DELETED_MESSAGE, completedTask.getName()));
 		}
-		Task completedTask = _taskItr.next();
-		showToUser(String.format(DELETED_MESSAGE, completedTask.getName()));
 	}
 
 	/**
