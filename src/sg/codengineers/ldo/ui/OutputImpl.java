@@ -57,8 +57,8 @@ public class OutputImpl implements Output {
 														"Priority", ": %s\n");
 
 	/* Welcome messages */
-	private static final String	PROGRAM_NAME	= "L'Do";
-	private static final String	NO_TASK_TODAY	= "There are no tasks for today!\n";
+	private static final String	PROGRAM_NAME	= "\t L'Do";
+	private static final String	NO_TASK_TODAY	= "There are @|green no|@ tasks for today!\n";
 	private static final String	TODAYS_TASK		= "Here are your tasks for today:\n";
 
 	/* Member Variables */
