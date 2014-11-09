@@ -37,6 +37,15 @@ public class SearchHandler extends Handler {
 			
 		} 
 		
+		if(!isOpEmpty && !isItEmpty){
+			List<Task> resultList = new ArrayList<Task>(_taskList);
+			resultList = searchTask(resultList, new AdditionalArgumentImpl(AdditionalArgument.ArgumentType.NAME, primaryOperand));
+			while(iterator.hasNext()){
+				resultList = searchTask(resultList, iterator.next());
+			}
+			result = constructResult(primaryOperand, resultList);
+		} 		
+		
 		if(isOpEmpty && !isItEmpty){
 			List<Task> resultList = new ArrayList<Task>(_taskList);
 			while(iterator.hasNext()){
@@ -64,14 +73,14 @@ public class SearchHandler extends Handler {
 	
 	@Override
 	protected Result constructResult(String operand, List<Task> list){
-		return 	new ResultImpl(CommandType.RETRIEVE, 
+		return 	new ResultImpl(CommandType.SEARCH, 
 				operand,
 				new Time(System.currentTimeMillis()), 
 				list);
 	}
 	@Override
 	protected Result constructResult(String operand){
-		return new ResultImpl(CommandType.RETRIEVE,
+		return new ResultImpl(CommandType.SEARCH,
 				operand,
 				new Time(System.currentTimeMillis())
 				);
