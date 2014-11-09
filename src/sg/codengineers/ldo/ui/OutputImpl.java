@@ -2,6 +2,8 @@ package sg.codengineers.ldo.ui;
 
 import java.util.Iterator;
 
+import org.fusesource.jansi.Ansi;
+
 import sg.codengineers.ldo.model.Command.CommandType;
 import sg.codengineers.ldo.model.Output;
 import sg.codengineers.ldo.model.Result;
@@ -16,20 +18,43 @@ import sg.codengineers.ldo.model.Task;
 public class OutputImpl implements Output {
 
 	/* Constants */
+	public static final String	ANSI_CLS		= "\u001b[2J";
+	public static final String	ANSI_HOME		= "\u001b[H";
 
+	/* Color Strings */
+	private static final String	KEYWORD_COLOR	= "@|blue %s|@%s";
 	/* Message Strings */
-	private static final String	CREATED_MESSAGE	= "Added %s\n";
-	private static final String	UPDATED_MESSAGE	= "Updated %s\n";
-	private static final String	DELETED_MESSAGE	= "Deleted %s\n";
+	private static final String	CREATED_MESSAGE	= String.format(KEYWORD_COLOR,
+														"Added", " \"%s\"\n");
+	private static final String	UPDATED_MESSAGE	= String.format(KEYWORD_COLOR,
+														"Updated", " %s\n");
+	private static final String	DELETED_MESSAGE	= String.format(KEYWORD_COLOR,
+														"Deleted", " %s\n");
+	private static final String	SYNC_MESSAGE	= String.format(KEYWORD_COLOR,
+														"Syncing",
+														" with Google\n");
+	private static final String	SEARCH_MESSAGE	= String.format(KEYWORD_COLOR,
+														"Searching",
+														" for all tasks containing\"%s\":\n");
+	private static final String	UNDO_MESSAGE	= String.format(KEYWORD_COLOR,
+														"Undone",
+														" command: \"s\".\n");
 	private static final String	EXIT_MESSAGE	= "Bye! See you again.\n";
 	private static final String	STUB_MESSAGE	= "This module is still under development.\n";
+	private static final String	EMPTY_TASK_LIST	= "Task list is empty.\n";
 	private static final String	TASK			= "[%d] %s%s%s%s%s%s\n";
-	private static final String	NAME			= "Name: %s\n";
-	private static final String	DESCRIPTION		= "Description: %s\n";
-	private static final String	TAG				= "Tag: %s\n";
-	private static final String	DEADLINE		= "Deadline: %s %s\n";
-	private static final String	TIME			= "Time: %s\n";
-	private static final String	PRIORITY		= "Priority: %s\n";
+	private static final String	NAME			= String.format(KEYWORD_COLOR,
+														"Name", ": %s\n");
+	private static final String	DESCRIPTION		= String.format(KEYWORD_COLOR,
+														"Description", ": %s\n");
+	private static final String	TAG				= String.format(KEYWORD_COLOR,
+														"Tag", ": %s\n");
+	private static final String	DEADLINE		= String.format(KEYWORD_COLOR,
+														"Deadline", ": %s %s\n");
+	private static final String	TIME			= String.format(KEYWORD_COLOR,
+														"Time", ": %s\n");
+	private static final String	PRIORITY		= String.format(KEYWORD_COLOR,
+														"Priority", ": %s\n");
 
 	/* Welcome messages */
 	private static final String	PROGRAM_NAME	= "L'Do";
@@ -66,6 +91,9 @@ public class OutputImpl implements Output {
 				break;
 			case RETRIEVE :
 				feedbackForRetrieve();
+				break;
+			case SYNC :
+				feedbackForSync();
 				break;
 			case SEARCH :
 				feedbackForSearch();
@@ -162,9 +190,10 @@ public class OutputImpl implements Output {
 	private void feedbackForDelete() {
 		if (_result.getPrimaryOperand().equalsIgnoreCase("all")) {
 			showToUser(String.format(DELETED_MESSAGE, "all"));
+		} else {
+			Task completedTask = _taskItr.next();
+			showToUser(String.format(DELETED_MESSAGE, completedTask.getName()));
 		}
-		Task completedTask = _taskItr.next();
-		showToUser(String.format(DELETED_MESSAGE, completedTask.getName()));
 	}
 
 	/**
@@ -176,7 +205,7 @@ public class OutputImpl implements Output {
 	private void feedbackForRetrieve() {
 		clearScreen();
 		if (!_result.getTasksIterator().hasNext()) {
-			showToUser("Task list is empty.\n");
+			showToUser(EMPTY_TASK_LIST);
 		}
 		else {
 			if (isNumeric(_result.getPrimaryOperand())) {
@@ -184,9 +213,14 @@ public class OutputImpl implements Output {
 						+ ": \n");
 				showOneTaskToUser();
 			} else {
+				showToUser("Showing all tasks\n");
 				showMultipleTasksToUser();
 			}
 		}
+	}
+
+	private void feedbackForSync() {
+		showToUser(String.format(SYNC_MESSAGE));
 	}
 
 	/**
@@ -198,8 +232,7 @@ public class OutputImpl implements Output {
 	 */
 	private void feedbackForSearch() {
 		clearScreen();
-		showToUser("Showing all tasks containing \""
-				+ _result.getPrimaryOperand() + "\":\n");
+		showToUser(String.format(SEARCH_MESSAGE, _result.getPrimaryOperand()));
 		showMultipleTasksToUser();
 	}
 
@@ -221,7 +254,7 @@ public class OutputImpl implements Output {
 	 * user which command was undone.
 	 */
 	private void feedbackForUndo() {
-		showToUser("Undone last command");
+		showToUser(String.format(UNDO_MESSAGE, _result.getPrimaryOperand()));
 	}
 
 	/**
@@ -233,13 +266,125 @@ public class OutputImpl implements Output {
 	 * [3] <Task Name>
 	 * 
 	 */
+	@SuppressWarnings("deprecation")
 	private void showMultipleTasksToUser() {
-		String priOp = _result.getPrimaryOperand();
-		if (priOp.isEmpty()) {
-			priOp = "all";
+		int counter = 1;
+
+		while (_taskItr.hasNext()) {
+			Task toPrint = _taskItr.next();
+			StringBuilder sb = new StringBuilder();
+			String name = new String();
+			String description = new String();
+			String tag = new String();
+			String deadline = new String();
+			String time = new String();
+			String priority = new String();
+
+			name = toPrint.getName();
+
+			if (!toPrint.getDescription().isEmpty()) {
+				description = " " + toPrint.getDescription();
+			}
+
+			if (!toPrint.getTag().isEmpty()) {
+				tag = " " + toPrint.getTag();
+			}
+
+			if (toPrint.getDeadline() != null) {
+
+				sb.append(String.format("%02d", toPrint.getDeadline()
+						.getHours()));
+				sb.append(":");
+				sb.append(String.format("%02d", toPrint.getDeadline()
+						.getMinutes()));
+				sb.append(" ");
+				sb.append(String
+						.format("%02d", toPrint.getDeadline().getDate()));
+				sb.append(" ");
+				int month = toPrint.getDeadline().getMonth();
+				switch (month) {
+					case 0 :
+						sb.append("Jan");
+						break;
+					case 1 :
+						sb.append("Feb");
+						break;
+					case 2 :
+						sb.append("Mar");
+						break;
+					case 3 :
+						sb.append("Apr");
+						break;
+					case 4 :
+						sb.append("May");
+						break;
+					case 5 :
+						sb.append("Jun");
+						break;
+					case 6 :
+						sb.append("Jul");
+						break;
+					case 7 :
+						sb.append("Aug");
+						break;
+					case 8 :
+						sb.append("Sep");
+						break;
+					case 9 :
+						sb.append("Oct");
+						break;
+					case 10 :
+						sb.append("Nov");
+						break;
+					case 11 :
+						sb.append("Dec");
+						break;
+					default:
+				}
+				sb.append(" ");
+				sb.append(String.format("%04d",
+						toPrint.getDeadline().getYear() + 1900));
+				deadline = " " + sb.toString();
+			}
+			if (toPrint.getStartTime() != null
+					&& toPrint.getEndTime() != null
+					&& !toPrint.getStartTime().equals(toPrint.getEndTime())) {
+				sb = new StringBuilder();
+				sb.append(" from ");
+				sb.append(String.format("%02d", toPrint.getStartTime()
+						.getHours()));
+				sb.append(":");
+				sb.append(String.format("%02d", toPrint.getStartTime()
+						.getMinutes()));
+				sb.append(" to ");
+				sb.append(String
+						.format("%02d", toPrint.getEndTime().getHours()));
+				sb.append(":");
+				sb.append(String.format("%02d", toPrint.getEndTime()
+						.getMinutes()));
+				time = sb.toString();
+			}
+
+			if (toPrint.getPriority() != null) {
+				sb = new StringBuilder();
+				switch (toPrint.getPriority()) {
+					case HIGH :
+						priority = "@|red  high|@";
+						break;
+					case NORMAL :
+						priority = "@|yellow  normal|@";
+						break;
+					case LOW :
+						priority = "@|green  low|@";
+						break;
+					default:
+				}
+			}
+
+			showToUser(String.format(TASK, counter, name, description,
+					time, tag, deadline, priority));
+			counter++;
 		}
-		showToUser("Showing " + priOp + "\n");
-		printTaskList();
 	}
 
 	/**
@@ -354,13 +499,13 @@ public class OutputImpl implements Output {
 			if (toPrint.getPriority() != null) {
 				switch (toPrint.getPriority()) {
 					case HIGH :
-						showToUser(String.format(PRIORITY, "high"));
+						showToUser(String.format(PRIORITY, "@|red high|@"));
 						break;
 					case NORMAL :
-						showToUser(String.format(PRIORITY, "normal"));
+						showToUser(String.format(PRIORITY, "@|yellow normal|@"));
 						break;
 					case LOW :
-						showToUser(String.format(PRIORITY, "low"));
+						showToUser(String.format(PRIORITY, "@|green low|@"));
 						break;
 					default:
 				}
@@ -383,119 +528,10 @@ public class OutputImpl implements Output {
 
 		if (hasTasksToday) {
 			showToUser(TODAYS_TASK);
-			printTaskList();
+			showMultipleTasksToUser();
 		}
 		else {
 			showToUser(NO_TASK_TODAY);
-		}
-	}
-
-	@SuppressWarnings("deprecation")
-	private void printTaskList() {
-		int counter = 1;
-
-		while (_taskItr.hasNext()) {
-			Task toPrint = _taskItr.next();
-			StringBuilder sb = new StringBuilder();
-			String name = new String();
-			String description = new String();
-			String tag = new String();
-			String deadline = new String();
-			String time = new String();
-			String priority = new String();
-
-			name = toPrint.getName();
-
-			if (!toPrint.getDescription().isEmpty()) {
-				description = " " + toPrint.getDescription();
-			}
-
-			if (!toPrint.getTag().isEmpty()) {
-				tag = " " + toPrint.getTag();
-			}
-
-			if (toPrint.getDeadline() != null) {
-
-				sb.append(String.format("%02d", toPrint.getDeadline()
-						.getHours()));
-				sb.append(":");
-				sb.append(String.format("%02d", toPrint.getDeadline()
-						.getMinutes()));
-				sb.append(" ");
-				sb.append(String
-						.format("%02d", toPrint.getDeadline().getDate()));
-				sb.append(" ");
-				int month = toPrint.getDeadline().getMonth();
-				switch (month) {
-					case 0 :
-						sb.append("Jan");
-						break;
-					case 1 :
-						sb.append("Feb");
-						break;
-					case 2 :
-						sb.append("Mar");
-						break;
-					case 3 :
-						sb.append("Apr");
-						break;
-					case 4 :
-						sb.append("May");
-						break;
-					case 5 :
-						sb.append("Jun");
-						break;
-					case 6 :
-						sb.append("Jul");
-						break;
-					case 7 :
-						sb.append("Aug");
-						break;
-					case 8 :
-						sb.append("Sep");
-						break;
-					case 9 :
-						sb.append("Oct");
-						break;
-					case 10 :
-						sb.append("Nov");
-						break;
-					case 11 :
-						sb.append("Dec");
-						break;
-					default:
-				}
-				sb.append(" ");
-				sb.append(String.format("%04d",
-						toPrint.getDeadline().getYear() + 1900));
-				deadline = " " + sb.toString();
-			}
-			if (toPrint.getStartTime() != null
-					&& toPrint.getEndTime() != null
-					&& !toPrint.getStartTime().equals(toPrint.getEndTime())) {
-				sb = new StringBuilder();
-				sb.append(" from ");
-				sb.append(String.format("%02d", toPrint.getStartTime()
-						.getHours()));
-				sb.append(":");
-				sb.append(String.format("%02d", toPrint.getStartTime()
-						.getMinutes()));
-				sb.append(" to ");
-				sb.append(String
-						.format("%02d", toPrint.getEndTime().getHours()));
-				sb.append(":");
-				sb.append(String.format("%02d", toPrint.getEndTime()
-						.getMinutes()));
-				time = sb.toString();
-			}
-
-			if (toPrint.getPriority() != null) {
-				priority = " " + toPrint.getPriority().getText();
-			}
-
-			showToUser(String.format(TASK, counter, name, description,
-					time, tag, deadline, priority));
-			counter++;
 		}
 	}
 
@@ -504,6 +540,7 @@ public class OutputImpl implements Output {
 	 * used during development, not in the final product.
 	 * 
 	 */
+	@SuppressWarnings("unused")
 	private void stub() {
 		showToUser(STUB_MESSAGE);
 	}
@@ -514,22 +551,8 @@ public class OutputImpl implements Output {
 	 * Used to help provide a cleaner user interface.
 	 */
 	private void clearScreen() {
-		try
-		{
-			final String os = System.getProperty("os.name");
-
-			if (os.contains("Windows"))
-			{
-				Runtime.getRuntime().exec("cls");
-			}
-			else
-			{
-				Runtime.getRuntime().exec("clear");
-			}
-		} catch (final Exception e)
-		{
-			// Do nothing.
-		}
+		showToUser(ANSI_CLS);
+		showToUser(ANSI_HOME);
 	}
 
 	/**
@@ -562,7 +585,7 @@ public class OutputImpl implements Output {
 	 *            Message to be shown
 	 */
 	private void showToUser(String message) {
-		System.out.print(message);
+		System.out.print(Ansi.ansi().render(message));
 	}
 
 }
