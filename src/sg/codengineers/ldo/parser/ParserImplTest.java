@@ -562,6 +562,34 @@ public class ParserImplTest {
 	}
 
 	@Test
+	public void testParseToCommandRetrieve9() {
+		Command obtainedCommand = testClass.parse("view a");
+		assertEquals("checking user input", "view a",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Primary operand should contain numbers!\n",
+				obtainedCommand.getMessage());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve10() {
+		Command obtainedCommand = testClass.parse("show a");
+		assertEquals("checking user input", "show a",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Primary operand should contain numbers!\n",
+				obtainedCommand.getMessage());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
 	public void testEqualsWithNull() {
 		Command obtainedCommand = testClass.parse("add test");
 		assertFalse("Checking if equals compares correctly with null",
