@@ -112,6 +112,7 @@ public class OutputImpl implements Output {
 	public void displayWelcome(Result result) {
 		clearScreen();
 		_result = result;
+		_taskItr = result.getTasksIterator();
 		showToUser(PROGRAM_NAME + "\n");
 		displayTodaysTask();
 	}
@@ -316,7 +317,8 @@ public class OutputImpl implements Output {
 						toPrint.getDeadline().getYear() + 1900));
 				deadline = " " + sb.toString();
 			}
-			if (!toPrint.getStartTime().equals(toPrint.getEndTime())) {
+			if (toPrint.getStartTime() != null && toPrint.getEndTime() != null
+					&& !toPrint.getStartTime().equals(toPrint.getEndTime())) {
 				sb = new StringBuilder();
 				sb.append(" from ");
 				sb.append(String.format("%02d", toPrint.getStartTime()
@@ -433,7 +435,8 @@ public class OutputImpl implements Output {
 				showToUser(String.format(DEADLINE, time, date));
 			}
 
-			if (!toPrint.getStartTime().equals(toPrint.getEndTime())) {
+			if (toPrint.getStartTime() != null && toPrint.getEndTime() != null
+					&& !toPrint.getStartTime().equals(toPrint.getEndTime())) {
 				sb = new StringBuilder();
 				sb.append("from ");
 				sb.append(String.format("%02d", toPrint.getStartTime()
@@ -472,18 +475,122 @@ public class OutputImpl implements Output {
 	 * Displays a list of tasks to be done today. If no task is to be done
 	 * today, the NO_TASK_TODAY_MESSAGE will be shown instead
 	 */
+	@SuppressWarnings("deprecation")
 	private void displayTodaysTask() {
+
 		boolean hasTasksToday = false;
 		Iterator<Task> taskList = _result.getTasksIterator();
+		StringBuilder sb = new StringBuilder();
+		int counter = 1;
+
 		if (taskList != null && taskList.hasNext()) {
 			hasTasksToday = true;
 		}
+
 		if (hasTasksToday) {
 			showToUser(TODAYS_TASK);
-			int counter = 1;
-			while (taskList.hasNext()) {
-				Task toPrint = taskList.next();
-				showToUser(String.format(TASK, counter, toPrint.getName()));
+			String name = new String();
+			String description = new String();
+			String tag = new String();
+			String deadline = new String();
+			String time = new String();
+			String priority = new String();
+
+			while (_taskItr.hasNext()) {
+				Task toPrint = _taskItr.next();
+				sb = new StringBuilder();
+
+				name = toPrint.getName();
+
+				if (!toPrint.getDescription().isEmpty()) {
+					description = " " + toPrint.getDescription();
+				}
+
+				if (!toPrint.getTag().isEmpty()) {
+					tag = " " + toPrint.getTag();
+				}
+
+				if (toPrint.getDeadline() != null) {
+
+					sb.append(String.format("%02d", toPrint.getDeadline()
+							.getHours()));
+					sb.append(":");
+					sb.append(String.format("%02d", toPrint.getDeadline()
+							.getMinutes()));
+					sb.append(" ");
+					sb.append(String
+							.format("%02d", toPrint.getDeadline().getDate()));
+					sb.append(" ");
+					int month = toPrint.getDeadline().getMonth();
+					switch (month) {
+						case 0 :
+							sb.append("Jan");
+							break;
+						case 1 :
+							sb.append("Feb");
+							break;
+						case 2 :
+							sb.append("Mar");
+							break;
+						case 3 :
+							sb.append("Apr");
+							break;
+						case 4 :
+							sb.append("May");
+							break;
+						case 5 :
+							sb.append("Jun");
+							break;
+						case 6 :
+							sb.append("Jul");
+							break;
+						case 7 :
+							sb.append("Aug");
+							break;
+						case 8 :
+							sb.append("Sep");
+							break;
+						case 9 :
+							sb.append("Oct");
+							break;
+						case 10 :
+							sb.append("Nov");
+							break;
+						case 11 :
+							sb.append("Dec");
+							break;
+						default:
+					}
+					sb.append(" ");
+					sb.append(String.format("%04d",
+							toPrint.getDeadline().getYear() + 1900));
+					deadline = " " + sb.toString();
+				}
+				if (toPrint.getStartTime() != null
+						&& toPrint.getEndTime() != null
+						&& !toPrint.getStartTime().equals(toPrint.getEndTime())) {
+					sb = new StringBuilder();
+					sb.append(" from ");
+					sb.append(String.format("%02d", toPrint.getStartTime()
+							.getHours()));
+					sb.append(":");
+					sb.append(String.format("%02d", toPrint.getStartTime()
+							.getMinutes()));
+					sb.append(" to ");
+					sb.append(String
+							.format("%02d", toPrint.getEndTime().getHours()));
+					sb.append(":");
+					sb.append(String.format("%02d", toPrint.getEndTime()
+							.getMinutes()));
+					time = sb.toString();
+				}
+
+				if (toPrint.getPriority() != null) {
+					priority = " " + toPrint.getPriority().getText();
+				}
+
+				showToUser(String.format(TASK, counter, name, description,
+						time, tag, deadline, priority));
 				counter++;
 			}
 		}
