@@ -393,17 +393,16 @@ public class OutputImpl implements Output {
 	@SuppressWarnings("deprecation")
 	private void printTaskList() {
 		int counter = 1;
-		StringBuilder sb = new StringBuilder();
-		String name = new String();
-		String description = new String();
-		String tag = new String();
-		String deadline = new String();
-		String time = new String();
-		String priority = new String();
 
 		while (_taskItr.hasNext()) {
 			Task toPrint = _taskItr.next();
-			sb = new StringBuilder();
+			StringBuilder sb = new StringBuilder();
+			String name = new String();
+			String description = new String();
+			String tag = new String();
+			String deadline = new String();
+			String time = new String();
+			String priority = new String();
 
 			name = toPrint.getName();
 
