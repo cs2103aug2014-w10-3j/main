@@ -149,9 +149,30 @@ public abstract class Handler {
 				break;
 			case TIME:
 				String[] sOperand = operand.split("\\s+");
-				if(sOperand.length != 2){
-					throw new IllegalArgumentException("Please specify both start date and end date");
-				} else {
+				if((sOperand.length == 2 && !sOperand[0].isEmpty() && sOperand[1].isEmpty())
+						|| (sOperand.length == 1 && !sOperand[0].isEmpty())){
+					final Date date = FORMATTER.parse(sOperand[0]);
+					newList = filter(newList, new Filter<Task>(){
+						@Override
+						public boolean call(Task task){
+							Date ts = task.getStartTime();
+							Date te = task.getEndTime();
+							Date ddl= task.getDeadline();
+							if(ddl != null){
+								if( ddl.compareTo(date) <=0 &&
+										ddl.compareTo(new Date()) >=0){
+									return true;
+								}
+							}							
+							if(ts != null && te != null){
+								if(te.compareTo(date)>=0 && te.compareTo(date)<=0){
+									return true;
+								}
+							}
+							return false;
+						}
+					});					
+				} else if (sOperand.length == 2&& !sOperand[0].isEmpty() && !sOperand[1].isEmpty()){
 					final Date startDate = FORMATTER.parse(sOperand[0]);
 					final Date endDate = FORMATTER.parse(sOperand[1]);
 					newList = filter(newList, new Filter<Task>(){
@@ -167,6 +188,8 @@ public abstract class Handler {
 							}
 						}
 					});
+				} else {
+					throw new IllegalArgumentException("Please specify both start date and end date");
 				}
 				break;
 			case PRIORITY:		
