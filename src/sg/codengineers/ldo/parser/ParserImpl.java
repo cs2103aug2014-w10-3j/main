@@ -28,16 +28,16 @@ public class ParserImpl implements Parser {
 
 	/* Messages to show to user for Exceptions */
 	private static String						CODE_FAULT					= "%1s in %2s component is not behaving according to how it should be.\n";
-	private static String						BLANK_INPUT					= "Blank input not acceptable\n";
-	private static String						INVALID_COMMAND				= "%1s has an Invalid command type entered\n";
-	private static String						HELP_EXPECTED				= "Help argument expected\n";
-	private static String						NUMBER_EXPECTED				= "Primary operand should contain numbers!\n";
-	private static String						INVALID_ARGUMENT			= "Invalid additional argument entered\n";
-	private static String						OPERAND_EXPECTED			= "Operand should follow additional argument %1s\n";
-	private static String						INVALID_INDEX				= "Primary operand should not be less than 1!\n";
-	private static String						INVALID_OPERAND				= "%s is not a valid operand for %s\n";
-	private static String						INVALID_ARG_FOR_CMD			= "%s argument is invalid for %s command type\n";
-	private static final String					DEADLINE_AND_TIME			= "Not possible to set both deadline and time range!\n";
+	private static String						BLANK_INPUT					= "Blank input not acceptable.\n";
+	private static String						INVALID_COMMAND				= "%1s has an Invalid command type entered.\n";
+	private static String						EMPTY_OPR_FOR_CMD			= "Empty operand for %s command not supported.\n";
+	private static String						NUMBER_EXPECTED_FOR_CMD		= "Primary operand for %s should contain numbers.\n";
+	private static String						INVALID_ARGUMENT			= "Invalid additional argument entered.\n";
+	private static String						OPERAND_EXPECTED			= "Operand should follow additional argument %s.\n";
+	private static String						INVALID_INDEX				= "Primary operand should not be less than 1.\n";
+	private static String						INVALID_OPERAND				= "%s is not a valid operand for %s.\n";
+	private static String						INVALID_ARG_FOR_CMD			= "%s argument is invalid for %s command type.\n";
+	private static final String					DEADLINE_AND_TIME			= "Not possible to set both deadline and time range.\n";
 
 	/* Static Variables */
 	private static Map<String, CommandType>		_cmdMap;
@@ -513,15 +513,24 @@ public class ParserImpl implements Parser {
 			_isEmptyPriOp = false;
 		}
 
+		// To capture empty primary operands
 		if (_isEmptyPriOp) {
 			if (!_isHelpRequest && !isUnaryCommand(cmdType)) {
-				throw new IllegalArgumentException(HELP_EXPECTED);
+				throw new IllegalArgumentException(String.format(
+						EMPTY_OPR_FOR_CMD, cmdType.toString().toLowerCase()));
 			}
 		}
 
+		/* Checking for acceptable primary operand for each command type */
+
+		// CREATE accepts all
+
+		// Update
 		if (cmdType == CommandType.UPDATE && !_isHelpRequest) {
 			if (!isDigit(priOp)) {
-				throw new IllegalArgumentException(NUMBER_EXPECTED);
+				throw new IllegalArgumentException(String.format(
+						NUMBER_EXPECTED_FOR_CMD, cmdType.toString()
+								.toLowerCase()));
 			}
 
 			int index = Integer.parseInt(priOp);
@@ -530,11 +539,14 @@ public class ParserImpl implements Parser {
 			}
 		}
 
+		// DELETE
 		if (cmdType == CommandType.DELETE && !priOp.equalsIgnoreCase("all")
 				&& !_isHelpRequest) {
 
 			if (!isDigit(priOp)) {
-				throw new IllegalArgumentException(NUMBER_EXPECTED);
+				throw new IllegalArgumentException(String.format(
+						NUMBER_EXPECTED_FOR_CMD, cmdType.toString()
+								.toLowerCase()));
 			}
 
 			int index = Integer.parseInt(priOp);
@@ -543,11 +555,14 @@ public class ParserImpl implements Parser {
 			}
 		}
 
+		// RETRIEVE
 		if (cmdType == CommandType.RETRIEVE && !priOp.equalsIgnoreCase("all")
 				&& !_isHelpRequest && !_isEmptyPriOp) {
 
 			if (!isDigit(priOp)) {
-				throw new IllegalArgumentException(NUMBER_EXPECTED);
+				throw new IllegalArgumentException(String.format(
+						NUMBER_EXPECTED_FOR_CMD, cmdType.toString()
+								.toLowerCase()));
 			}
 
 			int i = Integer.parseInt(priOp);
@@ -555,6 +570,10 @@ public class ParserImpl implements Parser {
 				throw new IllegalArgumentException(INVALID_INDEX);
 			}
 		}
+
+		// SEARCH
+		// UNDO
+		// EXIT
 	}
 
 	/**
@@ -706,6 +725,7 @@ public class ParserImpl implements Parser {
 									.toString().toLowerCase()));
 				}
 			}
+
 			// UPDATE accepts all
 
 			// DELETE accepts only help
@@ -717,6 +737,22 @@ public class ParserImpl implements Parser {
 
 			// RETRIEVE accepts only help
 			if (cmdType == CommandType.RETRIEVE) {
+				throw new Exception(String.format(INVALID_ARG_FOR_CMD, argType
+						.toString().toLowerCase(), cmdType.toString()
+						.toLowerCase()));
+			}
+
+			// SEARCH accepts all
+
+			// UNDO accepts only help
+			if (cmdType == CommandType.UNDO) {
+				throw new Exception(String.format(INVALID_ARG_FOR_CMD, argType
+						.toString().toLowerCase(), cmdType.toString()
+						.toLowerCase()));
+			}
+
+			// EXIT accepts only help
+			if (cmdType == CommandType.EXIT) {
 				throw new Exception(String.format(INVALID_ARG_FOR_CMD, argType
 						.toString().toLowerCase(), cmdType.toString()
 						.toLowerCase()));
@@ -767,7 +803,8 @@ public class ParserImpl implements Parser {
 		else {
 			// Only help addArg should have empty operand
 			if (operand.isEmpty()) {
-				throw new Exception(String.format(OPERAND_EXPECTED, argType));
+				throw new Exception(String.format(OPERAND_EXPECTED, argType
+						.toString().toLowerCase()));
 			}
 
 			// Parsing priority to enums
