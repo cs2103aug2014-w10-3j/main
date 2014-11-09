@@ -109,22 +109,37 @@ public class Logic {
 	}
 
 	public Result deleteTask(Command command) throws IOException{
-		String primaryOperand = command.getPrimaryOperand();
-		Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
-		Result result = deleteHandler.execute(primaryOperand, iterator);
-		_dbConnector.delete(result.getTasksIterator().next(), TaskImpl.CLASS_NAME);
-		_listStack.push(new ArrayList<Task>(_taskList));
-		_commandStack.push(command);
+		Result result;
+		try{
+			String primaryOperand = command.getPrimaryOperand();
+			Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
+			result = deleteHandler.execute(primaryOperand, iterator);
+			_dbConnector.delete(result.getTasksIterator().next(), TaskImpl.CLASS_NAME);
+			_listStack.push(new ArrayList<Task>(_taskList));
+			_commandStack.push(command);			
+		} catch(Exception e){
+			return  new ResultImpl(CommandType.INVALID, 
+					"Cannot delete task with "+command.getUserInput(),
+					new Time(System.currentTimeMillis()));				
+		}
+
 		return result;
 	}
 
 	public Result updateTask(Command command) throws IOException{
-		String primaryOperand = command.getPrimaryOperand();
-		Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
-		Result result = updateHandler.execute(primaryOperand, iterator);
-		_dbConnector.update(result.getTasksIterator().next(),TaskImpl.CLASS_NAME);
-		_listStack.push(new ArrayList<Task>(_taskList));
-		_commandStack.push(command);
+		Result result;
+		try{
+			String primaryOperand = command.getPrimaryOperand();
+			Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
+			result = updateHandler.execute(primaryOperand, iterator);
+			_dbConnector.update(result.getTasksIterator().next(),TaskImpl.CLASS_NAME);
+			_listStack.push(new ArrayList<Task>(_taskList));
+			_commandStack.push(command);			
+		} catch(Exception e){
+			return  new ResultImpl(CommandType.INVALID, 
+					"Cannot update task with "+command.getUserInput(),
+					new Time(System.currentTimeMillis()));			
+		}
 		return result;
 	}
 
@@ -174,8 +189,15 @@ public class Logic {
 	}
 	
 	public Result showHelp(Command command){
-		CommandType type = command.getCommandType();
-		return helpHandler.execute(type);
+		try{
+			CommandType type = command.getCommandType();
+			return helpHandler.execute(type);			
+		}catch(Exception e){
+			return new ResultImpl(CommandType.INVALID, 
+					"Cannot find HELP page with "+command.getUserInput(),
+					new Time(System.currentTimeMillis()));			
+		}
+
 	}
 	
 	public String getGCalAuthURL(){
