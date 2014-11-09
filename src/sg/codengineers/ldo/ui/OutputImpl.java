@@ -2,7 +2,7 @@ package sg.codengineers.ldo.ui;
 
 import java.util.Iterator;
 
-import org.fusesource.jansi.AnsiConsole;
+import org.fusesource.jansi.Ansi;
 
 import sg.codengineers.ldo.model.Command.CommandType;
 import sg.codengineers.ldo.model.Output;
@@ -18,32 +18,52 @@ import sg.codengineers.ldo.model.Task;
 public class OutputImpl implements Output {
 
 	/* Constants */
-	private static final boolean	DEBUG_MODE		= false;
-	public static final String		ANSI_CLS		= "\u001b[2J";
-	public static final String		ANSI_HOME		= "\u001b[H";
+	public static final String	ANSI_CLS		= "\u001b[2J";
+	public static final String	ANSI_HOME		= "\u001b[H";
 
+	/* Color Strings */
+	private static final String	KEYWORD_COLOR	= "@|blue %s|@%s";
 	/* Message Strings */
-	private static final String		CREATED_MESSAGE	= "Added %s\n";
-	private static final String		UPDATED_MESSAGE	= "Updated %s\n";
-	private static final String		DELETED_MESSAGE	= "Deleted %s\n";
-	private static final String		EXIT_MESSAGE	= "Bye! See you again.\n";
-	private static final String		STUB_MESSAGE	= "This module is still under development.\n";
-	private static final String		TASK			= "[%d] %s%s%s%s%s%s\n";
-	private static final String		NAME			= "Name: %s\n";
-	private static final String		DESCRIPTION		= "Description: %s\n";
-	private static final String		TAG				= "Tag: %s\n";
-	private static final String		DEADLINE		= "Deadline: %s %s\n";
-	private static final String		TIME			= "Time: %s\n";
-	private static final String		PRIORITY		= "Priority: %s\n";
+	private static final String	CREATED_MESSAGE	= String.format(KEYWORD_COLOR,
+														"Added", " \"%s\"\n");
+	private static final String	UPDATED_MESSAGE	= String.format(KEYWORD_COLOR,
+														"Updated", " %s\n");
+	private static final String	DELETED_MESSAGE	= String.format(KEYWORD_COLOR,
+														"Deleted", " %s\n");
+	private static final String	SYNC_MESSAGE	= String.format(KEYWORD_COLOR,
+														"Syncing",
+														" with Google\n");
+	private static final String	SEARCH_MESSAGE	= String.format(KEYWORD_COLOR,
+														"Searching",
+														" for all tasks containing\"%s\":\n");
+	private static final String	UNDO_MESSAGE	= String.format(KEYWORD_COLOR,
+														"Undone",
+														" command: \"s\".\n");
+	private static final String	EXIT_MESSAGE	= "Bye! See you again.\n";
+	private static final String	STUB_MESSAGE	= "This module is still under development.\n";
+	private static final String	EMPTY_TASK_LIST	= "Task list is empty.\n";
+	private static final String	TASK			= "[%d] %s%s%s%s%s%s\n";
+	private static final String	NAME			= String.format(KEYWORD_COLOR,
+														"Name", ": %s\n");
+	private static final String	DESCRIPTION		= String.format(KEYWORD_COLOR,
+														"Description", ": %s\n");
+	private static final String	TAG				= String.format(KEYWORD_COLOR,
+														"Tag", ": %s\n");
+	private static final String	DEADLINE		= String.format(KEYWORD_COLOR,
+														"Deadline", ": %s %s\n");
+	private static final String	TIME			= String.format(KEYWORD_COLOR,
+														"Time", ": %s\n");
+	private static final String	PRIORITY		= String.format(KEYWORD_COLOR,
+														"Priority", ": %s\n");
 
 	/* Welcome messages */
-	private static final String		PROGRAM_NAME	= "L'Do";
-	private static final String		NO_TASK_TODAY	= "There are no tasks for today!\n";
-	private static final String		TODAYS_TASK		= "Here are your tasks for today:\n";
+	private static final String	PROGRAM_NAME	= "\t L'Do";
+	private static final String	NO_TASK_TODAY	= "There are @|green no|@ tasks for today!\n";
+	private static final String	TODAYS_TASK		= "Here are your tasks for today:\n";
 
 	/* Member Variables */
-	private Result					_result;
-	private Iterator<Task>			_taskItr;
+	private Result				_result;
+	private Iterator<Task>		_taskItr;
 
 	/* Public Methods */
 
@@ -71,6 +91,9 @@ public class OutputImpl implements Output {
 				break;
 			case RETRIEVE :
 				feedbackForRetrieve();
+				break;
+			case SYNC :
+				feedbackForSync();
 				break;
 			case SEARCH :
 				feedbackForSearch();
@@ -182,7 +205,7 @@ public class OutputImpl implements Output {
 	private void feedbackForRetrieve() {
 		clearScreen();
 		if (!_result.getTasksIterator().hasNext()) {
-			showToUser("Task list is empty.\n");
+			showToUser(EMPTY_TASK_LIST);
 		}
 		else {
 			if (isNumeric(_result.getPrimaryOperand())) {
@@ -196,6 +219,10 @@ public class OutputImpl implements Output {
 		}
 	}
 
+	private void feedbackForSync() {
+		showToUser(String.format(SYNC_MESSAGE));
+	}
+
 	/**
 	 * Gives the feedback for a SEARCH CommandType.
 	 * Method will display all the tasks that meets the search criteria provided
@@ -205,8 +232,7 @@ public class OutputImpl implements Output {
 	 */
 	private void feedbackForSearch() {
 		clearScreen();
-		showToUser("Showing all tasks containing \""
-				+ _result.getPrimaryOperand() + "\":\n");
+		showToUser(String.format(SEARCH_MESSAGE, _result.getPrimaryOperand()));
 		showMultipleTasksToUser();
 	}
 
@@ -228,7 +254,7 @@ public class OutputImpl implements Output {
 	 * user which command was undone.
 	 */
 	private void feedbackForUndo() {
-		showToUser("Undone last command");
+		showToUser(String.format(UNDO_MESSAGE, _result.getPrimaryOperand()));
 	}
 
 	/**
@@ -340,7 +366,19 @@ public class OutputImpl implements Output {
 			}
 
 			if (toPrint.getPriority() != null) {
-				priority = " " + toPrint.getPriority().getText();
+				sb = new StringBuilder();
+				switch (toPrint.getPriority()) {
+					case HIGH :
+						priority = "@|red  high|@";
+						break;
+					case NORMAL :
+						priority = "@|yellow  normal|@";
+						break;
+					case LOW :
+						priority = "@|green  low|@";
+						break;
+					default:
+				}
 			}
 
 			showToUser(String.format(TASK, counter, name, description,
@@ -461,13 +499,13 @@ public class OutputImpl implements Output {
 			if (toPrint.getPriority() != null) {
 				switch (toPrint.getPriority()) {
 					case HIGH :
-						showToUser(String.format(PRIORITY, "high"));
+						showToUser(String.format(PRIORITY, "@|red high|@"));
 						break;
 					case NORMAL :
-						showToUser(String.format(PRIORITY, "normal"));
+						showToUser(String.format(PRIORITY, "@|yellow normal|@"));
 						break;
 					case LOW :
-						showToUser(String.format(PRIORITY, "low"));
+						showToUser(String.format(PRIORITY, "@|green low|@"));
 						break;
 					default:
 				}
@@ -547,8 +585,7 @@ public class OutputImpl implements Output {
 	 *            Message to be shown
 	 */
 	private void showToUser(String message) {
-		AnsiConsole.systemInstall();
-		AnsiConsole.out.print(message);
+		System.out.print(Ansi.ansi().render(message));
 	}
 
 }
