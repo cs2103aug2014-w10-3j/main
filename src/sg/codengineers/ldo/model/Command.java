@@ -47,11 +47,6 @@ public interface Command {
 			}
 			return null;
 		}
-		
-		@Override
-		public String toString(){
-			return text;
-		}
 	};
 
 	/**
