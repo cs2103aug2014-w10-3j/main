@@ -21,7 +21,10 @@ import sg.codengineers.ldo.ui.UIImpl;
  * It reads the user's input which contains a command,
  * routes what to do with the data according to the
  * command type, and prints the corresponding feedback.
+ * 
+ * Uses java.util.Date class which has been deprecated.
  */
+@SuppressWarnings("deprecation")
 public class Controller {
 	//@author A0112171Y
 	
