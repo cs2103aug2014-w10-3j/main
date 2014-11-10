@@ -1,4 +1,4 @@
-//@author A0112171Y
+//@author A0112171Y-unused
 
 package sg.codengineers.ldo.test.system;
 
@@ -13,6 +13,10 @@ import org.junit.Test;
 
 import sg.codengineers.ldo.controller.Controller;
 
+/**
+ * System test cannot be used after Jansi is added.
+ * The ANSI escape sequences are all captured in the CLI.
+ */
 public class SystemTestCRUD {
 	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 	
@@ -29,31 +33,32 @@ public class SystemTestCRUD {
 	@Test
 	public void testCreate() {
 		Controller controller = Controller.getInstance();
-		
+		String answer;
 		try{
 			//only primary argument
 			controller.processCommand("add primary arg");
-			assertEquals("Added primary arg\n", outContent.toString());
-			outContent.reset();
-			
-			//primary argument + time using --time
-			controller.processCommand("add primary arg and time 1 --time 29/10/2014");
-			assertEquals("Added primary arg and time 1\n", outContent.toString());
-			outContent.reset();
-			
-			//primary argument + time using -t
-			controller.processCommand("add primary arg and time 2 -t 29/10/2014");
-			assertEquals("Added primary arg and time 2\n", outContent.toString());
+			answer = "Added \"primary arg\"\n"
+					+ "Name: primary arg\n"
+					+ "Priority: normal\n";
+			assertEquals(answer, outContent.toString());
 			outContent.reset();
 			
 			//primary argument + deadline using --deadline
 			controller.processCommand("add primary arg and deadline 1 --deadline 01/11/2014");
-			assertEquals("Added primary arg and deadline 1\n", outContent.toString());
+			answer = "Added \"primary arg and deadline 1\"\n"
+					+ "Name: primary arg and deadline 1\n"
+					+ "Deadline: 23:59 01 Nov 2014\n"
+					+ "Priority: normal\n";
+			assertEquals(answer, outContent.toString());
 			outContent.reset();
 			
-			//primary argument + deadline using -d
-			controller.processCommand("add primary arg and deadline 2 -d 01/11/2014");
-			assertEquals("Added primary arg and deadline 2\n", outContent.toString());
+			//primary argument + deadline using -dd
+			controller.processCommand("add primary arg and deadline 2 -dd 01/11/2014");
+			answer = "Added \"primary arg and deadline 2\"\n"
+					+ "Name: primary arg and deadline 2\n"
+					+ "Deadline: 23:59 01 Nov 2014\n"
+					+ "Priority: normal";
+			assertEquals(answer, outContent.toString());
 			outContent.reset();
 			
 			//primary argument + description using --description
