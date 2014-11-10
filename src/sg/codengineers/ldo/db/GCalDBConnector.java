@@ -8,7 +8,6 @@ package sg.codengineers.ldo.db;
  * handle objects of type "Task". This breaks a little abstraction but
  * we are left clear components
  * 
- * @author Sean
  */
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
