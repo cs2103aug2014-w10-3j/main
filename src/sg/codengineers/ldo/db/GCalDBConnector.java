@@ -27,6 +27,8 @@ import sg.codengineers.ldo.model.Task;
 
 import java.io.*;
 import java.util.*;
+import java.net.URI;
+import java.awt.Desktop;
 
 public class GCalDBConnector implements DBConnector {
 
@@ -35,7 +37,6 @@ public class GCalDBConnector implements DBConnector {
 	private static final String CLIENT_ID = "300670791643-aqcjcpka4r18bnr53rl5vtvj2h88l9ga.apps.googleusercontent.com";
 	private static final String CLIENT_SECRET = "pp9dS5SHzSEl_pu5hXw0ZFDk";
 	private static final String CALENDAR_SUMMARY = "L'Do";
-	private static final String CALENDAR_ID = "L-DO@cs2103.nus.edu.sg";
 	private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 	private static final JacksonFactory JSON_FACTORY = new JacksonFactory();
 	
@@ -155,7 +156,18 @@ public class GCalDBConnector implements DBConnector {
 	public static void auth() {
 		String url = FLOW.newAuthorizationUrl().setRedirectUri(REDIRECT_URL)
 				.build();
-		return url;
+		try {
+			if(Desktop.isDesktopSupported()) {
+				// Windows
+				Desktop.getDesktop().browse(new URI(url));
+			} else {
+				// Ubuntu
+				Runtime runtime = Runtime.getRuntime();
+				runtime.exec("/usr/bin/firefox -new-window " + url);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static GCalDBConnector setup(String authCode) {
@@ -164,10 +176,9 @@ public class GCalDBConnector implements DBConnector {
 					.setRedirectUri(REDIRECT_URL).execute();
 			GoogleCredential credential = new GoogleCredential()
 					.setFromTokenResponse(response);
-
 			
 			return new GCalDBConnector(credential);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
