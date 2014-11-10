@@ -205,8 +205,8 @@ public class Logic {
 
 	}
 	
-	public String getGCalAuthURL(){
-		return _dbConnector.getGCalAuthURL();
+	public void gCalAuth(){
+		_dbConnector.gCalAuth();
 	}
 	
 	public Result syncGCal(String userGCalAuthKey){

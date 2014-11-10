@@ -149,8 +149,8 @@ public class Controller {
 	}
 	
 	private Result GCal(){
-		String GCalAuthURL = logic.getGCalAuthURL();
-		ui.displayMessage(String.format(MSG_GCAL_AUTH_URL, GCalAuthURL));
+		logic.gCalAuth();
+		ui.displayMessage(String.format(MSG_GCAL_AUTH_URL));
 		
 		String userGCalAuthKey = ui.readFromUser();
 		return logic.syncGCal(userGCalAuthKey);
