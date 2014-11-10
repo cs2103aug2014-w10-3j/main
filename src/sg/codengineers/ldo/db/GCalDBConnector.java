@@ -51,12 +51,13 @@ public class GCalDBConnector implements DBConnector {
 	// No way around this since there is a name clash in the imported libraries
 	private com.google.api.services.calendar.Calendar service = null;
 	private List<Event> gCalEvents = null;
+	private Calendar calendar = null;
 
 	public GCalDBConnector(GoogleCredential credential) {
 		// Create a new authorized API client
 		service = new com.google.api.services.calendar.Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY,
 				credential).build();
-		
+
 		if (initCalendar()) {
 			read();
 		}
@@ -67,12 +68,11 @@ public class GCalDBConnector implements DBConnector {
 			List<CalendarListEntry> calendarList = service.calendarList().list().execute().getItems();
 			
 			if (!isCalendarCreated(calendarList)) {
-				Calendar calendar = new Calendar();
+				calendar = new Calendar();
 	
 				calendar.setSummary(CALENDAR_SUMMARY);
-				calendar.setId(CALENDAR_ID);
 				
-				service.calendars().insert(calendar).execute();
+				calendar = service.calendars().insert(calendar).execute();
 			}
 
 			return true;
@@ -88,7 +88,7 @@ public class GCalDBConnector implements DBConnector {
 			Task task = convertToTask(data);
 			Event event = taskToEvent(task);
 
-			Event createdEvent = service.events().insert(CALENDAR_ID, event).execute();
+			Event createdEvent = service.events().insert(calendar.getId(), event).execute();
 			gCalEvents.add(createdEvent);
 
 			return true;
@@ -104,7 +104,7 @@ public class GCalDBConnector implements DBConnector {
 			Task task = convertToTask(data);
 			Event event = taskToEvent(task);
 
-			service.events().patch(CALENDAR_ID, event.getId(), event).execute();
+			service.events().patch(calendar.getId(), event.getId(), event).execute();
 
 			return true;
 		} catch (IOException e) {
@@ -116,7 +116,7 @@ public class GCalDBConnector implements DBConnector {
 	@Override
 	public List<String> read() {
 		try {
-			Events events = service.events().list(CALENDAR_ID).execute();
+			Events events = service.events().list(calendar.getId()).execute();
 			gCalEvents = events.getItems();
 
 			List<String> taskList = new ArrayList<String>();
@@ -138,7 +138,7 @@ public class GCalDBConnector implements DBConnector {
 			Task task = convertToTask(data);			
 			Event event = taskToEvent(task);
 
-			service.events().delete(CALENDAR_ID, event.getId()).execute();
+			service.events().delete(calendar.getId(), event.getId()).execute();
 
 			return true;
 		} catch (IOException e) {
@@ -185,18 +185,24 @@ public class GCalDBConnector implements DBConnector {
 	}
 	
 	public boolean isCalendarCreated(List<CalendarListEntry> list) {
-		boolean isCreated = false;
-		String calendarId;
-		
-		for (CalendarListEntry entry : list) {
-			calendarId = entry.getId();
-
-			if (calendarId.equals(CALENDAR_ID)) {
-				isCreated = true;
+		try {
+			boolean isCreated = false;
+			String calendarSummary;
+			
+			for (CalendarListEntry entry : list) {
+				calendarSummary = entry.getSummary();
+	
+				if (calendarSummary.equals(CALENDAR_SUMMARY)) {
+					calendar = service.calendars().get(entry.getId()).execute();
+					isCreated = true;
+				}
 			}
+			
+			return isCreated;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
 		}
-		
-		return isCreated;
 	}
 	
 	/**
