@@ -315,4 +315,27 @@ public abstract class Handler {
 				new Time(System.currentTimeMillis())
 				);
 	}
+	
+	public static List<Task> eliminateDoneTasks(List<Task> taskList){
+		List<Task> newList = new ArrayList<Task>();
+		if(taskList != null){
+			for(int i = 0; i < taskList.size();i++){
+				if(!taskList.get(i).getTag().equalsIgnoreCase("Done")){
+					newList.add(taskList.get(i));
+				}
+			}
+		}
+		return newList;
+	}
+	
+	protected boolean isTagDone(AdditionalArgument arg){
+		if(arg == null){
+			return false;
+		} else {
+			if(arg.getArgumentType() == AdditionalArgument.ArgumentType.TAG && arg.getOperand()!= null &&arg.getOperand().equalsIgnoreCase("Done")){
+				return true;
+			}
+		}
+		return false;
+	}
 }

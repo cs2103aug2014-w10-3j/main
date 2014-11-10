@@ -19,7 +19,7 @@ public class ShowHandler {
 			return new ResultImpl(CommandType.RETRIEVE, 
 					"all",
 					new Time(System.currentTimeMillis()), 
-					_taskList);	 
+					Handler.eliminateDoneTasks(_taskList));	 
 		}
 		Task task = null;
 		try{
