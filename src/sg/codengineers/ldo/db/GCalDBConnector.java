@@ -31,6 +31,7 @@ import java.net.URI;
 import java.awt.Desktop;
 
 public class GCalDBConnector implements DBConnector {
+	//@author A0111163Y
 
 	// The clientId and clientSecret can be found in Google Developers
 	// Console
@@ -39,40 +40,75 @@ public class GCalDBConnector implements DBConnector {
 	private static final String CALENDAR_SUMMARY = "L'Do";
 	private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 	private static final JacksonFactory JSON_FACTORY = new JacksonFactory();
-	
+	private static final String REFRESH_TOKEN = "refresh_token";
+	private static final int SECOND = 1;
+
 	// Or your redirect URL for web based applications.
 	private static final String REDIRECT_URL = "urn:ietf:wg:oauth:2.0:oob";
 	private static final String SCOPE = "https://www.googleapis.com/auth/calendar";
 	private static final GoogleAuthorizationCodeFlow FLOW = new GoogleAuthorizationCodeFlow.Builder(
 			HTTP_TRANSPORT, JSON_FACTORY, CLIENT_ID, CLIENT_SECRET,
 			Arrays.asList(CalendarScopes.CALENDAR))
-			.setAccessType("online").setApprovalPrompt("auto").build();
+			.setAccessType("offline").setApprovalPrompt("force").build();
 
 	// No way around this since there is a name clash in the imported libraries
 	private com.google.api.services.calendar.Calendar service = null;
 	private List<Event> gCalEvents = null;
 	private Calendar calendar = null;
+	private String refreshToken = null;
 
-	public GCalDBConnector(GoogleCredential credential) {
-		// Create a new authorized API client
-		service = new com.google.api.services.calendar.Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY,
-				credential).build();
+	public GCalDBConnector() {
+		refreshToken = loadRefreshToken();
+
+		GoogleCredential credential = new GoogleCredential.Builder()
+					.setJsonFactory(JSON_FACTORY)
+					.setTransport(HTTP_TRANSPORT)
+					.setClientSecrets(CLIENT_ID, CLIENT_SECRET)
+					.build()
+					.setRefreshToken(refreshToken);
+
+		service = new com.google.api.services.calendar.Calendar
+				.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
+				.setApplicationName(CALENDAR_SUMMARY)
+				.build();
 
 		if (initCalendar()) {
+			read();
+		}
+	}
+
+	public GCalDBConnector(GoogleCredential credential, String token) {
+		refreshToken = token;
+
+		// Create a new authorized API client
+		service = new com.google.api.services.calendar.Calendar
+				.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
+				.setApplicationName(CALENDAR_SUMMARY)
+				.build();
+
+		if (initCalendar()) {
+			DBConfig.addNewSettings("task", "GCal", this);
 			read();
 		}
 	}
 	
 	private boolean initCalendar() {
 		try {
-			List<CalendarListEntry> calendarList = service.calendarList().list().execute().getItems();
+			List<CalendarListEntry> calendarList = service
+					.calendarList()
+					.list()
+					.execute()
+					.getItems();
 			
 			if (!isCalendarCreated(calendarList)) {
 				calendar = new Calendar();
 	
 				calendar.setSummary(CALENDAR_SUMMARY);
 				
-				calendar = service.calendars().insert(calendar).execute();
+				calendar = service
+						.calendars()
+						.insert(calendar)
+						.execute();
 			}
 
 			return true;
@@ -88,7 +124,10 @@ public class GCalDBConnector implements DBConnector {
 			Task task = convertToTask(data);
 			Event event = taskToEvent(task);
 
-			Event createdEvent = service.events().insert(calendar.getId(), event).execute();
+			Event createdEvent = service
+					.events()
+					.insert(calendar.getId(), event)
+					.execute();
 			gCalEvents.add(createdEvent);
 
 			return true;
@@ -104,7 +143,9 @@ public class GCalDBConnector implements DBConnector {
 			Task task = convertToTask(data);
 			Event event = taskToEvent(task);
 
-			service.events().patch(calendar.getId(), event.getId(), event).execute();
+			service.events()
+			.patch(calendar.getId(), event.getId(), event)
+			.execute();
 
 			return true;
 		} catch (IOException e) {
@@ -116,7 +157,10 @@ public class GCalDBConnector implements DBConnector {
 	@Override
 	public List<String> read() {
 		try {
-			Events events = service.events().list(calendar.getId()).execute();
+			Events events = service
+					.events()
+					.list(calendar.getId())
+					.execute();
 			gCalEvents = events.getItems();
 
 			List<String> taskList = new ArrayList<String>();
@@ -138,7 +182,9 @@ public class GCalDBConnector implements DBConnector {
 			Task task = convertToTask(data);			
 			Event event = taskToEvent(task);
 
-			service.events().delete(calendar.getId(), event.getId()).execute();
+			service.events()
+			.delete(calendar.getId(), event.getId())
+			.execute();
 
 			return true;
 		} catch (IOException e) {
@@ -149,12 +195,16 @@ public class GCalDBConnector implements DBConnector {
 
 	@Override
 	public boolean clear() {
-		// TODO Auto-generated method stub
+		// This method is not implemented here
 		return false;
 	}
 	
+	/**
+	 * Starts the authentication process for google calendar
+	 */
 	public static void auth() {
-		String url = FLOW.newAuthorizationUrl().setRedirectUri(REDIRECT_URL)
+		String url = FLOW.newAuthorizationUrl()
+				.setRedirectUri(REDIRECT_URL)
 				.build();
 		try {
 			if(Desktop.isDesktopSupported()) {
@@ -170,14 +220,30 @@ public class GCalDBConnector implements DBConnector {
 		}
 	}
 
+	/**
+	 * Sets up the connection to google calendar after
+	 * receiving the authentication token
+	 * 
+	 * @param authCode The authentication token from google
+	 * @return The connector object that can be used to
+	 * interface with google calendar
+	 */
 	public static GCalDBConnector setup(String authCode) {
 		try {
 			GoogleTokenResponse response = FLOW.newTokenRequest(authCode)
-					.setRedirectUri(REDIRECT_URL).execute();
-			GoogleCredential credential = new GoogleCredential()
+					.setRedirectUri(REDIRECT_URL)
+					.execute();
+			GoogleCredential credential = new GoogleCredential.Builder()
+					.setJsonFactory(JSON_FACTORY)
+					.setTransport(HTTP_TRANSPORT)
+					.setClientSecrets(CLIENT_ID, CLIENT_SECRET)
+					.build()
 					.setFromTokenResponse(response);
-			
-			return new GCalDBConnector(credential);
+				
+			String token = credential.getRefreshToken();
+			saveRefreshToken(token);
+
+			return new GCalDBConnector(credential, token);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -224,12 +290,20 @@ public class GCalDBConnector implements DBConnector {
 	private static Event taskToEvent(Task task) {
 		Event event = new Event();
 		
-		event.setId(String.valueOf(task.getId()));
+		event.setId("ldomanager" + String.valueOf(task.getId()));
 		event.setSummary(task.getName());
 		event.setDescription(task.getDescription());
 		
-	    DateTime start = new DateTime(task.getStartTime(), TimeZone.getTimeZone("UTC"));
-	    DateTime end = new DateTime(task.getEndTime(), TimeZone.getTimeZone("UTC"));
+		DateTime start = new DateTime(new Date());
+		DateTime end = new DateTime(new Date());
+		
+		if (task.getStartTime() != null) {
+			start = new DateTime(task.getStartTime());
+		}
+		
+		if (task.getEndTime() != null) {
+			end = new DateTime(task.getEndTime());
+		}
 
 		event.setStart(new EventDateTime().setDateTime(start));
 		event.setEnd(new EventDateTime().setDateTime(end));
@@ -240,7 +314,9 @@ public class GCalDBConnector implements DBConnector {
 	private static Task eventToTask(Event event) {
 		Task task = new TaskImpl();
 		
-		task.setId(Integer.parseInt(event.getId()));
+		String eventId = event.getId();
+		eventId = eventId.trim().split("r", 2)[SECOND];
+		task.setId(Integer.parseInt(eventId));
 		task.setName(event.getSummary());
 		task.setDescription(event.getDescription());
 		
@@ -248,5 +324,47 @@ public class GCalDBConnector implements DBConnector {
 		task.setTimeStart(new Date(event.getEnd().getDateTime().getValue()));
 		
 		return task;
+	}
+	
+	private static boolean saveRefreshToken(String refreshToken) {
+		try {
+			File file = initTokenFile();
+			
+			BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+			bw.write(refreshToken);
+			bw.close();
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	private static String loadRefreshToken() {
+		try {
+			File file = initTokenFile();
+			
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			String result = br.readLine();
+			br.close();
+			
+			return result;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	private static File initTokenFile() {
+		try {
+			File file = new File(REFRESH_TOKEN);
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			return file;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

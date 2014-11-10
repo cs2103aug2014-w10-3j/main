@@ -1,3 +1,5 @@
+//@author A0110741X
+
 package sg.codengineers.ldo.parser;
 
 import sg.codengineers.ldo.model.AdditionalArgument;
@@ -7,7 +9,6 @@ import sg.codengineers.ldo.model.AdditionalArgument;
  * Argument interface
  * 
  */
-//@author A0110741X
 public class AdditionalArgumentImpl implements AdditionalArgument {
 
 	/* Member variables */

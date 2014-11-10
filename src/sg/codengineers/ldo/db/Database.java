@@ -1,3 +1,5 @@
+//@author A0111163Y
+
 package sg.codengineers.ldo.db;
 
 /**
@@ -13,7 +15,6 @@ package sg.codengineers.ldo.db;
 import java.util.*;
 
 public class Database {
-
 	private static final int FIRST = 0;
 
 	private Map<String, List<DBConnector>> classToConnector;
@@ -46,7 +47,7 @@ public class Database {
 	public boolean create(Object data, String className) {
 		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
 		boolean success = true;
-		
+
 		for (DBConnector connector : connectorList) {
 			// If anyone of the process fails, the whole operation fails
 			success = success && connector.create(data);

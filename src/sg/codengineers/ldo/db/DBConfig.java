@@ -1,3 +1,5 @@
+//@author A0111163Y
+
 package sg.codengineers.ldo.db;
 
 /**
@@ -18,35 +20,65 @@ package sg.codengineers.ldo.db;
 import java.util.*;
 
 public class DBConfig {
-
 	// Essential information for the configuration of the database
 	private static DBConnector config;
+	private static Map<String, DBConfig> configList;
 	private static Map<String, List<DBConnector>> classToConnector;
 	private static boolean isInitialized = false;
 	
 	// Filename of the config file
 	private static final String FILENAME = "dbconfig";
+	private static final String SEPERATOR = "<;>";
 	
 	private static final int FIRST_WORD = 0;
-	private static final int TYPE_ARRAY = 1;
+	private static final int SECOND_WORD = 1;
+	private static final int TYPE_ARRAY = 2;	
 	
-	
-	private static final String[] DEFAULT_SETTINGS = {"task textfile", "test textfile"};
+	private static final String[] DEFAULT_SETTINGS = {"0<;>task<;>textfile", "1<;>test<;>textfile"};
 	
 	private String className;
-	private String[] type;
+	private List<String> types;
+	private int id;
 
 	/**
 	 * Constructor
 	 * 
 	 * @param className The name of the class whose
 	 * data is being saved
-	 * @param type The types of database that the type
+	 * @param types The types of database that the type
 	 * of class has
 	 */
-	public DBConfig(String className, String[] type) {
+	public DBConfig(String className, String[] types) {
+		this.id = configList.size();
 		this.className = className;
-		this.type = type;
+		this.types = new ArrayList<String>();
+		
+		for (String s : types) {
+			this.types.add(s);
+		}
+	}
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param id The id of the object
+	 * @param className The name of the class whose
+	 * data is being saved
+	 * @param types The types of database that the type
+	 * of class has
+	 */
+	public DBConfig(int id, String className, String[] types) {
+		this.id = id;
+		this.className = className;
+		this.types = new ArrayList<String>();
+		
+		for (String s : types) {
+			this.types.add(s);
+		}
+	}
+
+	public int getId() {
+		return id;
 	}
 	
 	/**
@@ -54,6 +86,7 @@ public class DBConfig {
 	 * 
 	 * @return The name of the class
 	 */
+
 	public String getClassName() {
 		return className;
 	}
@@ -62,10 +95,15 @@ public class DBConfig {
 	 * Getter method for the array of types of database
 	 * that the class can have
 	 * 
-	 * @return An array of the database types
+	 * @return An list of the database types
 	 */
-	public String[] getType() {
-		return type;
+	public List<String> getTypes() {
+		return types;
+	}
+	
+	public boolean addType(String type) {
+		types.add(type);
+		return true;
 	}
 	
 	/**
@@ -73,14 +111,23 @@ public class DBConfig {
 	 * that a class can have
 	 */
 	private void initDB() {
-		List<DBConnector> connectorList = new ArrayList<DBConnector>();
+		List<DBConnector> connectorList = null;
 
-		for (String s : type) {
+		if (classToConnector.containsKey(className)) {
+			connectorList = classToConnector.get(className);
+		} else {
+			connectorList = new ArrayList<DBConnector>();
+		}
+
+		for (String s : types) {
 			if (s.equalsIgnoreCase("textfile")) {
 				connectorList.add(new TextDBConnector(className));
+			} else if (s.equalsIgnoreCase("GCal")) {
+				connectorList.add(new GCalDBConnector());
 			}
 		}
 		
+		classToConnector.remove(className);
 		classToConnector.put(className, connectorList);
 	}
 
@@ -101,19 +148,22 @@ public class DBConfig {
 			 * around this since this is needed to initialize 
 			 * the layer.
 			 */
+
 			config = new TextDBConnector(FILENAME);
-			List<String> configList = config.read();
+			List<String> textConfigList = config.read();
 			
 			// Use the default settings if there isn't any
 			// existing settings
-			if (configList.isEmpty()) {
-				configList = addDefaultSettings();
+			if (textConfigList.isEmpty()) {
+				textConfigList = addDefaultSettings();
 			}
 			
 			classToConnector = new HashMap<String, List<DBConnector>>();
+			configList = new HashMap<String, DBConfig>();
 
-			for (String s : configList) {
+			for (String s : textConfigList) {
 				DBConfig config = DBConfig.fromString(s);
+				configList.put(config.getClassName(), config);
 				config.initDB();
 			}
 
@@ -123,6 +173,26 @@ public class DBConfig {
 		return classToConnector;
 	}
 	
+	public static void addNewSettings(String className, String type, DBConnector connector) {
+		DBConfig dBConfig = configList.get(className);
+		List<DBConnector> connectorList = classToConnector.get(className);
+		
+		if (dBConfig == null) {
+			connectorList = new ArrayList<DBConnector>();
+			String[] types = new String[] {type};
+			dBConfig = new DBConfig(className, types);
+			config.create(dBConfig);
+			connectorList.add(connector);
+			classToConnector.put(className, connectorList);
+		} else {
+			dBConfig.addType(type);
+			config.update(dBConfig);
+			connectorList.add(connector);
+			classToConnector.put(className, connectorList);
+		}
+		
+	}
+
 	private static List<String> addDefaultSettings() {
 		List<String> settings = new ArrayList<String>();
 
@@ -136,22 +206,23 @@ public class DBConfig {
 	/*****************************
 	 * Convert to string
 	 *****************************/
-	
-	public static String toString(DBConfig dBConfig) {
-		String types = arrayToString(dBConfig.getType());		
-		return dBConfig.getClassName()+ " " + types;
+
+	public String toString() {
+		String types = listToString(getTypes());		
+		return getId() + SEPERATOR + getClassName()+ SEPERATOR + types;
 	}
 	
 	public static DBConfig fromString(String entry) {
+		int id = getIdFromEntry(entry);
 		String className = getClassFromEntry(entry);
 		String[] typeArray = getTypeFromEntry(entry);
-		return new DBConfig(className, typeArray);
+		return new DBConfig(id, className, typeArray);
 	}
 	
-	private static String arrayToString(String[] array) {
+	private static String listToString(List<String> list) {
 		StringBuilder builder = new StringBuilder();
 		
-		for (String s : array) {
+		for (String s : list) {
 			builder.append(s);
 			builder.append(",");
 		}
@@ -161,12 +232,16 @@ public class DBConfig {
 		return builder.toString();
 	}
 	
+	private static int getIdFromEntry(String entry) {
+		return Integer.parseInt(entry.trim().split(SEPERATOR, 3)[FIRST_WORD]);
+	}
+	
 	private static String getClassFromEntry(String entry) {
-		return entry.trim().split(" ", 2)[FIRST_WORD];
+		return entry.trim().split(SEPERATOR, 3)[SECOND_WORD];
 	}
 	
 	private static String[] getTypeFromEntry(String entry) {
-		String types = entry.trim().split(" ", 2)[TYPE_ARRAY];
+		String types = entry.trim().split(SEPERATOR, 3)[TYPE_ARRAY];
 		return types.split(",");
 	}
 }

@@ -1,3 +1,5 @@
+//@author A0110741X
+
 package sg.codengineers.ldo.ui;
 
 import java.util.Iterator;
@@ -13,7 +15,6 @@ import sg.codengineers.ldo.model.Task;
  * This class implements the output class as specified by the Output interface
  * 
  */
-//@author A0110741X
 public class OutputImpl implements Output {
 
 	/* Constants */

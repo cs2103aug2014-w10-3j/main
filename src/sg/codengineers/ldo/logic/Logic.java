@@ -237,7 +237,8 @@ public class Logic {
 		}
 
 	}
-
+	
+	//@author A0112171Y
 	public void gCalAuth(){
 		_dbConnector.gCalAuth();
 	}

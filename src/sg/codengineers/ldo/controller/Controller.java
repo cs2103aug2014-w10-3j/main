@@ -1,10 +1,15 @@
+//@author A0112171Y
+
 package sg.codengineers.ldo.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.logging.FileHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import sg.codengineers.ldo.logic.Logic;
 import sg.codengineers.ldo.logic.LogicStub;
@@ -26,7 +31,6 @@ import sg.codengineers.ldo.ui.UIImpl;
  */
 @SuppressWarnings("deprecation")
 public class Controller {
-	//@author A0112171Y
 	
 	//Logger instance
 	private final static Logger logger = Logger.getLogger(Controller.class.getName()); 
@@ -37,7 +41,11 @@ public class Controller {
 														+ "Please restart the program.";
 	private static String MSG_ERROR_UNABLE_TO_EXECUTE_CMD = "Sorry! There is an error within the program.\n"
 														+ "Please re-enter the command or restart the program.";
-	private static String MSG_GCAL_AUTH_URL = "Open this URL from your web browser to login to Google Calendar:\n%s";
+	private static String MSG_GCAL_AUTH_URL = "Please go to the browser and authorise the application:\n";
+	
+	//Logging directory and file name
+	private static String LOG_DIRECTORY = "log/";
+	private static String LOG_FILE_NAME = "log.log";
 	
 	// Logic instance
 	private static Logic logic;
@@ -56,12 +64,20 @@ public class Controller {
 		ui = new UIImpl();
 		parser = new ParserImpl();
 		
+		activateLogger();
+	}
+	
+	private void activateLogger(){
 		try {
-			logger.addHandler(new FileHandler("log.txt"));
+			new File(LOG_DIRECTORY).mkdirs();
+			Handler fileHandler = new FileHandler(LOG_DIRECTORY + LOG_FILE_NAME);
+			fileHandler.setFormatter(new SimpleFormatter());
+			logger.addHandler(fileHandler);
+			logger.setUseParentHandlers(false);
 		} catch (SecurityException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage(), e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 	
@@ -95,7 +111,7 @@ public class Controller {
 	 */
 	public void run() {
 		logger.entering("Controller", "run");
-		logger.log(Level.SEVERE, "Running L'Do");
+		logger.log(Level.INFO, "Running L'Do");
 		
 		processWelcome();
 		
