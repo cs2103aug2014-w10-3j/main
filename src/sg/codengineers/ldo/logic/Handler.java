@@ -195,6 +195,9 @@ public abstract class Handler {
 					@Override
 					public boolean call(Task task) {
 						Date dd = task.getDeadline();
+						if(dd == null){
+							return false;
+						}
 						return dd.compareTo(deadline) <= 0
 								&& dd.compareTo(new Date()) >= 0;
 					}
@@ -398,6 +401,7 @@ public abstract class Handler {
 			}			
 		}
 
+		
 	}
 	
 	protected Task getTask(int uId){
