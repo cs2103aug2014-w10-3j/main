@@ -24,12 +24,10 @@ import sg.codengineers.ldo.ui.UIImpl;
 public class Controller {
 	//@author A0112171Y
 	
-	// Logic instance
-	private static Logic logic;
-
 	//Logger instance
 	private final static Logger logger = Logger.getLogger(Controller.class.getName()); 
 	
+	//These are command strings and messages required in Controller class
 	private static String COMMAND_SHOW_TODAY = "show";
 	private static String MSG_ERROR_UNABLE_TO_START_LDO = "Sorry! There is an error when starting the program.\n"
 														+ "Please restart the program.";
@@ -37,6 +35,9 @@ public class Controller {
 														+ "Please re-enter the command or restart the program.";
 	private static String MSG_GCAL_AUTH_URL = "Open this URL from your web browser to login to Google Calendar:\n%s";
 	
+	// Logic instance
+	private static Logic logic;
+
 	// UI instances
 	private UI ui;
 	
@@ -54,21 +55,20 @@ public class Controller {
 		try {
 			logger.addHandler(new FileHandler("log.txt"));
 		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
 	/**
 	 * This constructor allows the controller to use a logic stub
-	 * for unit testing purposes.
+	 * and has an access modifier of package access, because it is
+	 * used only for unit testing purposes within the package.
 	 * @param stub
-	 * 			true if the unit is under testing, false otherwise
+	 * 			true if the unit is under testing
 	 */
-	protected Controller(boolean stub){
+	Controller(boolean stub){
 		logic = new LogicStub();
 	}
 	
@@ -101,9 +101,9 @@ public class Controller {
 	}
 	
 	/**
-	 * Processes command string and displays
-	 * messages and feedback to continue
-	 * interaction with user.
+	 * Processes raw command string and displays feedback
+	 * to continue interaction with user.
+	 * 
 	 * @param rawCommand
 	 * 			unprocessed command string
 	 */
@@ -136,6 +136,9 @@ public class Controller {
 		}
 	}
 	
+	/**
+	 * Displays welcome message to start interaction with user.
+	 */
 	public void processWelcome() {
 		logger.entering("Controller", "processWelcome");
 		logger.log(Level.INFO, "Process welcome message");
@@ -149,6 +152,13 @@ public class Controller {
 		}
 	}
 	
+	/**
+	 * Validates whether the command type is a valid command type.
+	 * Used to check the command type in Command and Result classes.
+	 * 
+	 * @param commandType
+	 * @return true if valid command type, false otherwise
+	 */
 	private boolean isValidCommandType(CommandType commandType){
 		switch (commandType){
 			case CREATE:
