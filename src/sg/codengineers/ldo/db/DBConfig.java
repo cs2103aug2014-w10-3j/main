@@ -21,20 +21,23 @@ public class DBConfig {
 
 	// Essential information for the configuration of the database
 	private static DBConnector config;
+	private static Map<String, DBConfig> configList;
 	private static Map<String, List<DBConnector>> classToConnector;
 	private static boolean isInitialized = false;
 	
 	// Filename of the config file
 	private static final String FILENAME = "dbconfig";
+	private static final String SEPERATOR = "<;>";
 	
 	private static final int FIRST_WORD = 0;
-	private static final int TYPE_ARRAY = 1;
+	private static final int SECOND_WORD = 1;
+	private static final int TYPE_ARRAY = 2;	
 	
-	
-	private static final String[] DEFAULT_SETTINGS = {"task textfile", "test textfile"};
+	private static final String[] DEFAULT_SETTINGS = {"0<;>task<;>textfile", "1<;>test<;>textfile"};
 	
 	private String className;
-	private String[] type;
+	private List<String> types;
+	private int id;
 
 	/**
 	 * Constructor
