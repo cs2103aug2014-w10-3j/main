@@ -1,12 +1,11 @@
+//@author A0110741X
+
 package sg.codengineers.ldo.model;
 
 import java.util.Date;
 
 /**
  * This interface specifies the public methods available to the Parser Class
- * 
- * @author Victor Hazali
- * 
  */
 public interface Parser {
 

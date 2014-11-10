@@ -1,3 +1,5 @@
+//@author A0110741X
+
 package sg.codengineers.ldo.model;
 
 import java.sql.Time;
@@ -7,9 +9,6 @@ import sg.codengineers.ldo.model.Command.CommandType;
 
 /**
  * This interface specifies the available public methods of the Result Class
- * 
- * @author Victor Hazali
- * 
  */
 public interface Result {
 

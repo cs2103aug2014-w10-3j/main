@@ -1,10 +1,9 @@
+//@author A0110741X
+
 package sg.codengineers.ldo.model;
 
 /**
  * This interface specifies how a user can interact with the Output class
- * 
- * @author Victor Hazali
- * 
  */
 public interface Output {
 

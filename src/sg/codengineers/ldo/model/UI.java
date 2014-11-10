@@ -1,10 +1,9 @@
+//@author A0110741X
+
 package sg.codengineers.ldo.model;
 
 /**
  * This interface specifies all the public methods for the UI component
- * 
- * @author Victor Hazali
- * 
  */
 public interface UI {
 

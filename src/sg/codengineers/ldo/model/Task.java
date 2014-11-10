@@ -1,11 +1,11 @@
+//@author A0119541J
+
 package sg.codengineers.ldo.model;
 
 import java.util.Date;
 
 /**
  * This interface exposes public functionality for a task
- *
- * @author Sean
  */
 public interface Task {
 	

@@ -1,10 +1,9 @@
+//@author A0110741X
+
 package sg.codengineers.ldo.model;
 
 /**
  * This interface specifies how the user can interact with the Input class
- * 
- * @author Victor Hazali
- * 
  */
 public interface Input {
 

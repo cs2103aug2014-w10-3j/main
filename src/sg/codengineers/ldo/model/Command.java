@@ -1,3 +1,5 @@
+//@author A0110741X
+
 package sg.codengineers.ldo.model;
 
 import java.util.ArrayList;
@@ -7,9 +9,6 @@ import sg.codengineers.ldo.model.Task.Priority;
 
 /**
  * This interface specifies the public methods of the Command Class
- * 
- * @author Victor Hazali
- * @Collaborator Sharon Lynn, Luan Wenhao
  */
 public interface Command {
 
