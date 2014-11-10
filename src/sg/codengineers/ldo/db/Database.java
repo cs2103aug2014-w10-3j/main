@@ -125,8 +125,8 @@ public class Database {
 		return success;
 	}
 	
-	public String getGCalAuthURL() {
-		return GCalDBConnector.getAuthURL();
+	public void gCalAuth() {
+		GCalDBConnector.auth();
 	}
 	
 	public boolean loginGCal(String authCode) {

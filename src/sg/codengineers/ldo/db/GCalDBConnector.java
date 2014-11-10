@@ -152,7 +152,7 @@ public class GCalDBConnector implements DBConnector {
 		return false;
 	}
 	
-	public static String getAuthURL() {
+	public static void auth() {
 		String url = FLOW.newAuthorizationUrl().setRedirectUri(REDIRECT_URL)
 				.build();
 		return url;
