@@ -18,6 +18,7 @@ import sg.codengineers.ldo.model.Result;
 import sg.codengineers.ldo.model.Task;
 import sg.codengineers.ldo.parser.ResultImpl;
 
+//@author A0110741X
 public class OutputImplTest {
 
 	private final ByteArrayOutputStream	outContent	= new ByteArrayOutputStream();

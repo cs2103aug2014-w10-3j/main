@@ -12,9 +12,8 @@ import sg.codengineers.ldo.model.Task;
 /**
  * This class implements the output class as specified by the Output interface
  * 
- * @author Victor Hazali
- * 
  */
+//@author A0110741X
 public class OutputImpl implements Output {
 
 	/* Constants */

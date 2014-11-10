@@ -9,9 +9,8 @@ import sg.codengineers.ldo.model.Input;
 /**
  * This Class implements the Input class as specified by the Input interface
  * 
- * @author Victor Hazali
- * 
  */
+//@author A0110741X
 public class InputImpl implements Input {
 
 	/* Member Variables */
