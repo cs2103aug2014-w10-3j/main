@@ -98,9 +98,12 @@ public class TaskImpl implements Task {
 	@Override
 	public Date getDeadline() {
 		// Deadline tasks have the same start and end time
-		if(_timeStart.equals(_timeEnd)){
-			return _timeStart;
+		if(_timeStart!=null){
+			if(_timeStart.equals(_timeEnd)){
+				return _timeStart;
+			}		
 		}
+
 		return null;
 	}
 	

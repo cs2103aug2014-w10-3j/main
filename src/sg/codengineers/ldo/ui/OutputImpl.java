@@ -39,6 +39,7 @@ public class OutputImpl implements Output {
 	private static final String	UNDO_MESSAGE	= String.format(KEYWORD_COLOR,
 														"Undone",
 														" command: \"%s\".\n");
+	private static final String	UNDO_NOTHING	= "No command to undo.\n";
 	private static final String	EXIT_MESSAGE	= "Bye! See you again.\n";
 	private static final String	STUB_MESSAGE	= "This module is still under development.\n";
 	private static final String	EMPTY_TASK_LIST	= "Task list is empty.\n";
@@ -48,7 +49,8 @@ public class OutputImpl implements Output {
 	private static final String	DESCRIPTION		= String.format(KEYWORD_COLOR,
 														"Description", ": %s\n");
 	private static final String	TAG				= String.format(KEYWORD_COLOR,
-														"Tag", ": %s\n");
+														"Tag",
+														": @|magenta %s|@\n");
 	private static final String	DEADLINE		= String.format(KEYWORD_COLOR,
 														"Deadline", ": %s %s\n");
 	private static final String	TIME			= String.format(KEYWORD_COLOR,
@@ -254,7 +256,11 @@ public class OutputImpl implements Output {
 	 * user which command was undone.
 	 */
 	private void feedbackForUndo() {
-		showToUser(String.format(UNDO_MESSAGE, _result.getPrimaryOperand()));
+		if (_result.getPrimaryOperand() == null) {
+			showToUser(UNDO_NOTHING);
+		} else {
+			showToUser(String.format(UNDO_MESSAGE, _result.getPrimaryOperand()));
+		}
 	}
 
 	/**
@@ -282,12 +288,12 @@ public class OutputImpl implements Output {
 
 			name = toPrint.getName();
 
-			if (!toPrint.getDescription().isEmpty()) {
-				description = " " + toPrint.getDescription();
-			}
+			// if (!toPrint.getDescription().isEmpty()) {
+			// description = " " + toPrint.getDescription();
+			// }
 
 			if (!toPrint.getTag().isEmpty()) {
-				tag = " " + toPrint.getTag();
+				tag = " @|magenta " + toPrint.getTag() + "|@";
 			}
 
 			if (toPrint.getDeadline() != null) {
