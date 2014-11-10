@@ -1,0 +1,30 @@
+//@author: a0112171y
+
+
+
+	/**
+	 * origin: logic\Logic.java
+	 */
+
+	public void gCalAuth(){
+		_dbConnector.gCalAuth();
+	}
+
+	public Result syncGCal(String userGCalAuthKey) {
+		boolean successSync = _dbConnector.loginGCal(userGCalAuthKey);
+		if (successSync == true) {
+			return new ResultImpl(CommandType.SYNC, MSG_SYNC_SUCCESS, new Time(
+					System.currentTimeMillis()));
+		} else {
+			return new ResultImpl(CommandType.SYNC, MSG_SYNC_FAIL, new Time(
+					System.currentTimeMillis()));
+		}
+	}
+}
+
+	// End of segment: logic\Logic.java
+
+
+
+
+

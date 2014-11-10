@@ -1,0 +1,800 @@
+//@author: a0119541j
+
+
+
+	/**
+	 * origin: logic\CreateHandler.java
+	 */
+
+import java.sql.Time;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import sg.codengineers.ldo.model.AdditionalArgument;
+import sg.codengineers.ldo.model.Command.CommandType;
+import sg.codengineers.ldo.model.Result;
+import sg.codengineers.ldo.model.Task;
+import sg.codengineers.ldo.parser.ResultImpl;
+
+public class CreateHandler extends Handler {
+
+	public CreateHandler(List<Task> taskList) {
+		super(taskList);
+	}
+
+	@Override
+	public Result execute(String primaryOperand,Iterator<AdditionalArgument> iterator) throws IllegalArgumentException{
+
+		if(primaryOperand == null){
+			return null;
+		}
+
+		Task task = new TaskImpl(primaryOperand);
+
+
+		AdditionalArgument arg = null;
+		while(iterator.hasNext()){
+			try{
+				arg = iterator.next();
+				modifyTask(task, arg);
+			} catch (Exception e){
+				if(arg != null){
+					return new ResultImpl(CommandType.INVALID, 
+							"Invalid argument "+arg.getOperand()+".",
+							new Time(System.currentTimeMillis()));						
+				} else {
+					return new ResultImpl(CommandType.INVALID, 
+							"Invalid argument.",
+							new Time(System.currentTimeMillis()));		
+				}
+
+			}
+		}
+
+
+
+		_taskList.add(task);
+
+		Result result = new ResultImpl(CommandType.CREATE, 
+				primaryOperand,
+				new Time(System.currentTimeMillis()), 
+				task);
+
+		return result;
+
+	}
+
+}
+
+	// End of segment: logic\CreateHandler.java
+
+
+
+
+
+	/**
+	 * origin: logic\DeleteHandler.java
+	 */
+
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import sg.codengineers.ldo.model.AdditionalArgument;
+import sg.codengineers.ldo.model.Command;
+import sg.codengineers.ldo.model.Result;
+import sg.codengineers.ldo.model.Task;
+import sg.codengineers.ldo.model.Command.CommandType;
+import sg.codengineers.ldo.parser.ResultImpl;
+
+public class DeleteHandler extends Handler {
+
+	public DeleteHandler(List<Task> taskList) {
+		super(taskList);
+	}
+
+	@Override
+	public Result execute(String primaryOperand,
+			Iterator<AdditionalArgument> iterator) {
+		
+		Result result = null;
+		Task task = null;
+		
+		if(primaryOperand.equalsIgnoreCase("all")){
+			List<Task> theList = new ArrayList<Task>(_taskList);
+			_taskList.clear();
+			indexMap.clear();
+			result = new ResultImpl(CommandType.DELETE, 
+					primaryOperand,
+					new Time(System.currentTimeMillis()), 
+					theList);	
+			return result;
+		}
+		int id = -1;
+		try{
+			id = Integer.valueOf(primaryOperand) - DIFFERENCE_DIPSLAY_INDEX_AND_SYSTEM_INDEX;
+			task = getTask((int)indexMap.get(id));
+			_taskList.remove(task);
+			indexMap.remove(Integer.valueOf(id));
+		} catch(Exception e){
+			if(Logic.DEBUG){
+				e.printStackTrace();
+			}
+			return new ResultImpl(CommandType.INVALID, 
+					"Task "+primaryOperand+" doesn't exist.",
+					new Time(System.currentTimeMillis()));		
+		}
+		
+		result = new ResultImpl(CommandType.DELETE, 
+				primaryOperand,
+				new Time(System.currentTimeMillis()), 
+				task);		
+		return result;
+	}
+
+}
+
+	// End of segment: logic\DeleteHandler.java
+
+
+
+
+
+	/**
+	 * origin: logic\Filter.java
+	 */
+
+/**
+ * An interface that wraps a filter method to simulate "pass in functions as parameters".<br>
+ * You are strongly suggested to use anonymous classes to implement this interface.
+	// End of segment: logic\Filter.java
+
+
+
+
+
+	/**
+	 * origin: logic\Handler.java
+	 */
+
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import sg.codengineers.ldo.model.AdditionalArgument;
+import sg.codengineers.ldo.model.Parser;
+import sg.codengineers.ldo.model.Result;
+import sg.codengineers.ldo.model.Task;
+import sg.codengineers.ldo.model.Command.CommandType;
+import sg.codengineers.ldo.model.Task.Priority;
+import sg.codengineers.ldo.parser.ParserImpl;
+import sg.codengineers.ldo.parser.ResultImpl;
+import sg.codengineers.ldo.logic.Filter;
+
+/**
+ * Abstract class for logic operations. <br>
+ * It provides some basic utility functions for task manipulations. Concrete
+ * logic operation classes need to implement {@link #execute(String, Iterator)}
+ * method and fill in the actual execution there.
+ * 
+	// End of segment: logic\Handler.java
+
+
+
+
+
+	/**
+	 * origin: logic\HelpHandler.java
+	 */
+
+import java.sql.Time;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import sg.codengineers.ldo.model.AdditionalArgument;
+import sg.codengineers.ldo.model.Command.CommandType;
+import sg.codengineers.ldo.model.Result;
+import sg.codengineers.ldo.model.Task;
+import sg.codengineers.ldo.parser.ResultImpl;
+
+public class HelpHandler extends Handler{
+//	public  String MSG_AA_TIME = "\t\t-t/--time <start time> <end time>\t\t set the start time and end time for the task.\n";
+//	public  String MSG_AA_DEADLINE = "\t\t-d/--deadline <time>\t\t\t\t set the deadline time for the task.\n";
+//	public  String MSG_AA_NAME = "\t\t-n/--name <task name>\t\t\t\t set the name for the task.\n";
+//	public  String MSG_AA_PRIORITY = "\t\t-p/--priority <priority level>\t\t\t set the priority level for the task. Can only be LOW, MEDIUM or HIGH.\n";
+//	public  String MSG_AA_TAG = "\t\t--tag <tag name>\t\t\t\t set the tag for the task.\n";
+//	public  String MSG_AA_DESCRIPTION = "\t\t-a/--description <description text>\t\t set the description for the task.\n";
+//	public  String MSG_AA_HELP = "\t\t-h/--help \t\t\t\t\t display the help message for the command.";
+//	public  String MSG_AA_ALL = MSG_AA_TIME + MSG_AA_DEADLINE
+//			+ MSG_AA_NAME + MSG_AA_PRIORITY + MSG_AA_TAG + MSG_AA_DESCRIPTION
+//			+ MSG_AA_HELP;
+//	public  String HELP_MSG_CREATE = "Help message for command *add*\n\tUsage: add <taskname> [<parameters>]\n\tParameters:\n"
+//			+ MSG_AA_ALL;
+//	public  String HELP_MSG_SEARCH = "Help message for command *search*\n\tUsage: search <taskname> \n\t\t search [<parameters>]\n\tParameters:\n"
+//			+ MSG_AA_ALL;
+//	public  String HELP_MSG_UPDATE = "Help message for command *update*\n\tUsage: update <task index> [<parameters>]\n\tParameters:\n"
+//			+ MSG_AA_ALL;
+//	public  String HELP_MSG_DELETE = "Help message for command *delete*\n\tUsage: delete <task index>";
+//	public  String HELP_MSG_SHOW = "Help mesasge for command *show*\n\tUsage: show\n\t\tshow <task index>";
+//	public  String HELP_MSG_HELP = "Help message for command *help*\n\tUsage: help <command> [<parameters>]\n\t"
+//			+ "Note: Currently support add, update, delete, show, search, help.\n\tParameters:\n"
+//			+ MSG_AA_HELP;
+	public  String HELP_MSG_CREATE = "Help message for command *add*\n\tUsage: add <taskname> [<parameters>]\n\tParameters:\n\t\t-t/--time <start time> <end time>\t\t set the start time and end time for the task.\n\t\t-d/--deadline <time>\t\t\t\t set the deadline time for the task.\n\t\t-n/--name <task name>\t\t\t\t set the name for the task.\n\t\t-p/--priority <priority level>\t\t\t set the priority level for the task. Can only be LOW, NORMAL or HIGH.\n\t\t--tag <tag name>\t\t\t\t set the tag for the task. note that once a task is tagged \"done\", it will never appear in your task list unless you search for \"--tag done\"\n\t\t --done \t\t\t\t\t alias of \"--tag done\".\n\t\t-a/--description <description text>\t\t set the description for the task.\n\t\t-h/--help \t\t\t\t\t display this help message\n.";
+	public  String HELP_MSG_SEARCH = "Help message for command *search*\n\tUsage: search <taskname> \n\t\t search [<parameters>]\n\tParameters:\n\t\t-t/--time <start time> <end time>\t\t search using the start time and end time.\n\t\t-t/--time <time>\t\t\t\t\tsearch both the time and deadline.\n\t\t-d/--deadline <time>\t\t\t\t search the deadline time.\n\t\t-n/--name <task name>\t\t\t\t search the name.\n\t\t-p/--priority <priority level>\t\t\t search the priority level. Can only be LOW, NORMAL or HIGH.\n\t\t--tag <tag name>\t\t\t\t search the tag.\n\t\t --done \t\t\t\t\t alias of \"--tag done\".\n\t\t-a/--description <description text>\t\t search the description.\n\t\t-h/--help \t\t\t\t\t display this help message\n.";
+	public  String HELP_MSG_UPDATE = "Help message for command *update*\n\tUsage: update <task index> [<parameters>]\n\tParameters:\n\t\t-t/--time <start time> <end time>\t\t set the start time and end time for the task.\n\t\t-d/--deadline <time>\t\t\t\t set the deadline time for the task.\n\t\t-n/--name <task name>\t\t\t\t set the name for the task.\n\t\t-p/--priority <priority level>\t\t\t set the priority level for the task. Can only be LOW, NORMAL or HIGH.\n\t\t--tag <tag name>\t\t\t\t set the tag for the task. note that once a task is tagged \"done\", it will never appear in your task list unless you search for \"--tag done\"\n\t\t--done \t\t\t\t\t alias of \"--tag done\".\n\t\t-a/--description <description text>\t\t set the description for the task.\n\t\t-h/--help \t\t\t\t\t display this help message\n.";
+	public String HELP_MSG_UNDO = "Help message for command *undo*\n\tUsage: undo\n\tDescription: It will recover the previous command. If this is the first command, nothing will be done.\n";
+	public  String HELP_MSG_DELETE = "Help message for command *delete*\n\tUsage: delete <task index>\n";
+	public  String HELP_MSG_SHOW = "Help mesasge for command *show*\n\tUsage: show [<task index>]\t\t\t\tshow all available tasks or view a tasks with a specific index.\n";
+	public  String HELP_MSG_HELP = "Help message for command *help*\n\tUsage: help <command> [<parameters>]\n\tNote: Currently support add, update, delete, show, search, help, undo.\n\tParameters:\n\t\t-h/--help \t\t\t\t\t display this help message\n.";
+	private Map<CommandType, String> _map = new HashMap<CommandType, String>();
+
+	public HelpHandler(List<Task> taskList) {
+		super(taskList);
+		_map.put(CommandType.CREATE, HELP_MSG_CREATE);
+		_map.put(CommandType.UPDATE, HELP_MSG_UPDATE);
+		_map.put(CommandType.SEARCH, HELP_MSG_SEARCH);
+		_map.put(CommandType.DELETE, HELP_MSG_DELETE);
+		_map.put(CommandType.RETRIEVE, HELP_MSG_SHOW);
+		_map.put(CommandType.HELP, HELP_MSG_HELP);
+		_map.put(CommandType.UNDO, HELP_MSG_UNDO);
+	}
+
+	public Result execute(CommandType type) {
+		Result result;
+		try {
+			if(type == null){
+				throw new Exception();
+			}
+			//System.out.println("My result string is: " + _map.get(type));
+			result = new ResultImpl(CommandType.HELP, _map.get(type), new Time(
+					System.currentTimeMillis()));
+		} catch (Exception e) {
+			if (Logic.DEBUG) {
+				e.printStackTrace();
+			}
+			result = new ResultImpl(CommandType.INVALID,
+					"Invalid command type " + type + " for help.", new Time(
+							System.currentTimeMillis()));
+		}
+
+		return result;
+
+	}
+
+	@Override
+	public Result execute(String primaryOperand,
+			Iterator<AdditionalArgument> iterator)
+			throws IllegalArgumentException {
+		//System.out.println(primaryOperand);
+		//System.out.println(CommandType.fromString(primaryOperand));
+		return execute(CommandType.fromString(primaryOperand));
+	}
+
+}
+
+	// End of segment: logic\HelpHandler.java
+
+
+
+
+
+	/**
+	 * origin: logic\Logic.java
+	 */
+
+import java.io.IOException;
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
+import sg.codengineers.ldo.db.Database;
+import sg.codengineers.ldo.model.AdditionalArgument;
+import sg.codengineers.ldo.model.Command;
+import sg.codengineers.ldo.model.Command.CommandType;
+import sg.codengineers.ldo.model.Result;
+import sg.codengineers.ldo.model.Task;
+import sg.codengineers.ldo.parser.ResultImpl;
+
+/**
+ * Logic class provides basic manipulation functions of tasks and task lists. <br>
+ * To construct a Logic instance, please call {@link Logic#getLogic()}. There
+ * will be only one Logic instance alive at a time.
+ * 
+	// End of segment: logic\Logic.java
+
+
+
+
+
+	/**
+	 * origin: logic\SearchHandler.java
+	 */
+
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import sg.codengineers.ldo.model.AdditionalArgument;
+import sg.codengineers.ldo.model.AdditionalArgument.ArgumentType;
+import sg.codengineers.ldo.model.Result;
+import sg.codengineers.ldo.model.Task;
+import sg.codengineers.ldo.model.Command.CommandType;
+import sg.codengineers.ldo.parser.AdditionalArgumentImpl;
+import sg.codengineers.ldo.parser.ResultImpl;
+
+public class SearchHandler extends Handler {
+	
+	private String pmOperand;
+	private boolean isDone = false;
+	
+	public SearchHandler(List<Task> taskList) {
+		super(taskList);
+	}
+
+	@Override
+	public Result execute(String primaryOperand,
+			Iterator<AdditionalArgument> iterator) {
+		isDone = false;
+		pmOperand = primaryOperand;
+		Result result = null;
+		List<Task> resultList = null;
+		
+		boolean isOpEmpty = primaryOperand == null || primaryOperand.equals("");
+		boolean isItEmpty = iterator == null || !iterator.hasNext();
+		
+		if(isOpEmpty && isItEmpty){
+			return new ResultImpl(CommandType.INVALID, 
+					"Search for nothing is not allowed!",
+					new Time(System.currentTimeMillis()));
+		}
+		
+		if(!isOpEmpty && isItEmpty){
+			resultList = new ArrayList<Task>(_taskList);
+			AdditionalArgument arg = new AdditionalArgumentImpl(AdditionalArgument.ArgumentType.NAME, primaryOperand);
+			resultList = searchTask(resultList, arg);
+			String opString = populateAddArg("", arg);
+			resultList = eliminateDoneTasks(resultList);
+			result = constructResult(opString, resultList);
+		} 
+		
+		if(!isItEmpty){
+			resultList = new ArrayList<Task>(_taskList);
+			AdditionalArgument arg = null;
+			String opString = "";
+			if(!isOpEmpty){
+				arg = new AdditionalArgumentImpl(AdditionalArgument.ArgumentType.NAME, primaryOperand);
+				resultList = searchTask(resultList, arg);	
+				opString = populateAddArg(opString, arg);
+			}
+			while(iterator.hasNext()){
+				arg =  iterator.next();
+				isDone = isDone || isTagDone(arg);
+				resultList = searchTask(resultList, arg);
+				opString = populateAddArg(opString, arg);
+			}
+			if(!isDone){
+				resultList = eliminateDoneTasks(resultList);
+			}
+			result = constructResult(opString, resultList);
+		} 		
+		populateIndexMap(resultList);
+		return result;
+	}
+
+	private String populateAddArg(String accString, AdditionalArgument arg){
+		if(!accString.isEmpty()){
+			accString+=" and ";
+		}
+		accString += arg.getArgumentType().toString() + " "+arg.getOperand();
+		return accString;
+	}
+}
+
+	// End of segment: logic\SearchHandler.java
+
+
+
+
+
+	/**
+	 * origin: logic\ShowHandler.java
+	 */
+
+import java.sql.Time;
+import java.util.Iterator;
+import java.util.List;
+
+import sg.codengineers.ldo.model.AdditionalArgument;
+import sg.codengineers.ldo.model.Result;
+import sg.codengineers.ldo.model.Task;
+import sg.codengineers.ldo.model.Command.CommandType;
+import sg.codengineers.ldo.parser.ResultImpl;
+
+public class ShowHandler extends Handler {
+	public ShowHandler(List<Task> taskList) {
+		super(taskList);
+	}
+
+	public Result execute(int index) {
+		if (index == -1) {
+			List<Task> showList = eliminateDoneTasks(_taskList);
+			populateIndexMap(showList);
+			return new ResultImpl(CommandType.RETRIEVE, "all", new Time(
+					System.currentTimeMillis()),
+					showList);
+		}
+		Task task = null;
+		try {
+			task = _taskList.get(index - 1);
+		} catch (Exception e) {
+			if (Logic.DEBUG) {
+				e.printStackTrace();
+			}
+			return new ResultImpl(CommandType.INVALID, "Task " + index
+					+ " doesn't exist.", new Time(System.currentTimeMillis()));
+		}
+		return new ResultImpl(CommandType.RETRIEVE, String.valueOf(index),
+				new Time(System.currentTimeMillis()), task);
+	}
+
+	@Override
+	public Result execute(String primaryOperand,
+			Iterator<AdditionalArgument> iterator)
+			throws IllegalArgumentException {
+		return execute(Integer.valueOf(primaryOperand));
+	}
+}
+
+	// End of segment: logic\ShowHandler.java
+
+
+
+
+
+	/**
+	 * origin: logic\TaskImpl.java
+	 */
+
+import java.text.ParseException;
+import java.util.Date;
+
+import sg.codengineers.ldo.model.Parser;
+import sg.codengineers.ldo.model.Task;
+import sg.codengineers.ldo.parser.ParserImpl;
+
+public class TaskImpl implements Task {
+	public static String CLASS_NAME = "TASK";
+	public static Parser parser = new ParserImpl();
+	
+	public static int FIELD_ID_INDEX = 0;
+	public static int FIELD_NAME_INDEX = 1;
+	public static int FIELD_DESCRIPTION_INDEX = 2;
+	public static int FIELD_TAG_INDEX = 3;
+	public static int FIELD_TIMESTART_INDEX = 4;
+	public static int FIELD_TIMEEND_INDEX = 5;
+	public static int FIELD_PRIORITY_INDEX = 6;
+	public static int FIELD_DELETED_INDEX = 7;
+	
+	public static int FIELD_COUNT = 7;
+	public static int FIELD_COUNT_DELETED = 8;
+	
+	private int _id;
+	private String _name, _description, _tag;
+	private Date _timeStart, _timeEnd;
+	private Priority _priority;
+	
+	private static int _accumulateId = -1;
+	
+	public TaskImpl(String name) {
+		_id = getNextId();
+		_name = name;
+		_description = _tag = "";
+		_timeStart = _timeEnd = null;
+		_priority = Priority.NORMAL;
+	}
+	
+	/**
+	 * Construct a new task by copying all information from the input task.
+	 * @param task The {@link Task} object from which the information will be copied
+	 */
+	public TaskImpl(Task task){
+		this._id = task.getId();
+		this._name = task.getName();
+		this._tag = task.getTag();
+		this._timeStart = task.getStartTime();
+		this._timeEnd = task.getEndTime();
+		this._description = task.getDescription();
+		this._priority = task.getPriority();
+	}
+	
+	/**
+	 * Constructs a Task object for manipulation
+	 */
+	public TaskImpl() {
+		
+	}
+	
+	/**
+	 * Generate a unique ID for a new task.
+	 * @return the unique ID in integer format.
+	 */
+	public static int getNextId(){
+		_accumulateId ++;
+		return _accumulateId;
+	}
+	
+	@Override
+	public int getId() {
+		return _id;
+	}
+
+	@Override
+	public String getName() {
+		return _name;
+	}
+
+	@Override
+	public String getTag() {
+		return _tag;
+	}
+	
+	@Override
+	public String getDescription() {
+		return _description;
+	}
+
+	@Override
+	public Date getStartTime() {
+		return _timeStart;
+	}
+
+	@Override
+	public Date getEndTime() {
+		return _timeEnd;
+	}
+
+	@Override
+	public Date getDeadline() {
+		// Deadline tasks have the same start and end time
+		if(_timeStart!=null){
+			if(_timeStart.equals(_timeEnd)){
+				return _timeStart;
+			}		
+		}
+
+		return null;
+	}
+	
+	public void setId(int id) {
+		_id = id;	
+	}
+	
+	public void setName(String name){
+		_name = name;
+	}
+	
+	public void setTag(String tag) {
+		_tag = tag;
+	}
+	
+	public void setDescription(String description) {
+		_description = description;
+	}
+	
+	public void setTimeStart(Date timeStart) {
+		_timeStart = timeStart;
+	}
+	
+	public void setTimeEnd(Date timeEnd) {
+		_timeEnd = timeEnd;
+	}
+	
+	public void setDeadline(Date deadline) {
+		_timeStart = deadline;
+		_timeEnd = deadline;
+	}
+	
+	@Override
+	public String toString(){	
+		StringBuilder builder = new StringBuilder();
+		builder.append(_id+"<;>");
+		builder.append(_name+"<;>");
+		builder.append(_description+"<;>");
+		builder.append(_tag+"<;>");
+		if(_timeStart != null && _timeEnd !=null){
+			builder.append(parser.parseDateToString(_timeStart)+"<;>");
+			builder.append(parser.parseDateToString(_timeEnd)+"<;>");		
+		}else{
+			builder.append("<;>");
+			builder.append("<;>");
+		}
+
+		builder.append(_priority);
+		return builder.toString();
+	}
+	
+	public static Task valueOf(String s) throws ParseException{
+		if(s == null || s.isEmpty()) return null;
+
+		Task task = null;
+		
+		String taskArgs[] = s.split("<;>");
+		
+		if(taskArgs.length != FIELD_COUNT && taskArgs.length!= FIELD_COUNT_DELETED){
+			throw new ParseException("Cannot parse file texts", taskArgs.length);
+		} else {
+			
+			int id = Integer.valueOf(taskArgs[FIELD_ID_INDEX]);
+			
+			if(_accumulateId <= id){
+				_accumulateId = id + 1;
+			}
+			
+			if(taskArgs.length == FIELD_COUNT_DELETED){
+				return null;
+			}
+			
+			String name = taskArgs[FIELD_NAME_INDEX];
+			task = new TaskImpl(name);
+			task.setId(id);
+			
+			String description = taskArgs[FIELD_DESCRIPTION_INDEX];
+			if(description!= null && !description.isEmpty()){
+				task.setDescription(description);
+			}
+			
+			String tag = taskArgs[FIELD_TAG_INDEX];
+			if(tag!= null && !tag.isEmpty()){
+				task.setTag(tag);
+			}				
+			
+			Date sTime = null;
+			Date eTime = null;
+			
+			String timeStart = taskArgs[FIELD_TIMESTART_INDEX];
+			if(timeStart!=null && !timeStart.isEmpty()){
+				sTime = parser.parseToDate(timeStart);
+			}
+			
+			String timeEnd = taskArgs[FIELD_TIMEEND_INDEX];
+			if(timeEnd!=null && !timeEnd.isEmpty()){
+				eTime = parser.parseToDate(timeEnd);
+			}	
+			
+			if(sTime!=null && eTime!=null && sTime.equals(eTime)){
+				task.setDeadline(sTime);
+			} else {
+				task.setTimeEnd(eTime);
+				task.setTimeStart(sTime);
+			}
+			
+			Priority priority = Priority.fromString(taskArgs[FIELD_PRIORITY_INDEX]);
+			if(priority != null){
+				task.setPriority(priority);
+			}
+
+		}
+		
+		return task;
+	}
+
+	@Override
+	public Priority getPriority() {
+		return _priority;
+	}
+
+	@Override
+	public void setPriority(Priority priority) {
+		this._priority = priority;
+	}
+
+	@Override
+	public void setParams(Task task) {
+		this._id = task.getId();
+		this._name = task.getName();
+		this._tag = task.getTag();
+		this._timeStart = task.getStartTime();
+		this._timeEnd = task.getEndTime();
+		this._description = task.getDescription();
+		this._priority = task.getPriority();
+	}
+}
+
+	// End of segment: logic\TaskImpl.java
+
+
+
+
+
+	/**
+	 * origin: logic\UpdateHandler.java
+	 */
+
+import java.sql.Time;
+import java.text.ParseException;
+import java.util.Iterator;
+import java.util.List;
+
+import sg.codengineers.ldo.model.AdditionalArgument;
+import sg.codengineers.ldo.model.Result;
+import sg.codengineers.ldo.model.Task;
+import sg.codengineers.ldo.model.Command.CommandType;
+import sg.codengineers.ldo.parser.ResultImpl;
+
+public class UpdateHandler extends Handler {
+	public static final int INVALID_ID = -1;
+	
+	public UpdateHandler(List<Task> taskList) {
+		super(taskList);
+	}
+
+	@Override
+	public Result execute(String primaryOperand, Iterator<AdditionalArgument> iterator) {
+		
+		Task task = null;
+		int taskId = INVALID_ID;
+		
+		try{
+			if(primaryOperand != null){
+				taskId = Integer.valueOf(primaryOperand) - DIFFERENCE_DIPSLAY_INDEX_AND_SYSTEM_INDEX;
+				
+				Task modifiedTask = new TaskImpl(getTask(indexMap.get(taskId)));
+				
+				while(iterator.hasNext()){
+					AdditionalArgument arg = iterator.next();
+					modifyTask(modifiedTask, arg);
+				}
+				
+				task = modifiedTask;
+			}
+		} catch (Exception e){
+			if(Logic.DEBUG){
+				e.printStackTrace();
+			}
+			return new ResultImpl(CommandType.INVALID, 
+					primaryOperand,
+					new Time(System.currentTimeMillis()), 
+					task);
+			
+		}
+		
+		if(taskId == INVALID_ID || task==null){			
+			return new ResultImpl(CommandType.INVALID, 
+					primaryOperand,
+					new Time(System.currentTimeMillis()), 
+					task);
+		} else {
+			getTask(indexMap.get(taskId)).setParams(task);
+		}
+		
+		Result result = new ResultImpl(CommandType.UPDATE, 
+							primaryOperand,
+							new Time(System.currentTimeMillis()), 
+							task);
+		return result;
+	}
+
+}
+
+	// End of segment: logic\UpdateHandler.java
+
+
+
+
+
