@@ -46,7 +46,7 @@ public class Database {
 	public boolean create(Object data, String className) {
 		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
 		boolean success = true;
-		
+
 		for (DBConnector connector : connectorList) {
 			// If anyone of the process fails, the whole operation fails
 			success = success && connector.create(data);

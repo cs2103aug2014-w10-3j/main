@@ -57,6 +57,7 @@ public class DBConfig {
 	 * 
 	 * @return The name of the class
 	 */
+
 	public String getClassName() {
 		return className;
 	}
@@ -65,7 +66,7 @@ public class DBConfig {
 	 * Getter method for the array of types of database
 	 * that the class can have
 	 * 
-	 * @return An array of the database types
+	 * @return An list of the database types
 	 */
 	public String[] getType() {
 		return type;
@@ -164,12 +165,16 @@ public class DBConfig {
 		return builder.toString();
 	}
 	
+	private static int getIdFromEntry(String entry) {
+		return Integer.parseInt(entry.trim().split(SEPERATOR, 3)[FIRST_WORD]);
+	}
+	
 	private static String getClassFromEntry(String entry) {
-		return entry.trim().split(" ", 2)[FIRST_WORD];
+		return entry.trim().split(SEPERATOR, 3)[SECOND_WORD];
 	}
 	
 	private static String[] getTypeFromEntry(String entry) {
-		String types = entry.trim().split(" ", 2)[TYPE_ARRAY];
+		String types = entry.trim().split(SEPERATOR, 3)[TYPE_ARRAY];
 		return types.split(",");
 	}
 }
