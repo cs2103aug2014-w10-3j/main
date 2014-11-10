@@ -1,3 +1,5 @@
+//@author A0110741X
+
 package sg.codengineers.ldo.parser;
 
 import java.sql.Time;
@@ -14,7 +16,6 @@ import sg.codengineers.ldo.model.Command.CommandType;
  * the Result interface
  * 
  */
-//@author A0110741X
 public class ResultImpl implements Result {
 
 	private CommandType	_commandType;

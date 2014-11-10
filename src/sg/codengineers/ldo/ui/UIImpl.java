@@ -1,3 +1,5 @@
+//@author A0110741X
+
 package sg.codengineers.ldo.ui;
 
 import org.fusesource.jansi.AnsiConsole;
@@ -7,7 +9,6 @@ import sg.codengineers.ldo.model.Output;
 import sg.codengineers.ldo.model.Result;
 import sg.codengineers.ldo.model.UI;
 
-//@author A0110741X
 public class UIImpl implements UI {
 
 	private Input	_input	= new InputImpl();

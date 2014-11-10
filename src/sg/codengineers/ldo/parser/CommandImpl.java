@@ -1,3 +1,5 @@
+//@author A0110741X
+
 package sg.codengineers.ldo.parser;
 
 // import java.util.ArrayList;
@@ -15,7 +17,6 @@ import sg.codengineers.ldo.model.Command;
  * Command interface
  * 
  */
-//@author A0110741X
 public class CommandImpl implements Command {
 
 	/* Member Variables */

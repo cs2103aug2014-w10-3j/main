@@ -1,3 +1,5 @@
+//@author A0112171Y
+
 package sg.codengineers.ldo.controller;
 
 import java.io.File;
@@ -29,7 +31,6 @@ import sg.codengineers.ldo.ui.UIImpl;
  */
 @SuppressWarnings("deprecation")
 public class Controller {
-	//@author A0112171Y
 	
 	//Logger instance
 	private final static Logger logger = Logger.getLogger(Controller.class.getName()); 

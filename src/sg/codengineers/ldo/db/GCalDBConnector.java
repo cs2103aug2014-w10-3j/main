@@ -31,6 +31,7 @@ import java.net.URI;
 import java.awt.Desktop;
 
 public class GCalDBConnector implements DBConnector {
+	//@author A0111163Y
 
 	// The clientId and clientSecret can be found in Google Developers
 	// Console

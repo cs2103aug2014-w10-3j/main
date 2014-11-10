@@ -1,3 +1,5 @@
+//@author A0111163Y
+
 package sg.codengineers.ldo.db;
 
 /**
@@ -10,7 +12,6 @@ package sg.codengineers.ldo.db;
 import java.util.*;
 
 public interface DBConnector {
-
 	/**
 	 * A create method to enter new data into the
 	 * database.

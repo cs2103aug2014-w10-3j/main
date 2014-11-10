@@ -1,3 +1,5 @@
+//@author A0111163Y
+
 package sg.codengineers.ldo.db;
 
 /**
@@ -18,7 +20,6 @@ package sg.codengineers.ldo.db;
 import java.util.*;
 
 public class DBConfig {
-
 	// Essential information for the configuration of the database
 	private static DBConnector config;
 	private static Map<String, DBConfig> configList;

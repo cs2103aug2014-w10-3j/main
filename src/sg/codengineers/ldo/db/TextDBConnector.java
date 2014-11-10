@@ -1,3 +1,5 @@
+//@author A0111163Y
+
 package sg.codengineers.ldo.db;
 
 /**
@@ -13,7 +15,6 @@ import java.io.*;
 import java.util.*;
 
 public class TextDBConnector implements DBConnector {
-	
 	private static final String SEPARATOR = "<;>";
 	private static final int FIRST_WORD = 0;
 

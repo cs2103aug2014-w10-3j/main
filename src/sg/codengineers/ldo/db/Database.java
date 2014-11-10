@@ -1,3 +1,5 @@
+//@author A0111163Y
+
 package sg.codengineers.ldo.db;
 
 /**
@@ -13,7 +15,6 @@ package sg.codengineers.ldo.db;
 import java.util.*;
 
 public class Database {
-
 	private static final int FIRST = 0;
 
 	private Map<String, List<DBConnector>> classToConnector;
