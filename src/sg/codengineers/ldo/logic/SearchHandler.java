@@ -18,8 +18,8 @@ public class SearchHandler extends Handler {
 	private String pmOperand;
 	private boolean isDone = false;
 	
-	public SearchHandler(List<Task> _taskList) {
-		super(_taskList);
+	public SearchHandler(List<Task> taskList) {
+		super(taskList);
 	}
 
 	@Override
@@ -28,6 +28,7 @@ public class SearchHandler extends Handler {
 		isDone = false;
 		pmOperand = primaryOperand;
 		Result result = null;
+		List<Task> resultList = null;
 		
 		boolean isOpEmpty = primaryOperand == null || primaryOperand.equals("");
 		boolean isItEmpty = iterator == null || !iterator.hasNext();
@@ -39,15 +40,16 @@ public class SearchHandler extends Handler {
 		}
 		
 		if(!isOpEmpty && isItEmpty){
-			List<Task> resultList = new ArrayList<Task>(_taskList);
+			resultList = new ArrayList<Task>(_taskList);
 			AdditionalArgument arg = new AdditionalArgumentImpl(AdditionalArgument.ArgumentType.NAME, primaryOperand);
 			resultList = searchTask(resultList, arg);
 			String opString = populateAddArg("", arg);
-			result = constructResult(opString, eliminateDoneTasks(resultList));
+			resultList = eliminateDoneTasks(resultList);
+			result = constructResult(opString, resultList);
 		} 
 		
 		if(!isItEmpty){
-			List<Task> resultList = new ArrayList<Task>(_taskList);
+			resultList = new ArrayList<Task>(_taskList);
 			AdditionalArgument arg = null;
 			String opString = "";
 			if(!isOpEmpty){
@@ -66,7 +68,7 @@ public class SearchHandler extends Handler {
 			}
 			result = constructResult(opString, resultList);
 		} 		
-		
+		populateIndexMap(resultList);
 		return result;
 	}
 

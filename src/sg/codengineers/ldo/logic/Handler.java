@@ -5,8 +5,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import sg.codengineers.ldo.model.AdditionalArgument;
 import sg.codengineers.ldo.model.Parser;
@@ -32,13 +34,16 @@ public abstract class Handler {
 	// which starts from 0
 	protected static int DIFFERENCE_DIPSLAY_INDEX_AND_SYSTEM_INDEX = 1;
 	protected Parser _parser;
+	public static Map<Integer, Integer> indexMap = new HashMap<Integer, Integer>();
 
 	public static boolean DEBUG_MODE = false;
+	
 	/**
 	 * SimpleDateFormat no longer in use. Changed to Parser parseToDate method.
 	 */
 	// public final static SimpleDateFormat FORMATTER = new
 	// SimpleDateFormat("dd/MM/yyyy");
+	
 	protected List<Task> _taskList;
 
 	/**
@@ -383,5 +388,24 @@ public abstract class Handler {
 			}
 		}
 		return false;
+	}
+	
+	protected void populateIndexMap(List<Task> list){
+		if(list != null && list.size() > 0){
+			indexMap.clear();
+			for(int i = 0; i < list.size();i ++){
+				indexMap.put(i, list.get(i).getId());
+			}			
+		}
+
+	}
+	
+	protected Task getTask(int uId){
+		for(Task t : _taskList){
+			if(t.getId() == uId){
+				return t;
+			}
+		}
+		throw new IllegalArgumentException();
 	}
 }

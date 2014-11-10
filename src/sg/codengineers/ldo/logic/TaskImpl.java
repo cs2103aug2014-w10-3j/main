@@ -168,10 +168,17 @@ public class TaskImpl implements Task {
 		if(taskArgs.length != FIELD_COUNT && taskArgs.length!= FIELD_COUNT_DELETED){
 			throw new ParseException("Cannot parse file texts", taskArgs.length);
 		} else {
+			
+			int id = Integer.valueOf(taskArgs[FIELD_ID_INDEX]);
+			
+			if(_accumulateId <= id){
+				_accumulateId = id + 1;
+			}
+			
 			if(taskArgs.length == FIELD_COUNT_DELETED){
 				return null;
 			}
-			int id = Integer.valueOf(taskArgs[FIELD_ID_INDEX]);
+			
 			String name = taskArgs[FIELD_NAME_INDEX];
 			task = new TaskImpl(name);
 			task.setId(id);
@@ -224,5 +231,16 @@ public class TaskImpl implements Task {
 	@Override
 	public void setPriority(Priority priority) {
 		this._priority = priority;
+	}
+
+	@Override
+	public void setParams(Task task) {
+		this._id = task.getId();
+		this._name = task.getName();
+		this._tag = task.getTag();
+		this._timeStart = task.getStartTime();
+		this._timeEnd = task.getEndTime();
+		this._description = task.getDescription();
+		this._priority = task.getPriority();
 	}
 }

@@ -13,14 +13,15 @@ import sg.codengineers.ldo.parser.ResultImpl;
 public class ShowHandler extends Handler {
 	public ShowHandler(List<Task> taskList) {
 		super(taskList);
-		this._taskList = taskList;
 	}
 
 	public Result execute(int index) {
 		if (index == -1) {
+			List<Task> showList = eliminateDoneTasks(_taskList);
+			populateIndexMap(showList);
 			return new ResultImpl(CommandType.RETRIEVE, "all", new Time(
 					System.currentTimeMillis()),
-					Handler.eliminateDoneTasks(_taskList));
+					showList);
 		}
 		Task task = null;
 		try {

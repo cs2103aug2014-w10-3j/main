@@ -14,8 +14,8 @@ import sg.codengineers.ldo.parser.ResultImpl;
 public class UpdateHandler extends Handler {
 	public static final int INVALID_ID = -1;
 	
-	public UpdateHandler(List<Task> _taskList) {
-		super(_taskList);
+	public UpdateHandler(List<Task> taskList) {
+		super(taskList);
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public class UpdateHandler extends Handler {
 			if(primaryOperand != null){
 				taskId = Integer.valueOf(primaryOperand) - DIFFERENCE_DIPSLAY_INDEX_AND_SYSTEM_INDEX;
 				
-				Task modifiedTask = new TaskImpl(_taskList.get(taskId));
+				Task modifiedTask = new TaskImpl(getTask(indexMap.get(taskId)));
 				
 				while(iterator.hasNext()){
 					AdditionalArgument arg = iterator.next();
@@ -54,8 +54,7 @@ public class UpdateHandler extends Handler {
 					new Time(System.currentTimeMillis()), 
 					task);
 		} else {
-			_taskList.remove(taskId);
-			_taskList.add(taskId, task);
+			getTask(indexMap.get(taskId)).setParams(task);
 		}
 		
 		Result result = new ResultImpl(CommandType.UPDATE, 
