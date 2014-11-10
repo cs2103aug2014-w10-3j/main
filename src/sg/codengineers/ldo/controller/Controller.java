@@ -51,7 +51,7 @@ public class Controller {
 	/**
 	 * Constructors
 	 */
-	public Controller(){
+	private Controller(){
 		logic = Logic.getInstance();
 		ui = new UIImpl();
 		parser = new ParserImpl();
