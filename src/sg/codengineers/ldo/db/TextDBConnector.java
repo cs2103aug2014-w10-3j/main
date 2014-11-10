@@ -13,6 +13,9 @@ import java.io.*;
 import java.util.*;
 
 public class TextDBConnector implements DBConnector {
+	
+	private static final String SEPARATOR = "<;>";
+	private static final int FIRST_WORD = 0;
 
 	private String filename;
 	private File file;
@@ -91,7 +94,10 @@ public class TextDBConnector implements DBConnector {
 
 	@Override
 	public boolean update(Object data) {
-		int id = Integer.parseInt(data.toString().trim().split("<;>")[0]);
+		int id = Integer.parseInt(data
+				.toString()
+				.trim()
+				.split(SEPARATOR)[FIRST_WORD]);
 		dataList.remove(id);
 		dataList.add(id, data.toString());
 		return writeList();
@@ -147,7 +153,7 @@ public class TextDBConnector implements DBConnector {
 
 	@Override
 	public boolean delete(Object data) {
-		return update(data.toString() + "<;>deleted");
+		return update(data.toString() + SEPARATOR + "deleted");
 	}
 
 	@Override
