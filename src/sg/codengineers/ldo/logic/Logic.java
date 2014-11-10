@@ -21,9 +21,6 @@ import sg.codengineers.ldo.parser.ResultImpl;
  * Logic class provides basic manipulation functions of tasks and task lists. <br>
  * To construct a Logic instance, please call {@link Logic#getLogic()}. There
  * will be only one Logic instance alive at a time.
- * 
- * @author Wenhao
- *
  */
 public class Logic {
 	private static String MSG_SYNC_SUCCESS = "Sync to Google Calendar successful.\n";

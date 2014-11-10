@@ -8,8 +8,6 @@ package sg.codengineers.ldo.db;
  * to save all data and how to go about doing it. It chooses the appropriate
  * connector which saves the data diligently. All changes to the data must go
  * through this class
- *
- * @author Sean
  */
 
 import java.util.*;
