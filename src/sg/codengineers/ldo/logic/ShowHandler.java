@@ -1,16 +1,19 @@
 package sg.codengineers.ldo.logic;
 
 import java.sql.Time;
+import java.util.Iterator;
 import java.util.List;
 
+import sg.codengineers.ldo.model.AdditionalArgument;
 import sg.codengineers.ldo.model.Result;
 import sg.codengineers.ldo.model.Task;
 import sg.codengineers.ldo.model.Command.CommandType;
 import sg.codengineers.ldo.parser.ResultImpl;
 
-public class ShowHandler {
+public class ShowHandler extends Handler{
 	private List<Task> _taskList;
 	public ShowHandler(List<Task> taskList){
+		super(taskList);
 		this._taskList = taskList;
 	}
 	
@@ -36,5 +39,12 @@ public class ShowHandler {
 				String.valueOf(index),
 				new Time(System.currentTimeMillis()), 
 				task);	
+	}
+
+	@Override
+	public Result execute(String primaryOperand,
+			Iterator<AdditionalArgument> iterator)
+			throws IllegalArgumentException {
+		return null;
 	}
 }

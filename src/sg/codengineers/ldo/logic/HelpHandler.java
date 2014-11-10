@@ -20,7 +20,7 @@ public class HelpHandler{
 	public static final String MSG_AA_TAG = "\t\t--tag <tag name>\t\t\t\t set the tag for the task.\n";
 	public static final String MSG_AA_DESCRIPTION = "\t\t-a/--description <description text> set the description for the task.\n";
 	public static final String MSG_AA_HELP = "\t\t-h/--help \t\t\t\t display the help message for the command.";
-	public static final String MSG_AA_ALL = MSG_AA_TIME + MSG_AA_DEADLINE+MSG_AA_NAME + MSG_AA_PRIORITY+MSG_AA_TAG+MSG_AA_DESCRIPTION + MSG_AA_HELP;
+	public static final String MSG_AA_ALL =MSG_AA_TIME + MSG_AA_DEADLINE+MSG_AA_NAME + MSG_AA_PRIORITY+MSG_AA_TAG+MSG_AA_DESCRIPTION + MSG_AA_HELP;
 	public static final String HELP_MSG_CREATE = "Help message for command *add*\n\tUsage: add <taskname> [<parameters>]\n\tParameters:\n"+MSG_AA_ALL;
 	public static final String HELP_MSG_SEARCH = "Help message for command *search*\n\tUsage: search <taskname> \n\t\t search [<parameters>]\n\tParameters:\n"+MSG_AA_ALL;
 	public static final String HELP_MSG_UPDATE = "Help message for command *update*\n\tUsage: update <task index> [<parameters>]\n\tParameters:\n"+MSG_AA_ALL;
