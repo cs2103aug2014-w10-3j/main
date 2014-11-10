@@ -107,11 +107,11 @@ public class Logic {
 			Iterator<AdditionalArgument> iterator = command
 					.getAdditionalArguments();
 			result = createHandler.execute(primaryOperand, iterator);
-			_dbConnector.create(result.getTasksIterator().next(),
-					TaskImpl.CLASS_NAME);
 			_listStack.push(new ArrayList<Task>(_taskList));
 			_commandStack.push(command);
 			_mapStack.push(new HashMap<Integer, Integer>(Handler.indexMap));
+			_dbConnector.create(result.getTasksIterator().next(),
+					TaskImpl.CLASS_NAME);			
 		} catch (Exception e) {
 			if (DEBUG) {
 				e.printStackTrace();
@@ -132,13 +132,13 @@ public class Logic {
 					.getAdditionalArguments();
 			result = deleteHandler.execute(primaryOperand, iterator);
 			Iterator<Task> it = result.getTasksIterator();
-			while(it != null && it.hasNext()){
-				_dbConnector.delete(it.next(),
-						TaskImpl.CLASS_NAME);				
-			}
 			_listStack.push(new ArrayList<Task>(_taskList));
 			_commandStack.push(command);
 			_mapStack.push(new HashMap<Integer, Integer>(Handler.indexMap));
+			while(it != null && it.hasNext()){
+				_dbConnector.delete(it.next(),
+						TaskImpl.CLASS_NAME);				
+			}			
 		} catch (Exception e) {
 			if(DEBUG){
 				e.printStackTrace();
@@ -158,11 +158,11 @@ public class Logic {
 			Iterator<AdditionalArgument> iterator = command
 					.getAdditionalArguments();
 			result = updateHandler.execute(primaryOperand, iterator);
-			_dbConnector.update(result.getTasksIterator().next(),
-					TaskImpl.CLASS_NAME);
 			_listStack.push(new ArrayList<Task>(_taskList));
 			_commandStack.push(command);
 			_mapStack.push(new HashMap<Integer, Integer>(Handler.indexMap));
+			_dbConnector.update(result.getTasksIterator().next(),
+					TaskImpl.CLASS_NAME);			
 		} catch (Exception e) {
 			if(DEBUG){
 				e.printStackTrace();
