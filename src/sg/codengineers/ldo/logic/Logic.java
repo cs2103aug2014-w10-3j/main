@@ -78,7 +78,10 @@ public class Logic {
 		_taskList = new ArrayList<Task>();
 		List<String> stringList = _dbConnector.read(TaskImpl.CLASS_NAME);
 		for (String s : stringList) {
-			_taskList.add(TaskImpl.valueOf(s));
+			Task newTask = TaskImpl.valueOf(s);
+			if(newTask != null){
+				_taskList.add(newTask);
+			}
 		}
 
 		createHandler = new CreateHandler(_taskList);
@@ -206,8 +209,7 @@ public class Logic {
 
 	public Result showHelp(Command command) {
 		try {
-			CommandType type = command.getCommandType();
-			return helpHandler.execute(type);
+			return helpHandler.execute(command.getPrimaryOperand(), null);
 		} catch (Exception e) {
 			return new ResultImpl(CommandType.INVALID,
 					"Cannot find HELP page with " + command.getUserInput(),

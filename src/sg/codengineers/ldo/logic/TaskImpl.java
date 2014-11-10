@@ -18,8 +18,11 @@ public class TaskImpl implements Task {
 	public static int FIELD_TIMESTART_INDEX = 4;
 	public static int FIELD_TIMEEND_INDEX = 5;
 	public static int FIELD_PRIORITY_INDEX = 6;
+	public static int FIELD_DELETED_INDEX = 7;
 	
 	public static int FIELD_COUNT = 7;
+	public static int FIELD_COUNT_DELETED = 8;
+	
 	private int _id;
 	private String _name, _description, _tag;
 	private Date _timeStart, _timeEnd;
@@ -162,9 +165,12 @@ public class TaskImpl implements Task {
 		
 		String taskArgs[] = s.split("<;>");
 		
-		if(taskArgs.length != FIELD_COUNT){
+		if(taskArgs.length != FIELD_COUNT && taskArgs.length!= FIELD_COUNT_DELETED){
 			throw new ParseException("Cannot parse file texts", taskArgs.length);
 		} else {
+			if(taskArgs.length == FIELD_COUNT_DELETED){
+				return null;
+			}
 			int id = Integer.valueOf(taskArgs[FIELD_ID_INDEX]);
 			String name = taskArgs[FIELD_NAME_INDEX];
 			task = new TaskImpl(name);
