@@ -26,7 +26,7 @@ public class Controller {
 	private static String MSG_ERROR_UNABLE_TO_START_LDO = "Sorry!\n"
 														+ "There is an error when starting the program.\n"
 														+ "Please restart the program.\n";
-	private static String MSG_GCAL_AUTH_URL = "Open this URL from your web browser to login to Google Calendar:\n%s";
+	private static String MSG_GCAL_AUTH_URL = "Please go to your web browser to login to Google Calendar and paste the token below:\n";
 	
 	// UI instances
 	private UI ui;
