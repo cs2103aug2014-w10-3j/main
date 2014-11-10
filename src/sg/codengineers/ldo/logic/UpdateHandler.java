@@ -55,10 +55,10 @@ public class UpdateHandler extends Handler {
 					task);
 		} else {
 			_taskList.remove(taskId);
-			_taskList.add(task);
+			_taskList.add(taskId, task);
 		}
 		
-		Result result = new ResultImpl(CommandType.CREATE, 
+		Result result = new ResultImpl(CommandType.UPDATE, 
 							primaryOperand,
 							new Time(System.currentTimeMillis()), 
 							task);

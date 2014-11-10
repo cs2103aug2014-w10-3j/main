@@ -9,10 +9,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import sg.codengineers.ldo.model.AdditionalArgument;
+import sg.codengineers.ldo.model.Parser;
 import sg.codengineers.ldo.model.Result;
 import sg.codengineers.ldo.model.Task;
 import sg.codengineers.ldo.model.Command.CommandType;
 import sg.codengineers.ldo.model.Task.Priority;
+import sg.codengineers.ldo.parser.ParserImpl;
 import sg.codengineers.ldo.parser.ResultImpl;
 import sg.codengineers.ldo.logic.Filter;
 
@@ -27,9 +29,13 @@ import sg.codengineers.ldo.logic.Filter;
 public abstract class Handler {
 	//Difference between display index which starts from 1 and system index which starts from 0
 	protected static int DIFFERENCE_DIPSLAY_INDEX_AND_SYSTEM_INDEX = 1;
+	protected Parser _parser;
 		
 	public static boolean DEBUG_MODE = false;
-	public final static SimpleDateFormat FORMATTER = new SimpleDateFormat("dd/MM/yyyy");
+	/**
+	 * SimpleDateFormat no longer in use. Changed to Parser parseToDate method.
+	 */
+	//public final static SimpleDateFormat FORMATTER = new SimpleDateFormat("dd/MM/yyyy");
 	protected List<Task> _taskList;
 	
 	/**
@@ -44,6 +50,7 @@ public abstract class Handler {
 	
 	public Handler(List<Task> taskList){
 		this._taskList = taskList;
+		this._parser = new ParserImpl();
 	}
 	
 	/**
@@ -67,15 +74,26 @@ public abstract class Handler {
 			task.setName(operand);
 			break;
 		case DEADLINE:
-			task.setDeadline(FORMATTER.parse(operand));
+			Date d = _parser.parseToDate(operand);
+			if(d!=null){
+				task.setDeadline(d);
+			} else {
+				throw new IllegalArgumentException("Wrong date format: "+operand);
+			}
 			break;
 		case TIME:
 			String[] sOperand = operand.split("\\s+");
 			if(sOperand.length != 2){
 				break;
 			} else {
-				task.setTimeStart(FORMATTER.parse(sOperand[0]));
-				task.setTimeEnd(FORMATTER.parse(sOperand[1]));
+				Date startDate = _parser.parseToDate(sOperand[0]);
+				Date endDate = _parser.parseToDate(sOperand[1]);
+				if(startDate != null && endDate != null){
+					task.setTimeStart(startDate);
+					task.setTimeEnd(endDate);
+				} else {
+					throw new IllegalArgumentException("Wrong date format: "+operand);
+				}				
 			}
 			break;
 		case PRIORITY:
@@ -85,7 +103,7 @@ public abstract class Handler {
 			} else {
 				throw new IllegalArgumentException();
 			}
-		case DONE:		
+			break;
 		case TAG:
 			task.setTag(operand);
 			break;
@@ -137,7 +155,10 @@ public abstract class Handler {
 				});
 				break;
 			case DEADLINE:
-				final Date deadline = FORMATTER.parse(operand);
+				final Date deadline = _parser.parseToDate(operand);
+				if(deadline == null){
+					throw new IllegalArgumentException("Wrong date format: "+operand);
+				}				
 				newList = filter(newList, new Filter<Task>(){
 					@Override
 					public boolean call(Task task){
@@ -149,11 +170,39 @@ public abstract class Handler {
 				break;
 			case TIME:
 				String[] sOperand = operand.split("\\s+");
-				if(sOperand.length != 2){
-					throw new IllegalArgumentException("Please specify both start date and end date");
-				} else {
-					final Date startDate = FORMATTER.parse(sOperand[0]);
-					final Date endDate = FORMATTER.parse(sOperand[1]);
+				if((sOperand.length == 2 && !sOperand[0].isEmpty() && sOperand[1].isEmpty())
+						|| (sOperand.length == 1 && !sOperand[0].isEmpty())){
+					final Date date = _parser.parseToDate(sOperand[0]);
+					if(date == null){
+						throw new IllegalArgumentException("Wrong date format: "+operand);
+					}						
+					newList = filter(newList, new Filter<Task>(){
+						@Override
+						public boolean call(Task task){
+							Date ts = task.getStartTime();
+							Date te = task.getEndTime();
+							Date ddl= task.getDeadline();
+							if(ddl != null){
+								if( ddl.compareTo(date) <=0 &&
+										ddl.compareTo(new Date()) >=0){
+									return true;
+								}
+							}							
+							if(ts != null && te != null){
+								if(te.compareTo(date)>=0 && ts.compareTo(date)<=0){
+									return true;
+								}
+							}
+							return false;
+						}
+					});					
+				} else if (sOperand.length == 2 && !sOperand[0].isEmpty() && !sOperand[1].isEmpty()){
+					
+					final Date startDate = _parser.parseToDate(sOperand[0]);
+					final Date endDate = _parser.parseToDate(sOperand[1]);	
+					if(startDate == null || endDate == null){
+						throw new IllegalArgumentException("Wrong date format: "+operand);
+					}						
 					newList = filter(newList, new Filter<Task>(){
 						@Override
 						public boolean call(Task task){
@@ -167,6 +216,8 @@ public abstract class Handler {
 							}
 						}
 					});
+				} else {
+					throw new IllegalArgumentException("Please specify both start date and end date");
 				}
 				break;
 			case PRIORITY:		
@@ -182,8 +233,7 @@ public abstract class Handler {
 						}
 					});					
 				}
-				break;				
-			case DONE:		
+				break;
 			case TAG:
 				newList = filter(newList, new Filter<Task>(){
 					@Override
@@ -205,8 +255,10 @@ public abstract class Handler {
 			default:
 				break;
 			}
-		} catch(ParseException e){
-			e.printStackTrace();
+		} catch(Exception e){
+			if(Logic.DEBUG)
+				e.printStackTrace();
+			throw e;
 		}		
 		return  newList;
 	}

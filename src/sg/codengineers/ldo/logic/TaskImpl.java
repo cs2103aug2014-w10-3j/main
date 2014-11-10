@@ -3,10 +3,13 @@ package sg.codengineers.ldo.logic;
 import java.text.ParseException;
 import java.util.Date;
 
+import sg.codengineers.ldo.model.Parser;
 import sg.codengineers.ldo.model.Task;
+import sg.codengineers.ldo.parser.ParserImpl;
 
 public class TaskImpl implements Task {
 	public static String CLASS_NAME = "TASK";
+	public static Parser parser = new ParserImpl();
 	
 	public static int FIELD_ID_INDEX = 0;
 	public static int FIELD_NAME_INDEX = 1;
@@ -29,6 +32,7 @@ public class TaskImpl implements Task {
 		_name = name;
 		_description = _tag = "";
 		_timeStart = _timeEnd = null;
+		_priority = Priority.NORMAL;
 	}
 	
 	/**
@@ -42,6 +46,7 @@ public class TaskImpl implements Task {
 		this._timeStart = task.getStartTime();
 		this._timeEnd = task.getEndTime();
 		this._description = task.getDescription();
+		this._priority = task.getPriority();
 	}
 	
 	/**
@@ -93,7 +98,13 @@ public class TaskImpl implements Task {
 	@Override
 	public Date getDeadline() {
 		// Deadline tasks have the same start and end time
-		return _timeStart;
+		if(_timeStart!=null){
+			if(_timeStart.equals(_timeEnd)){
+				return _timeStart;
+			}		
+		}
+
+		return null;
 	}
 	
 	public void setId(int id) {
@@ -133,8 +144,8 @@ public class TaskImpl implements Task {
 		builder.append(_description+"<;>");
 		builder.append(_tag+"<;>");
 		if(_timeStart != null && _timeEnd !=null){
-			builder.append(Handler.FORMATTER.format(_timeStart)+"<;>");
-			builder.append(Handler.FORMATTER.format(_timeEnd)+"<;>");		
+			builder.append(parser.parseDateToString(_timeStart)+"<;>");
+			builder.append(parser.parseDateToString(_timeEnd)+"<;>");		
 		}else{
 			builder.append("<;>");
 			builder.append("<;>");
@@ -157,6 +168,7 @@ public class TaskImpl implements Task {
 			int id = Integer.valueOf(taskArgs[FIELD_ID_INDEX]);
 			String name = taskArgs[FIELD_NAME_INDEX];
 			task = new TaskImpl(name);
+			task.setId(id);
 			
 			String description = taskArgs[FIELD_DESCRIPTION_INDEX];
 			if(description!= null && !description.isEmpty()){
@@ -173,12 +185,12 @@ public class TaskImpl implements Task {
 			
 			String timeStart = taskArgs[FIELD_TIMESTART_INDEX];
 			if(timeStart!=null && !timeStart.isEmpty()){
-				sTime = Handler.FORMATTER.parse(timeStart);
+				sTime = parser.parseToDate(timeStart);
 			}
 			
 			String timeEnd = taskArgs[FIELD_TIMEEND_INDEX];
 			if(timeEnd!=null && !timeEnd.isEmpty()){
-				eTime = Handler.FORMATTER.parse(timeEnd);
+				eTime = parser.parseToDate(timeEnd);
 			}	
 			
 			if(sTime!=null && eTime!=null && sTime.equals(eTime)){

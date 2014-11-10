@@ -43,4 +43,15 @@ public interface Parser {
 	 * @return A Date Object based on the user's Input.
 	 */
 	public Date parseToDate(String userInput);
+
+	/**
+	 * parses a Date object into a string format in the following format:
+	 * "dd/mm/yyyy HH:mm"
+	 * 
+	 * @param date
+	 *            Date object to be parsed
+	 * @return a String object containing the hour, minute, date, month and year
+	 *         of the date object.
+	 */
+	public String parseDateToString(Date date);
 }

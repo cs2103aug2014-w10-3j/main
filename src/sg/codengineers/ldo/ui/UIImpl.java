@@ -1,5 +1,7 @@
 package sg.codengineers.ldo.ui;
 
+import org.fusesource.jansi.AnsiConsole;
+
 import sg.codengineers.ldo.model.Input;
 import sg.codengineers.ldo.model.Output;
 import sg.codengineers.ldo.model.Result;
@@ -9,6 +11,10 @@ public class UIImpl implements UI {
 
 	private Input	_input	= new InputImpl();
 	private Output	_output	= new OutputImpl();
+
+	public UIImpl() {
+		AnsiConsole.systemInstall();
+	}
 
 	@Override
 	public String readFromUser() {
@@ -22,7 +28,7 @@ public class UIImpl implements UI {
 
 	@Override
 	public void displayError(String message) {
-		System.out.println(message);
+		_output.displayError(message);
 	}
 
 	@Override
@@ -34,9 +40,9 @@ public class UIImpl implements UI {
 	public void displayExit() {
 		_output.displayExit();
 	}
-	
+
 	@Override
-	public void displayMessage(String message){
+	public void displayMessage(String message) {
 		_output.displayMessage(message);
 	}
 }

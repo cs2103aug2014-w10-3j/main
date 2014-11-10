@@ -3,13 +3,10 @@ package sg.codengineers.ldo.logic;
 import java.io.IOException;
 import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
-import sg.codengineers.ldo.db.DBConnector;
 import sg.codengineers.ldo.db.Database;
 import sg.codengineers.ldo.model.AdditionalArgument;
 import sg.codengineers.ldo.model.Command;
@@ -55,8 +52,16 @@ public class Logic {
 	}
 	
 	private Logic()throws Exception{
-		this._dbConnector = Database.initDatabase();
-		initialize();
+		try{
+			this._dbConnector = Database.initDatabase();
+			initialize();			
+		} catch(Exception e){
+			if(Logic.DEBUG){
+				e.printStackTrace();
+			}
+			throw e;
+		}
+
 	}
 	
 	protected Logic (boolean stub){
@@ -109,22 +114,37 @@ public class Logic {
 	}
 
 	public Result deleteTask(Command command) throws IOException{
-		String primaryOperand = command.getPrimaryOperand();
-		Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
-		Result result = deleteHandler.execute(primaryOperand, iterator);
-		_dbConnector.delete(result.getTasksIterator().next(), TaskImpl.CLASS_NAME);
-		_listStack.push(new ArrayList<Task>(_taskList));
-		_commandStack.push(command);
+		Result result;
+		try{
+			String primaryOperand = command.getPrimaryOperand();
+			Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
+			result = deleteHandler.execute(primaryOperand, iterator);
+			_dbConnector.delete(result.getTasksIterator().next(), TaskImpl.CLASS_NAME);
+			_listStack.push(new ArrayList<Task>(_taskList));
+			_commandStack.push(command);			
+		} catch(Exception e){
+			return  new ResultImpl(CommandType.INVALID, 
+					"Cannot delete task with "+command.getUserInput(),
+					new Time(System.currentTimeMillis()));				
+		}
+
 		return result;
 	}
 
 	public Result updateTask(Command command) throws IOException{
-		String primaryOperand = command.getPrimaryOperand();
-		Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
-		Result result = updateHandler.execute(primaryOperand, iterator);
-		_dbConnector.update(result.getTasksIterator().next(),TaskImpl.CLASS_NAME);
-		_listStack.push(new ArrayList<Task>(_taskList));
-		_commandStack.push(command);
+		Result result;
+		try{
+			String primaryOperand = command.getPrimaryOperand();
+			Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
+			result = updateHandler.execute(primaryOperand, iterator);
+			_dbConnector.update(result.getTasksIterator().next(),TaskImpl.CLASS_NAME);
+			_listStack.push(new ArrayList<Task>(_taskList));
+			_commandStack.push(command);			
+		} catch(Exception e){
+			return  new ResultImpl(CommandType.INVALID, 
+					"Cannot update task with "+command.getUserInput(),
+					new Time(System.currentTimeMillis()));			
+		}
 		return result;
 	}
 
@@ -174,8 +194,15 @@ public class Logic {
 	}
 	
 	public Result showHelp(Command command){
-		CommandType type = command.getCommandType();
-		return helpHandler.execute(type);
+		try{
+			CommandType type = command.getCommandType();
+			return helpHandler.execute(type);			
+		}catch(Exception e){
+			return new ResultImpl(CommandType.INVALID, 
+					"Cannot find HELP page with "+command.getUserInput(),
+					new Time(System.currentTimeMillis()));			
+		}
+
 	}
 	
 	public String getGCalAuthURL(){
