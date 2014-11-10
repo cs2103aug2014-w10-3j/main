@@ -122,7 +122,7 @@ public class DBConfig {
 			if (s.equalsIgnoreCase("textfile")) {
 				connectorList.add(new TextDBConnector(className));
 			} else if (s.equalsIgnoreCase("GCal")) {
-				//connectorList.add(new GCalDBConnector());
+				connectorList.add(new GCalDBConnector());
 			}
 		}
 		
