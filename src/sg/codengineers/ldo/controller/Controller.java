@@ -1,6 +1,7 @@
 package sg.codengineers.ldo.controller;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,7 +29,7 @@ public class Controller {
 	private final static Logger logger = Logger.getLogger(Controller.class.getName()); 
 	
 	//These are command strings and messages required in Controller class
-	private static String COMMAND_SHOW_TODAY = "show";
+	private static String COMMAND_SHOW_TODAY = "search --time %s";
 	private static String MSG_ERROR_UNABLE_TO_START_LDO = "Sorry! There is an error when starting the program.\n"
 														+ "Please restart the program.";
 	private static String MSG_ERROR_UNABLE_TO_EXECUTE_CMD = "Sorry! There is an error within the program.\n"
@@ -145,7 +146,14 @@ public class Controller {
 		logger.log(Level.INFO, "Process welcome message");
 		
 		try {
-			Command command = parser.parse(COMMAND_SHOW_TODAY);
+			//Create new date
+			Date date = new Date();
+			StringBuilder dateString = new StringBuilder();
+			dateString.append(date.getDate() + "/");
+			dateString.append(date.getMonth()+1 + "/");
+			dateString.append(date.getYear()+1990);
+			
+			Command command = parser.parse(String.format(COMMAND_SHOW_TODAY,dateString.toString()));
 			Result result = executeCommand(command);
 			ui.displayWelcome(result);
 		} catch (Exception e) {
