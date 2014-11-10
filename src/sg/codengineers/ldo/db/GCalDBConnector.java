@@ -292,8 +292,16 @@ public class GCalDBConnector implements DBConnector {
 		event.setSummary(task.getName());
 		event.setDescription(task.getDescription());
 		
-	    DateTime start = new DateTime(task.getStartTime(), TimeZone.getTimeZone("UTC"));
-	    DateTime end = new DateTime(task.getEndTime(), TimeZone.getTimeZone("UTC"));
+		DateTime start = new DateTime(new Date());
+		DateTime end = new DateTime(new Date());
+		
+		if (task.getStartTime() != null) {
+			start = new DateTime(task.getStartTime());
+		}
+		
+		if (task.getEndTime() != null) {
+			end = new DateTime(task.getEndTime());
+		}
 
 		event.setStart(new EventDateTime().setDateTime(start));
 		event.setEnd(new EventDateTime().setDateTime(end));
