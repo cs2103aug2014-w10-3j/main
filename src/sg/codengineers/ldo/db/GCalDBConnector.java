@@ -57,7 +57,7 @@ public class GCalDBConnector implements DBConnector {
 
 	public GCalDBConnector() {
 		refreshToken = loadRefreshToken();
-		
+
 		GoogleCredential credential = new GoogleCredential.Builder()
 					.setJsonFactory(JSON_FACTORY)
 					.setTransport(HTTP_TRANSPORT)
@@ -129,7 +129,7 @@ public class GCalDBConnector implements DBConnector {
 			gCalEvents.add(createdEvent);
 
 			return true;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
