@@ -26,6 +26,7 @@ import sg.codengineers.ldo.logic.Filter;
  * logic operation classes need to implement {@link #execute(String, Iterator)}
  * method and fill in the actual execution there.
  * 
+ * @author Wenhao
  *
  */
 public abstract class Handler {
@@ -64,6 +65,9 @@ public abstract class Handler {
 	public Handler(List<Task> taskList) {
 		this._taskList = taskList;
 		this._parser = new ParserImpl();
+		//wkurniawan07 was here
+		List<Task> showList = eliminateDoneTasks(_taskList);
+		populateIndexMap(showList);
 	}
 
 	/**

@@ -47,10 +47,10 @@ public class CreateHandler extends Handler {
 			}
 		}
 
-
-
 		_taskList.add(task);
-
+		//wkurniawan07 was here
+		List<Task> showList = eliminateDoneTasks(_taskList);
+		populateIndexMap(showList);
 		Result result = new ResultImpl(CommandType.CREATE, 
 				primaryOperand,
 				new Time(System.currentTimeMillis()), 

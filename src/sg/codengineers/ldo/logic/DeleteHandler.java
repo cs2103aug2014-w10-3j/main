@@ -24,7 +24,6 @@ public class DeleteHandler extends Handler {
 		
 		Result result = null;
 		Task task = null;
-		
 		if(primaryOperand.equalsIgnoreCase("all")){
 			List<Task> theList = new ArrayList<Task>(_taskList);
 			_taskList.clear();
@@ -49,7 +48,9 @@ public class DeleteHandler extends Handler {
 					"Task "+primaryOperand+" doesn't exist.",
 					new Time(System.currentTimeMillis()));		
 		}
-		
+		//wkurniawan07 was here
+		List<Task> showList = eliminateDoneTasks(_taskList);
+		populateIndexMap(showList);
 		result = new ResultImpl(CommandType.DELETE, 
 				primaryOperand,
 				new Time(System.currentTimeMillis()), 
