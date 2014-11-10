@@ -69,8 +69,13 @@ public class DBConfig {
 	 * 
 	 * @return An list of the database types
 	 */
-	public String[] getType() {
-		return type;
+	public List<String> getTypes() {
+		return types;
+	}
+	
+	public boolean addType(String type) {
+		types.add(type);
+		return true;
 	}
 	
 	/**
