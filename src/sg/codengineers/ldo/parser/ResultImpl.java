@@ -13,9 +13,8 @@ import sg.codengineers.ldo.model.Command.CommandType;
  * This class specifies the implementation of the Result class as specified by
  * the Result interface
  * 
- * @author Victor Hazali
- * 
  */
+//@author A0110741X
 public class ResultImpl implements Result {
 
 	private CommandType	_commandType;
