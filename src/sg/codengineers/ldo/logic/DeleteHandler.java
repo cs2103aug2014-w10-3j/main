@@ -38,8 +38,9 @@ public class DeleteHandler extends Handler {
 		int id = -1;
 		try{
 			id = Integer.valueOf(primaryOperand) - DIFFERENCE_DIPSLAY_INDEX_AND_SYSTEM_INDEX;
-			task = _taskList.remove((int)indexMap.get(id));
-			indexMap.remove(arg0);
+			task = getTask((int)indexMap.get(id));
+			_taskList.remove(task);
+			indexMap.remove(Integer.valueOf(id));
 		} catch(Exception e){
 			if(Logic.DEBUG){
 				e.printStackTrace();

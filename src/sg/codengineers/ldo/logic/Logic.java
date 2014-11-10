@@ -126,11 +126,17 @@ public class Logic {
 			Iterator<AdditionalArgument> iterator = command
 					.getAdditionalArguments();
 			result = deleteHandler.execute(primaryOperand, iterator);
-			_dbConnector.delete(result.getTasksIterator().next(),
-					TaskImpl.CLASS_NAME);
+			Iterator<Task> it = result.getTasksIterator();
+			while(it != null && it.hasNext()){
+				_dbConnector.delete(it.next(),
+						TaskImpl.CLASS_NAME);				
+			}
 			_listStack.push(new ArrayList<Task>(_taskList));
 			_commandStack.push(command);
 		} catch (Exception e) {
+			if(DEBUG){
+				e.printStackTrace();
+			}
 			return new ResultImpl(CommandType.INVALID,
 					"Cannot delete task with " + command.getUserInput(),
 					new Time(System.currentTimeMillis()));
