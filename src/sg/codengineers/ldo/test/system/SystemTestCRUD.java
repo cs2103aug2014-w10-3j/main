@@ -26,7 +26,7 @@ public class SystemTestCRUD {
 	
 	@Test
 	public void testCreate() {
-		Controller controller = new Controller();
+		Controller controller = Controller.getInstance();
 		
 		try{
 			//only primary argument
@@ -85,7 +85,8 @@ public class SystemTestCRUD {
 	
 	@Test
 	public void testRetrive() {
-		Controller controller = new Controller();
+		Controller controller = Controller.getInstance();
+		
 		try {
 			//IMPT! delete all tasks
 			
@@ -121,7 +122,8 @@ public class SystemTestCRUD {
 	
 	@Test
 	public void testUpdate() {
-		Controller controller = new Controller();
+		Controller controller = Controller.getInstance();
+		
 		try{
 			//delete all tasks
 			
@@ -149,7 +151,8 @@ public class SystemTestCRUD {
 	
 	@Test
 	public void testDelete() {
-		Controller controller = new Controller();
+		Controller controller = Controller.getInstance();
+		
 		try{
 			//delete all tasks
 			
