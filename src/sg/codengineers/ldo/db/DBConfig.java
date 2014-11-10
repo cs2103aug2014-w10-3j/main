@@ -44,7 +44,7 @@ public class DBConfig {
 	 * 
 	 * @param className The name of the class whose
 	 * data is being saved
-	 * @param type The types of database that the type
+	 * @param types The types of database that the type
 	 * of class has
 	 */
 	public DBConfig(String className, String[] type) {
