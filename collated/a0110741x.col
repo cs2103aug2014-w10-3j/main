@@ -3,7 +3,3359 @@
 
 
 	/**
-	 * origin: ui\InputImpl.java
+	 * origin: src\sg\codengineers\ldo\model\AdditionalArgument.java
+	 */
+
+
+package sg.codengineers.ldo.model;
+
+/**
+ * This interface specifies the public methods of the Additional Argument.
+ */
+public interface AdditionalArgument {
+
+	// List of acceptable argument types
+	enum ArgumentType {
+		HELP, NAME, DEADLINE, TIME, TAG, PRIORITY, DESCRIPTION, INVALID
+	};
+
+	/**
+	 * Gets the operand of the additional argument field.
+	 * 
+	 * @return A String containing the operand
+	 */
+	public String getOperand();
+
+	/**
+	 * Gets the argument type of the additional argument field.
+	 * 
+	 * @return an ArgumentType of the field.
+	 */
+	public ArgumentType getArgumentType();
+
+	/**
+	 * Displays the contents of the command class in the following format:
+	 * 
+	 * argument type:\t<argumentType>
+	 * operand:\t<operand>
+	 * 
+	 * @return a string object containing the contents of the additional
+	 *         argument object in the format specified
+	 */
+	@Override
+	public String toString();
+}
+
+	// End of segment: src\sg\codengineers\ldo\model\AdditionalArgument.java
+
+
+
+
+
+	/**
+	 * origin: src\sg\codengineers\ldo\model\Command.java
+	 */
+
+
+package sg.codengineers.ldo.model;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import sg.codengineers.ldo.model.Task.Priority;
+
+/**
+ * This interface specifies the public methods of the Command Class
+ */
+public interface Command {
+
+	// The list of acceptable Command types
+	public enum CommandType {
+		CREATE("add"), 
+		UPDATE("update"), 
+		DELETE("delete"), 
+		RETRIEVE("show"), 
+		SYNC("sync"), 
+		SEARCH("search"), 
+		HELP("help"), 
+		UNDO("undo"), 
+		EXIT("exit"),
+		INVALID("invalid");
+
+		private String text;
+		
+
+		CommandType(String text) {
+			this.text = text;
+		}
+
+		public String getText() {
+			return this.text;
+		}
+
+		public static CommandType fromString(String text) {
+			if (text != null) {
+				for (CommandType b : CommandType.values()) {
+					if (text.equalsIgnoreCase(b.text)) {
+						return b;
+					}
+				}
+			}
+			return null;
+		}
+	};
+
+	/**
+	 * Gets the original user input
+	 * 
+	 * @return a string object representing the initial user input
+	 */
+	public String getUserInput();
+
+	/**
+	 * Gets the command type of the command.
+	 * 
+	 * @return the command type; either create, retrieve, update, delete show or
+	 *         invalid
+	 */
+	public CommandType getCommandType();
+
+	/**
+	 * Gets the primary operand of the command.
+	 * 
+	 * Note that, for the event of a show command, if it does not have a primary
+	 * operand (i.e. the command is simply show), the primary operand that will
+	 * be returned is an empty string (i.e. "")
+	 * 
+	 * @return A string containing the primary operand.
+	 */
+	public String getPrimaryOperand();
+
+	/**
+	 * Gets the message field of the command.
+	 * 
+	 * The message field should only be used when the commandType is INVALID.
+	 * The message will then contain the error message explaining why is the
+	 * command invalid.
+	 * 
+	 * @return A string containing the message
+	 */
+	public String getMessage();
+
+	/**
+	 * Gets an iterator to iterate through all the additional arguments received
+	 * from the user.
+	 * 
+	 * @return An Iterator that is able to iterate through all the additional
+	 *         arguments
+	 */
+	public Iterator<AdditionalArgument> getAdditionalArguments();
+
+	/**
+	 * Displays the contents of the command class in the following format:
+	 * 
+	 * user input:\t <userInput>
+	 * command type:\t<commandType>
+	 * primary operand:\t<primaryOp>
+	 * message:\t<message>
+	 * additional arguments:
+	 * <additional argument>
+	 * <additional argument>
+	 * 
+	 * @return a string object containing the contents of the command object in
+	 *         the format specified
+	 */
+	@Override
+	public String toString();
+}
+
+	// End of segment: src\sg\codengineers\ldo\model\Command.java
+
+
+
+
+
+	/**
+	 * origin: src\sg\codengineers\ldo\model\Input.java
+	 */
+
+
+package sg.codengineers.ldo.model;
+
+/**
+ * This interface specifies how the user can interact with the Input class
+ */
+public interface Input {
+
+	/**
+	 * Method to read input from user
+	 */
+	public String readFromUser();
+
+}
+	// End of segment: src\sg\codengineers\ldo\model\Input.java
+
+
+
+
+
+	/**
+	 * origin: src\sg\codengineers\ldo\model\Output.java
+	 */
+
+
+package sg.codengineers.ldo.model;
+
+/**
+ * This interface specifies how a user can interact with the Output class
+ */
+public interface Output {
+
+	/**
+	 * Displays result from executing the command
+	 * 
+	 * @param result
+	 *            Result from the execution of command
+	 * @throws Exception
+	 *             Throws an Illegal Argument Exception when command type of
+	 *             result is invalid
+	 */
+	public void displayResult(Result result);
+
+	/**
+	 * Displays an exception message to the user. The method will first display
+	 * the message in the exception by calling the getMessage() method as
+	 * specified by the Exception Class. However, if a null is received, the
+	 * method will skip this step. The method will then execute
+	 * printStackTracte() method as specified by the Exception Class.
+	 * 
+	 * @param e
+	 *            The exception to be show to the user. Should contain the
+	 *            reason behind the exception.
+	 */
+	public void displayError(String errorMessage);
+
+	/**
+	 * Displays the welcome message to the user
+	 * 
+	 * @param result
+	 *            The list of task due today.
+	 */
+	public void displayWelcome(Result result);
+
+	/**
+	 * Displays an exit message to the user.
+	 */
+	public void displayExit();
+	
+	public void displayMessage(String message);
+}
+
+	// End of segment: src\sg\codengineers\ldo\model\Output.java
+
+
+
+
+
+	/**
+	 * origin: src\sg\codengineers\ldo\model\Parser.java
+	 */
+
+
+package sg.codengineers.ldo.model;
+
+import java.util.Date;
+
+/**
+ * This interface specifies the public methods available to the Parser Class
+ */
+public interface Parser {
+
+	/**
+	 * Parses the user input from a String into a Command Object
+	 * 
+	 * @param userInput
+	 *            The String object containing user input.
+	 * @return A Command Object based on the user's Input. An Invalid command
+	 *         will be returned should there be any issues with the user's
+	 *         input. The rationale behind the Invalid command will be placed
+	 *         within the primary operand field of the command.
+	 */
+	public Command parse(String userInput);
+
+	/**
+	 * Parses the user input from a String into an AdditionalArgument Object
+	 * 
+	 * @param userInput
+	 *            The String object containing user input.
+	 * @return An AdditionalArgument Object based on the user's Input. An
+	 *         Invalid AdditionalArgument will be returned should there be any
+	 *         issues with the user's input. The rationale behind the Invalid
+	 *         AdditionalArgument will be placed within the operand field of the
+	 *         AdditionalArgument.
+	 */
+	public AdditionalArgument parseToAddArg(String userInput);
+
+	/**
+	 * Parses the user input from a String into a Date Object
+	 * 
+	 * @param userInput
+	 *            The String object containing user input.
+	 * @return A Date Object based on the user's Input.
+	 */
+	public Date parseToDate(String userInput);
+
+	/**
+	 * parses a Date object into a string format in the following format:
+	 * "dd/mm/yyyy HH:mm"
+	 * 
+	 * @param date
+	 *            Date object to be parsed
+	 * @return a String object containing the hour, minute, date, month and year
+	 *         of the date object.
+	 */
+	public String parseDateToString(Date date);
+}
+
+	// End of segment: src\sg\codengineers\ldo\model\Parser.java
+
+
+
+
+
+	/**
+	 * origin: src\sg\codengineers\ldo\model\Result.java
+	 */
+
+
+package sg.codengineers.ldo.model;
+
+import java.sql.Time;
+import java.util.Iterator;
+
+import sg.codengineers.ldo.model.Command.CommandType;
+
+/**
+ * This interface specifies the available public methods of the Result Class
+ */
+public interface Result {
+
+	/**
+	 * Gets the command type of the result
+	 * 
+	 * @return A CommandType object representing the command type of the result
+	 */
+	public CommandType getCommandType();
+
+	/**
+	 * Gets the primary operand of the result
+	 * 
+	 * @return A String object representing the primary operand of the command
+	 *         by user
+	 */
+	public String getPrimaryOperand();
+
+	/**
+	 * Gets the message tagged to the Result class. This message is used for
+	 * --help calls
+	 * 
+	 * @return A String object containing all the help information for the
+	 *         commandType
+	 */
+	public String getMessage();
+
+	/**
+	 * Gets the time stamp of the completion of the operation
+	 * 
+	 * @return A Time object representing the time of completion of the
+	 *         operation
+	 */
+	public Time getOperationTime();
+
+	/**
+	 * Gets an iterator of the tasks involved in the operation
+	 * 
+	 * @return An Iterator<Task> object containing all the tasks involved in the
+	 *         operation
+	 */
+	public Iterator<Task> getTasksIterator();
+}
+
+	// End of segment: src\sg\codengineers\ldo\model\Result.java
+
+
+
+
+
+	/**
+	 * origin: src\sg\codengineers\ldo\model\UI.java
+	 */
+
+
+package sg.codengineers.ldo.model;
+
+/**
+ * This interface specifies all the public methods for the UI component
+ */
+public interface UI {
+
+	/**
+	 * Reads a string from the user
+	 * 
+	 * @return a String object representing user input
+	 */
+	public String readFromUser();
+
+	/**
+	 * Shows the result of the execution of a command based on user input to the
+	 * user.
+	 * 
+	 * @param result
+	 *            a Result object representing the results of execution
+	 * 
+	 */
+	public void displayResult(Result result);
+
+	/**
+	 * Shows the user an error message detailing the rationale of the error.
+	 * 
+	 * @param message
+	 *            String object containing the message to be shown to user
+	 */
+	public void displayError(String message);
+
+	/**
+	 * Shows the Welcome message to the user.
+	 * It will display the program name followed by the day's task in the
+	 * following format:
+	 * <Program Name>
+	 * Here are today's tasks:
+	 * 1. <Task 1>
+	 * 2. <Task 2>
+	 * 
+	 * If there are no tasks due on the same day, the display will be replaced
+	 * by:
+	 * <Program Name>
+	 * <NO_TASK_TODAY_MESSAGE>
+	 * 
+	 * @param result
+	 *            The list of task due today
+	 */
+	public void displayWelcome(Result result);
+
+	/**
+	 * Shows the Exit message to the user
+	 */
+	public void displayExit();
+	
+	public void displayMessage(String message);
+}
+
+	// End of segment: src\sg\codengineers\ldo\model\UI.java
+
+
+
+
+
+	/**
+	 * origin: src\sg\codengineers\ldo\parser\AdditionalArgumentImpl.java
+	 */
+
+
+package sg.codengineers.ldo.parser;
+
+import sg.codengineers.ldo.model.AdditionalArgument;
+
+/**
+ * This class implements Additional Argument as specified by the Additional
+ * Argument interface
+ * 
+ */
+public class AdditionalArgumentImpl implements AdditionalArgument {
+
+	/* Member variables */
+	private ArgumentType	_argumentType;
+	private String			_operand;
+
+	/* Constructors */
+	public AdditionalArgumentImpl(ArgumentType argumentType, String value) {
+		_argumentType = argumentType;
+		_operand = value;
+	}
+
+	/* public methods */
+
+	/**
+	 * Gets the Operand of the argument
+	 * 
+	 * @return A String containing the value of the argument
+	 */
+	@Override
+	public String getOperand() {
+		return _operand;
+	}
+
+	/**
+	 * Gets the argument type of the argument
+	 * 
+	 * @return An ArgumentType of the argument
+	 */
+	@Override
+	public ArgumentType getArgumentType() {
+		return _argumentType;
+	}
+
+	/**
+	 * Displays the contents of the command class in the following format:
+	 * 
+	 * argument type:\t<argumentType>
+	 * operand:\t<operand>
+	 * 
+	 * @return a string object containing the contents of the additional
+	 *         argument object in the format specified
+	 */
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("argument type:\t" + getArgumentType().toString());
+		sb.append("operand:\t" + getOperand());
+		return sb.toString();
+	}
+}
+	// End of segment: src\sg\codengineers\ldo\parser\AdditionalArgumentImpl.java
+
+
+
+
+
+	/**
+	 * origin: src\sg\codengineers\ldo\parser\CommandImpl.java
+	 */
+
+
+package sg.codengineers.ldo.parser;
+
+// import java.util.ArrayList;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import sg.codengineers.ldo.model.AdditionalArgument;
+import sg.codengineers.ldo.model.Command;
+
+// import sg.codengineers.ldo.model.Parser;
+
+/**
+ * This class specifies the implementation of Command as specified by the
+ * Command interface
+ * 
+ */
+public class CommandImpl implements Command {
+
+	/* Member Variables */
+	private String						_userInput;
+	private CommandType					_commandType;
+	private String						_primaryOperand;
+	private String						_message;
+	private List<AdditionalArgument>	_additionalArguments;
+
+	/* Constructors */
+
+	public CommandImpl(String userInput, CommandType commandType,
+			String primaryOperand, List<AdditionalArgument> additionalArguments) {
+		setUserInput(userInput);
+		setCommandType(commandType);
+		setPrimaryOperand(primaryOperand);
+		setMessage("");
+		setAdditionalArguments(additionalArguments);
+	}
+
+	public CommandImpl(String userInput, CommandType commandType, String message) {
+		setUserInput(userInput);
+		setCommandType(commandType);
+		setPrimaryOperand("");
+		setMessage(message);
+		setAdditionalArguments(new ArrayList<AdditionalArgument>());
+	}
+
+	/* Public Methods */
+
+	/**
+	 * Gets the initial string which contains the user input
+	 * 
+	 * @return a String object representing the initial user input string
+	 */
+	@Override
+	public String getUserInput() {
+		return _userInput;
+	}
+
+	/**
+	 * gets the Command type of this command.
+	 * 
+	 * @return a CommandType object representing the command type of this
+	 *         Command object.
+	 */
+	@Override
+	public CommandType getCommandType() {
+		return _commandType;
+	}
+
+	/**
+	 * Gets the primary operand of this command.
+	 * 
+	 * @return a String containing the primary operand
+	 */
+	@Override
+	public String getPrimaryOperand() {
+		return _primaryOperand;
+	}
+
+	/**
+	 * Gets the message field of this command.
+	 * 
+	 * @return a String containing the message.
+	 */
+	@Override
+	public String getMessage() {
+		return _message;
+	}
+
+	/**
+	 * Gets an iterator which is able to iterate through all of this command's
+	 * additional arguments
+	 * 
+	 * @return an iterator containing all the additional arguments
+	 */
+	@Override
+	public Iterator<AdditionalArgument> getAdditionalArguments() {
+		if (_additionalArguments == null) {
+			List<AdditionalArgument> tempList = new ArrayList<AdditionalArgument>();
+			return tempList.iterator();
+		}
+		return _additionalArguments.iterator();
+	}
+
+	@Override
+	/**
+	 * Checks for equality with another object
+	 * 
+	 * It will return true if and only if 
+	 * The object is a command object and
+	 * The object has the same user input string
+	 */
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		}
+		if (o == this) {
+			return true;
+		}
+		if (!(o instanceof Command)) {
+			return false;
+		}
+		Command other = (Command) o;
+		return other.getUserInput().equalsIgnoreCase(_userInput);
+
+	}
+
+	/**
+	 * Displays the contents of the command class in the following format:
+	 * 
+	 * user input:\t <userInput>
+	 * command type:\t<commandType>
+	 * primary operand:\t<primaryOp>
+	 * message:\t<message>
+	 * additional arguments:
+	 * <additional argument>
+	 * <additional argument>
+	 * 
+	 * @return a string object containing the contents of the command object in
+	 *         the format specified
+	 */
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("user input:\t" + getUserInput() + "\n");
+		sb.append("command type:\t" + getCommandType().toString() + "\n");
+		sb.append("primary op:\t" + getPrimaryOperand() + "\n");
+		sb.append("message:\t" + getMessage() + "\n");
+		sb.append("additional arguments:\n" + _additionalArguments.toString());
+
+		return sb.toString();
+	}
+
+	/* Protected Methods */
+	protected void setUserInput(String userInput) {
+		_userInput = userInput;
+	}
+
+	protected void setCommandType(CommandType cmdType) {
+		_commandType = cmdType;
+	}
+
+	protected void setPrimaryOperand(String priOp) {
+		_primaryOperand = priOp;
+	}
+
+	protected void setMessage(String message) {
+		_message = message;
+	}
+
+	protected void setAdditionalArguments(List<AdditionalArgument> addArgs) {
+		_additionalArguments = addArgs;
+	}
+}
+
+	// End of segment: src\sg\codengineers\ldo\parser\CommandImpl.java
+
+
+
+
+
+	/**
+	 * origin: src\sg\codengineers\ldo\parser\ParserImpl.java
+	 */
+
+
+package sg.codengineers.ldo.parser;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import sg.codengineers.ldo.model.AdditionalArgument;
+import sg.codengineers.ldo.model.AdditionalArgument.ArgumentType;
+import sg.codengineers.ldo.model.Command;
+import sg.codengineers.ldo.model.Command.CommandType;
+import sg.codengineers.ldo.model.Parser;
+
+/**
+ * This class implements a Parser as implemented by the Parser interface.
+ * 
+ */
+public class ParserImpl implements Parser {
+
+	/* Constants */
+	private static final int					PRIMARY_OPERAND_POSITION	= 0;
+	private static final boolean				DEBUG_MODE					= false;
+
+	/* Messages to show to user for Exceptions */
+	private static final String					CODE_FAULT					= "%1s in %2s component is not behaving according to how it should be.\n";
+	private static final String					BLANK_INPUT					= "Blank input not acceptable.\n";
+	private static final String					INVALID_COMMAND				= "\"%s\" does not have a valid command type entered.\n";
+	private static final String					EMPTY_OPR_FOR_CMD			= "Empty operand for %s command not supported.\n";
+	private static final String					NUMBER_EXPECTED_FOR_CMD		= "Primary operand for %s should contain numbers.\n";
+	private static final String					INVALID_ARGUMENT			= "Invalid additional argument entered.\n";
+	private static final String					OPERAND_EXPECTED			= "Operand should follow additional argument %s.\n";
+	private static final String					INVALID_INDEX				= "Primary operand should not be less than 1.\n";
+	private static final String					INVALID_OPERAND				= "\"%s\" is not a valid operand for %s.\n";
+	private static final String					INVALID_ARG_FOR_CMD			= "%s argument is invalid for %s command type.\n";
+	private static final String					DEADLINE_AND_TIME			= "Not possible to set both deadline and time range for the same task.\n";
+
+	/* Static Variables */
+	private static Map<String, CommandType>		_cmdMap;
+	private static Map<String, ArgumentType>	_argsMap;
+	private static List<DateFormat>				_dateTimeFormats;
+	private static List<DateFormat>				_dateFormats;
+	private static List<DateFormat>				_timeFormats;
+	private static boolean						_isInitialised;
+
+	/* Member Variables */
+	private String								_userInput;
+	private Command								_resultingCommand;
+	private boolean								_isEmptyPriOp;
+	private boolean								_isHelpRequest;
+	private boolean								_hasDeadline;
+	private boolean								_hasTimeRange;
+
+	/* Public methods */
+
+	/**
+	 * Parses an input string into a Command Object.
+	 * 
+	 * In the event of an unsuccessful parsing, a Command Object with the
+	 * command type INVALID is returned instead. The rationale behind the
+	 * unsuccessful parsing is stored within the command as it's primary
+	 * operand.
+	 */
+	@Override
+	public Command parse(String userInput) {
+		initialise(userInput);
+
+		try {
+			checkForBlankInput();
+		} catch (Exception e) {
+			if (DEBUG_MODE) {
+				e.printStackTrace();
+			}
+			return new CommandImpl(userInput, CommandType.INVALID,
+					e.getMessage());
+		}
+
+		CommandType cmdType = getCommandType();
+		String priOp = getPrimaryOperand();
+		String[] splitInput = splitToArguments(removePrimaryArgument(priOp));
+		List<AdditionalArgument> addArgs = populateAdditionalArguments(splitInput);
+
+		try {
+			validateInput(cmdType, priOp, addArgs);
+		} catch (Exception e) {
+			if (DEBUG_MODE) {
+				e.printStackTrace();
+			}
+			return new CommandImpl(userInput, CommandType.INVALID,
+					e.getMessage());
+		}
+
+		if (_isHelpRequest) {
+			priOp = cmdType.toString().toLowerCase();
+			cmdType = CommandType.HELP;
+			addArgs = new ArrayList<AdditionalArgument>();
+		}
+
+		_resultingCommand = new CommandImpl(_userInput, cmdType, priOp, addArgs);
+		return _resultingCommand;
+	}
+
+	/**
+	 * Parses an input string to an AdditionalArgument Object.
+	 * 
+	 * In the event of an unsuccessful parse, an AdditionalArgument with an
+	 * INVALID argument type will be returned. The rationale behind the
+	 * unsuccessful parsing will be stored as the operand.
+	 */
+	@Override
+	public AdditionalArgument parseToAddArg(String userInput) {
+		initialise(userInput);
+
+		try {
+			checkForBlankInput();
+		} catch (Exception e) {
+			if (DEBUG_MODE) {
+				e.printStackTrace();
+			}
+			return new AdditionalArgumentImpl(ArgumentType.INVALID,
+					e.getMessage());
+		}
+
+		ArgumentType argType = getArgumentType(getFirstWord(userInput));
+		String operand = getOperand();
+
+		try {
+			validateArgument(new AdditionalArgumentImpl(argType, operand));
+		} catch (Exception e) {
+			if (DEBUG_MODE) {
+				e.printStackTrace();
+			}
+			return new AdditionalArgumentImpl(ArgumentType.INVALID,
+					e.getMessage());
+		}
+
+		return new AdditionalArgumentImpl(argType, operand);
+	}
+
+	/**
+	 * Parses an input string to a Date object. The list of acceptable formats
+	 * is specified by the lists _dateFormats, _dateTimeFormats and
+	 * _timeFormats.
+	 * 
+	 * In the event of an unsuccessful parse, a null object is returned instead.
+	 */
+	@SuppressWarnings("deprecation")
+	@Override
+	public Date parseToDate(String userInput) {
+		initialise(userInput);
+		Date resultingDate = null;
+
+		try {
+			checkForBlankInput();
+		} catch (Exception e) {
+			if (DEBUG_MODE) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		for (DateFormat format : _dateTimeFormats) {
+			try {
+				resultingDate = format.parse(userInput);
+				return resultingDate;
+			} catch (Exception e) {
+				// Do nothing, move to next format
+			}
+		}
+
+		for (DateFormat format : _dateFormats) {
+			try {
+				resultingDate = format.parse(userInput);
+				resultingDate.setHours(23);
+				resultingDate.setMinutes(59);
+				return resultingDate;
+			} catch (Exception e) {
+				// Do nothing, move to next format.
+			}
+		}
+
+		for (DateFormat format : _timeFormats) {
+			try {
+				resultingDate = format.parse(userInput);
+				Date today = new Date();
+				resultingDate.setDate(today.getDate());
+				resultingDate.setMonth(today.getMonth());
+				resultingDate.setYear(today.getYear());
+				return resultingDate;
+			} catch (Exception e) {
+				if (DEBUG_MODE) {
+					e.printStackTrace();
+				}
+				// Do nothing, fail to parse
+			}
+		}
+
+		return resultingDate;
+	}
+
+	/**
+	 * parses a Date object into a string format in the following format:
+	 * "dd/mm/yyyy HH:mm"
+	 * 
+	 * @param date
+	 *            Date object to be parsed
+	 * @return a String object containing the hour, minute, date, month and year
+	 *         of the date object.
+	 */
+	@Override
+	@SuppressWarnings("deprecation")
+	public String parseDateToString(Date date) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(date.getDate());
+		sb.append("/" + (date.getMonth() + 1));
+		sb.append("/" + (date.getYear() + 1900));
+		sb.append(" " + date.getHours());
+		sb.append(":" + date.getMinutes());
+		return sb.toString();
+	}
+
+	/* Private Methods */
+
+	/**
+	 * Initialises the static variables if it has yet to be done.
+	 */
+	private void initialise(String userInput) {
+		_userInput = userInput;
+		_isEmptyPriOp = false;
+		_isHelpRequest = false;
+		_hasDeadline = false;
+		_hasTimeRange = false;
+		if (!_isInitialised) {
+			populateCmdMap();
+			populateArgsMap();
+			populateDateTimeFormats();
+			populateDateFormats();
+			populateTimeFormats();
+			_isInitialised = true;
+		}
+	}
+
+	/**
+	 * Checks if the input given by user is blank
+	 * 
+	 * @throws Exception
+	 *             throws an IllegalArgumentException if the user entered
+	 *             nothing but whitespace characters.
+	 */
+	private void checkForBlankInput() throws Exception {
+		if (_userInput.trim().isEmpty()) {
+			throw new IllegalArgumentException(BLANK_INPUT);
+		}
+	}
+
+	/**
+	 * Populates the command map with all the possible user input keywords and
+	 * their corresponding command types
+	 */
+	private void populateCmdMap() {
+		_cmdMap = new TreeMap<String, CommandType>();
+
+		_cmdMap.put("add", CommandType.CREATE);
+		_cmdMap.put("update", CommandType.UPDATE);
+		_cmdMap.put("delete", CommandType.DELETE);
+		_cmdMap.put("show", CommandType.RETRIEVE);
+		_cmdMap.put("retrieve", CommandType.RETRIEVE);
+		_cmdMap.put("view", CommandType.RETRIEVE);
+		_cmdMap.put("sync", CommandType.SYNC);
+		_cmdMap.put("search", CommandType.SEARCH);
+		_cmdMap.put("help", CommandType.HELP);
+		_cmdMap.put("undo", CommandType.UNDO);
+		_cmdMap.put("exit", CommandType.EXIT);
+	}
+
+	/**
+	 * populate the argsMap with all the possible input keywords for the
+	 * respective argument types
+	 */
+	private void populateArgsMap() {
+		_argsMap = new TreeMap<String, ArgumentType>();
+
+		// Possible keywords for Help
+		_argsMap.put("help", ArgumentType.HELP);
+		_argsMap.put("h", ArgumentType.HELP);
+
+		// Possible keywords for Name
+		_argsMap.put("name", ArgumentType.NAME);
+		_argsMap.put("n", ArgumentType.NAME);
+
+		// Possible keywords for Deadline
+		_argsMap.put("deadline", ArgumentType.DEADLINE);
+		_argsMap.put("dd", ArgumentType.DEADLINE);
+		_argsMap.put("dl", ArgumentType.DEADLINE);
+
+		// Possible keywords for Time
+		_argsMap.put("time", ArgumentType.TIME);
+
+		// Possible keywords for Tag
+		_argsMap.put("tag", ArgumentType.TAG);
+		_argsMap.put("done", ArgumentType.TAG);
+		_argsMap.put("mark", ArgumentType.TAG);
+
+		// Possible keywords for Priority
+		_argsMap.put("priority", ArgumentType.PRIORITY);
+		_argsMap.put("p", ArgumentType.PRIORITY);
+
+		// Possible keywords for Description
+		_argsMap.put("description", ArgumentType.DESCRIPTION);
+		_argsMap.put("desc", ArgumentType.DESCRIPTION);
+		_argsMap.put("information", ArgumentType.DESCRIPTION);
+		_argsMap.put("info", ArgumentType.DESCRIPTION);
+		_argsMap.put("note", ArgumentType.DESCRIPTION);
+		_argsMap.put("ds", ArgumentType.DESCRIPTION);
+		_argsMap.put("a", ArgumentType.DESCRIPTION);
+	}
+
+	/**
+	 * Populates the list with all acceptable date time formats
+	 */
+	private void populateDateTimeFormats() {
+		_dateTimeFormats = new ArrayList<DateFormat>();
+
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yy hha"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yyyy hha"));
+
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yy hh:mma"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yyyy hh:mma"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yy HH:mm"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd MMM yyyy HH:mm"));
+
+		// using slashes as delimiter
+		_dateTimeFormats.add(new SimpleDateFormat("dd/MM/yy hha"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd/MM/yyyy hha"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd/MM/yy hh:mma"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd/MM/yyyy hh:mma"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd/MM/yy HH:mm"));
+		_dateTimeFormats.add(new SimpleDateFormat("dd/MM/yyyy HH:mm"));
+	}
+
+	/**
+	 * Populates the list with all acceptable date formats
+	 */
+	private void populateDateFormats() {
+		_dateFormats = new ArrayList<DateFormat>();
+
+		_dateFormats.add(new SimpleDateFormat("dd MMM yy"));
+		_dateFormats.add(new SimpleDateFormat("dd MMM yyyy"));
+
+		// using slashes as delimiter
+		_dateFormats.add(new SimpleDateFormat("dd/MM/yy"));
+		_dateFormats.add(new SimpleDateFormat("dd/MM/yyyy"));
+	}
+
+	/**
+	 * populates the list with all acceptable time formats
+	 */
+	private void populateTimeFormats() {
+		_timeFormats = new ArrayList<DateFormat>();
+
+		_timeFormats.add(new SimpleDateFormat("hha"));
+		_timeFormats.add(new SimpleDateFormat("hh:mma"));
+		_timeFormats.add(new SimpleDateFormat("HH:mm"));
+	}
+
+	/**
+	 * Extracts the word representing the command type based on user input
+	 * 
+	 * @return a String object representing the command type entered by user.
+	 */
+	private CommandType getCommandType() {
+		String commandWord = _userInput.trim().split("\\s+")[0].toLowerCase();
+		CommandType commandType = _cmdMap.get(commandWord.toLowerCase());
+		if (commandType == null) {
+			return CommandType.INVALID;
+		}
+		return commandType;
+	}
+
+	/**
+	 * Gets the primary operand of the command from the user input
+	 * 
+	 * @return a String object representing the primary operand entered by user.
+	 */
+	private String getPrimaryOperand() {
+		return removeFirstWord(_userInput).split("--|-", 2)[PRIMARY_OPERAND_POSITION]
+				.trim();
+	}
+
+	private String removePrimaryArgument(String priOp) {
+		return removeFirstWord(_userInput).replaceFirst(priOp, "").trim();
+	}
+
+	/**
+	 * Gets the parameters input by user. This parameters encompasses all values
+	 * namely the primary operand and additional arguments, except for the
+	 * command type. The method will split the user input by detecting dashes,
+	 * which is used to indicate a keyword for an additional argument from user
+	 * 
+	 * @param userInput
+	 *            Input from user
+	 * @return An Array of String each representing the parameters. The string
+	 *         is trimmed to ensure that there will be no leading or trailing
+	 *         white spaces.
+	 */
+	private String[] splitToArguments(String addArgs) {
+		String[] additionalArguments = addArgs.split("--+|-+");
+		ArrayList<String> toReturn = new ArrayList<String>();
+		int length = additionalArguments.length;
+		for (int i = 0; i < additionalArguments.length; i++) {
+			if (!additionalArguments[i].equals("")) {
+				toReturn.add(additionalArguments[i].trim());
+			}
+			else {
+				length--;
+			}
+		}
+
+		return toReturn.toArray(new String[length]);
+	}
+
+	/**
+	 * Populates the list of additional arguments for this command
+	 * 
+	 * @param additionalArguments
+	 *            Parameters input by user from which the additional arguments
+	 *            and operands are extracted
+	 */
+	private List<AdditionalArgument> populateAdditionalArguments(
+			String[] additionalArguments) {
+		List<AdditionalArgument> toReturn = new ArrayList<AdditionalArgument>();
+		String[] argument = new String[2];
+		int length = additionalArguments.length;
+		for (int i = 0; i < length; i++) {
+			argument = additionalArguments[i].split(" ", 2);
+			if (argument.length == 1) {
+
+				if (argument[0].equalsIgnoreCase("done")) {
+					toReturn.add(new AdditionalArgumentImpl(
+							getArgumentType(argument[0]), "done"));
+				} else {
+					toReturn.add(new AdditionalArgumentImpl(
+							getArgumentType(argument[0]), ""));
+				}
+			} else {
+				toReturn.add(new AdditionalArgumentImpl(
+						getArgumentType(argument[0]), argument[1]));
+			}
+		}
+
+		return toReturn;
+	}
+
+	/**
+	 * Validates input from user to be parsed into a Command object. The list of
+	 * acceptable commandTypes is specified by the commands in the cmdMap. The
+	 * list of acceptable argumentTypes is specified by the arguments in the
+	 * argsMap. Depending on each command type, the acceptable primary operands
+	 * are specified. The acceptable additional arguments are also verified
+	 * depending on the command types. The acceptable additional operands are
+	 * dependent on the argument types.
+	 * 
+	 * @param cmdType
+	 *            Command Type
+	 * @param priOp
+	 *            Primary Operand
+	 * @param addArgs
+	 *            List of additional arguments
+	 * @throws Exception
+	 *             if any of the parameters do not clear the validation rules.
+	 */
+	private void validateInput(CommandType cmdType, String priOp,
+			List<AdditionalArgument> addArgs)
+			throws Exception {
+		validateCommandType(cmdType);
+		validateAdditionalArguments(addArgs, cmdType);
+		validatePrimaryOperand(cmdType, priOp, addArgs);
+	}
+
+	/**
+	 * Checks that a valid command type is entered by the user. The list of
+	 * acceptable command types is specified by the cmdMap
+	 * 
+	 * @param cmdType
+	 *            String object containing command type entered by user
+	 * 
+	 * @throws Exception
+	 *             If the command type is null, throws an exception to indicate
+	 *             errors in the code.
+	 *             If the command type is invalid, throws an
+	 *             IllegalArgumentException.
+	 */
+	private void validateCommandType(CommandType cmdType) throws Exception {
+		if (cmdType == null) {
+			throw new Exception(String.format(CODE_FAULT, "getCommandType",
+					"ParserImpl"));
+		}
+		if (cmdType == CommandType.INVALID) {
+			throw new IllegalArgumentException(String.format(INVALID_COMMAND,
+					_userInput));
+		}
+	}
+
+	/**
+	 * Checks that a valid primary operand is entered by the user. For all
+	 * commands, an empty primary command is acceptable if it is followed by a
+	 * --help or -h argument. Otherwise, only unary commands such as RETRIEVE,
+	 * SYNC, SEARCH, HELP, UNDO, EXIT will be acceptable for empty primary
+	 * commands. CREATE, RETRIEVE, SEARCH and HELP will also be the only
+	 * CommandTypes that accepts non digits for its primary operand.
+	 * 
+	 * @param cmdType
+	 *            commandType of current command.
+	 * @param priOp
+	 *            primary operand from user to be checked.
+	 * @param addArgs
+	 *            additional argument(s) of current command.
+	 * @throws Exception
+	 *             If the primary operand is null, throws an exception to
+	 *             indicate errors in the code.
+	 *             If the primary operand is invalid, throws an
+	 *             IllegalArgumentException
+	 */
+	private void validatePrimaryOperand(CommandType cmdType, String priOp,
+			List<AdditionalArgument> addArgs)
+			throws Exception {
+
+		if (priOp == null) {
+			throw new Exception(String.format(CODE_FAULT, "getPrimaryOperand",
+					"CommandImpl"));
+		}
+
+		if (priOp.trim().isEmpty()) {
+			_isEmptyPriOp = true;
+		}
+		else {
+			_isEmptyPriOp = false;
+		}
+
+		// To capture empty primary operands
+		if (_isEmptyPriOp) {
+			if (!_isHelpRequest && !isUnaryCommand(cmdType)) {
+				throw new IllegalArgumentException(String.format(
+						EMPTY_OPR_FOR_CMD, cmdType.toString().toLowerCase()));
+			}
+		}
+
+		/* Checking for acceptable primary operand for each command type */
+
+		// CREATE accepts all
+
+		// Update
+		if (cmdType == CommandType.UPDATE && !_isHelpRequest) {
+			if (!isDigit(priOp)) {
+				throw new IllegalArgumentException(String.format(
+						NUMBER_EXPECTED_FOR_CMD, cmdType.toString()
+								.toLowerCase()));
+			}
+
+			int index = Integer.parseInt(priOp);
+			if (index <= 0) {
+				throw new IllegalArgumentException(INVALID_INDEX);
+			}
+		}
+
+		// DELETE
+		if (cmdType == CommandType.DELETE && !priOp.equalsIgnoreCase("all")
+				&& !_isHelpRequest) {
+
+			if (!isDigit(priOp)) {
+				throw new IllegalArgumentException(String.format(
+						NUMBER_EXPECTED_FOR_CMD, cmdType.toString()
+								.toLowerCase()));
+			}
+
+			int index = Integer.parseInt(priOp);
+			if (index <= 0) {
+				throw new IllegalArgumentException(INVALID_INDEX);
+			}
+		}
+
+		// RETRIEVE
+		if (cmdType == CommandType.RETRIEVE && !priOp.equalsIgnoreCase("all")
+				&& !_isHelpRequest && !_isEmptyPriOp) {
+
+			if (!isDigit(priOp)) {
+				throw new IllegalArgumentException(String.format(
+						NUMBER_EXPECTED_FOR_CMD, cmdType.toString()
+								.toLowerCase()));
+			}
+
+			int i = Integer.parseInt(priOp);
+			if (i <= 0) {
+				throw new IllegalArgumentException(INVALID_INDEX);
+			}
+		}
+
+		// SEARCH accepts all
+
+		// UNDO accepts none
+		if (cmdType == CommandType.UNDO && !_isEmptyPriOp) {
+			throw new IllegalArgumentException(String.format(INVALID_OPERAND,
+					priOp, cmdType.toString().toLowerCase()));
+		}
+		// EXIT accepts none
+		if (cmdType == CommandType.EXIT && !_isEmptyPriOp) {
+			throw new IllegalArgumentException(String.format(INVALID_OPERAND,
+					priOp, cmdType.toString().toLowerCase()));
+		}
+	}
+
+	/**
+	 * Helper method to check if all the characters in a string is numeric
+	 * 
+	 * @param message
+	 *            String to be checked
+	 * @return True if all the contents are numeric and false otherwise. Note
+	 *         that method returns false for negative values as the character
+	 *         '-' is considered not numeric
+	 */
+	private boolean isDigit(String message) {
+		for (char c : message.toCharArray()) {
+			if (!Character.isDigit(c)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Validates all the additional Arguments entered by the user.
+	 * 
+	 * @param addArgs
+	 *            additionalArguments to check
+	 * 
+	 * @throws Exception
+	 *             If the AdditionalArgument Iterator is null, throws an
+	 *             exception to indicate error in code.
+	 * 
+	 */
+	private void validateAdditionalArguments(List<AdditionalArgument> addArgs,
+			CommandType cmdType)
+			throws Exception {
+		if (addArgs == null) {
+			throw new Exception(String.format(CODE_FAULT,
+					"populateAdditionalArguments", "ParserImpl"));
+		}
+		for (AdditionalArgument addArg : addArgs) {
+			validateArgument(addArg, cmdType);
+		}
+	}
+
+	/**
+	 * Validates each additional argument entered by user
+	 * 
+	 * @param arg
+	 *            The argument to be validated
+	 * @throws Exception
+	 *             If the argument is null, throws an exception to indicate
+	 *             error in code.
+	 *             If the ArgumentType is null, throws an exception to indicate
+	 *             error in code.
+	 *             If the ArgumentType is INVALID, throws an
+	 *             IllegalArgumentException.
+	 *             If the operand is null, throws an exception to indicate
+	 *             error in code.
+	 *             If the operand is empty, throws an IllegalArgumentException
+	 *             if it's not help.
+	 *             If the ArgumentType is HELP, and there is an operand, throws
+	 *             an IllegalArgumentException
+	 */
+	private void validateArgument(AdditionalArgument arg, CommandType cmdType)
+			throws Exception {
+		if (arg == null) {
+			throw new Exception(String.format(CODE_FAULT,
+					"getAdditionalArguments", "commandImpl"));
+		}
+		ArgumentType argType = arg.getArgumentType();
+		String operand = arg.getOperand();
+		if (argType == null) {
+			throw new Exception(String.format(CODE_FAULT,
+					"getAdditionalArguments", "ParserImpl"));
+		}
+		if (argType == ArgumentType.INVALID) {
+			throw new IllegalArgumentException(INVALID_ARGUMENT);
+		}
+		if (operand == null) {
+			throw new Exception(String.format(CODE_FAULT,
+					"assignMemberVariables", "commandImpl"));
+		}
+		if (argType == ArgumentType.HELP) {
+			_isHelpRequest = true;
+		}
+		else {
+			if (operand.isEmpty()) {
+				throw new Exception(String.format(OPERAND_EXPECTED, argType
+						.toString().toLowerCase()));
+			}
+
+			// Parsing priority to enums
+			if (argType == ArgumentType.PRIORITY) {
+				if (!operand.equalsIgnoreCase("low")
+						&& !operand.equalsIgnoreCase("normal")
+						&& !operand.equalsIgnoreCase("high")) {
+					throw new Exception(String.format(INVALID_OPERAND, operand,
+							argType.toString().toLowerCase()));
+				}
+			}
+
+			// Parsing deadline
+			if (argType == ArgumentType.DEADLINE) {
+				if (_hasTimeRange) {
+					throw new Exception(DEADLINE_AND_TIME);
+				}
+				Date date = parseToDate(operand);
+				if (date == null) {
+					throw new Exception(String.format(INVALID_OPERAND, operand,
+							argType.toString().toLowerCase()));
+				}
+				_hasDeadline = true;
+			}
+
+			// Parsing time range
+			if (argType == ArgumentType.TIME) {
+				if (_hasDeadline) {
+					throw new Exception(DEADLINE_AND_TIME);
+				}
+				String temp = operand;
+				String[] time = temp.split("\\s+");
+
+				if (time.length == 1) {	// only end time
+					Date endTime = parseToDate(time[0].trim());
+					if (endTime == null) {
+						throw new Exception(String.format(INVALID_OPERAND,
+								operand, argType.toString().toLowerCase()));
+					}
+				} else if (time.length == 2) {	// start and end time
+					Date startTime = parseToDate(time[0]);
+					Date endTime = parseToDate(time[1]);
+					if (startTime == null || endTime == null) {
+						throw new Exception(String.format(INVALID_OPERAND,
+								operand, argType.toString().toLowerCase()));
+					}
+				} else {
+					throw new Exception(String.format(INVALID_OPERAND, operand,
+							argType.toString().toLowerCase()));
+				}
+				_hasTimeRange = true;
+			}
+
+			/* Checking for acceptable additional argument for each command type */
+			// CREATE
+			if (cmdType == CommandType.CREATE) {
+				if (argType == ArgumentType.NAME) {
+					throw new Exception(String.format(INVALID_ARG_FOR_CMD,
+							argType.toString().toLowerCase(), cmdType
+									.toString().toLowerCase()));
+				}
+			}
+
+			// UPDATE accepts all
+
+			// DELETE accepts only help
+			if (cmdType == CommandType.DELETE) {
+				throw new Exception(String.format(INVALID_ARG_FOR_CMD, argType
+						.toString().toLowerCase(), cmdType.toString()
+						.toLowerCase()));
+			}
+
+			// RETRIEVE accepts only help
+			if (cmdType == CommandType.RETRIEVE) {
+				throw new Exception(String.format(INVALID_ARG_FOR_CMD, argType
+						.toString().toLowerCase(), cmdType.toString()
+						.toLowerCase()));
+			}
+
+			// SEARCH accepts all
+
+			// UNDO accepts only help
+			if (cmdType == CommandType.UNDO) {
+				throw new Exception(String.format(INVALID_ARG_FOR_CMD, argType
+						.toString().toLowerCase(), cmdType.toString()
+						.toLowerCase()));
+			}
+
+			// EXIT accepts only help
+			if (cmdType == CommandType.EXIT) {
+				throw new Exception(String.format(INVALID_ARG_FOR_CMD, argType
+						.toString().toLowerCase(), cmdType.toString()
+						.toLowerCase()));
+			}
+		}
+	}
+
+	/**
+	 * Validates each additional argument entered by user
+	 * 
+	 * @param arg
+	 *            The argument to be validated
+	 * @throws Exception
+	 *             If the argument is null, throws an exception to indicate
+	 *             error in code.
+	 *             If the ArgumentType is null, throws an exception to indicate
+	 *             error in code.
+	 *             If the ArgumentType is INVALID, throws an
+	 *             IllegalArgumentException.
+	 *             If the operand is null, throws an exception to indicate
+	 *             error in code.
+	 *             If the operand is empty, throws an IllegalArgumentException
+	 *             if it's not help.
+	 *             If the ArgumentType is HELP, and there is an operand, throws
+	 *             an IllegalArgumentException
+	 */
+	private void validateArgument(AdditionalArgument arg) throws Exception {
+		if (arg == null) {
+			throw new Exception(String.format(CODE_FAULT,
+					"getAdditionalArguments", "commandImpl"));
+		}
+		ArgumentType argType = arg.getArgumentType();
+		String operand = arg.getOperand();
+		if (argType == null) {
+			throw new Exception(String.format(CODE_FAULT,
+					"getAdditionalArguments", "ParserImpl"));
+		}
+		if (argType == ArgumentType.INVALID) {
+			throw new IllegalArgumentException(INVALID_ARGUMENT);
+		}
+		if (operand == null) {
+			throw new Exception(String.format(CODE_FAULT,
+					"assignMemberVariables", "commandImpl"));
+		}
+		if (argType == ArgumentType.HELP) {
+			_isHelpRequest = true;
+		}
+		else {
+			// Only help addArg should have empty operand
+			if (operand.isEmpty()) {
+				throw new Exception(String.format(OPERAND_EXPECTED, argType
+						.toString().toLowerCase()));
+			}
+
+			// Parsing priority to enums
+			if (argType == ArgumentType.PRIORITY) {
+				if (!operand.equalsIgnoreCase("low")
+						&& !operand.equalsIgnoreCase("normal")
+						&& !operand.equalsIgnoreCase("high")) {
+					throw new Exception(String.format(INVALID_OPERAND, operand,
+							argType.toString().toLowerCase()));
+				}
+			}
+
+			// Parsing deadline or time
+			if (argType == ArgumentType.DEADLINE
+					|| argType == ArgumentType.TIME) {
+				Date date = parseToDate(operand);
+				if (date == null) {
+					throw new Exception(String.format(INVALID_OPERAND, operand,
+							argType.toString().toLowerCase()));
+				}
+			}
+
+		}
+	}
+
+	/**
+	 * Takes the input of the user and returns the argument type
+	 * 
+	 * @param argument
+	 *            Input string from user
+	 * @return The argument type of the argument.
+	 */
+	private ArgumentType getArgumentType(String argument) {
+		ArgumentType argumentType = _argsMap.get(argument);
+		if (argumentType == null) {
+			return ArgumentType.INVALID;
+		}
+		return argumentType;
+	}
+
+	/**
+	 * Helper method to get the operand from a string.
+	 * 
+	 * This is assuming that the operand will be the remaining of the string
+	 * after removing the first word.
+	 * Used to extract the operand from a string representing the additional
+	 * argument.
+	 * 
+	 * @return a String object representing the operand in an additional
+	 *         argument.
+	 */
+	private String getOperand() {
+		return removeFirstWord(_userInput);
+	}
+
+	/**
+	 * Validates if the command is a unary Command.
+	 * Unary commands are commands that do not require a primary operand.
+	 * Commands that are unary are: retrieve/show/view, sync, search, help, undo
+	 * and exit
+	 * 
+	 * @return true if the command type is unary, false otherwise
+	 */
+	private boolean isUnaryCommand(CommandType cmdType) {
+		return (cmdType == CommandType.RETRIEVE || cmdType == CommandType.SYNC
+				|| cmdType == CommandType.SEARCH || cmdType == CommandType.HELP
+				|| cmdType == CommandType.UNDO || cmdType == CommandType.EXIT);
+	}
+
+	/**
+	 * Gets the first word from a String of message
+	 * 
+	 * @param message
+	 *            A string of message
+	 * @return The first word of the message
+	 */
+	private String getFirstWord(String message) {
+		return message.trim().split("\\s+")[0].toLowerCase();
+	}
+
+	/**
+	 * Removes the first word from a String of message
+	 * 
+	 * @param message
+	 *            A string of message
+	 * @return The rest of the message after removing the first word
+	 */
+	private String removeFirstWord(String message) {
+		return message.replaceFirst(getFirstWord(message), "").trim();
+	}
+}
+
+	// End of segment: src\sg\codengineers\ldo\parser\ParserImpl.java
+
+
+
+
+
+	/**
+	 * origin: src\sg\codengineers\ldo\parser\ParserImplTest.java
+	 */
+
+
+package sg.codengineers.ldo.parser;
+
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Date;
+import java.util.Iterator;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import sg.codengineers.ldo.model.AdditionalArgument;
+import sg.codengineers.ldo.model.AdditionalArgument.ArgumentType;
+import sg.codengineers.ldo.model.Command;
+import sg.codengineers.ldo.model.Command.CommandType;
+import sg.codengineers.ldo.model.Parser;
+
+public class ParserImplTest {
+
+	private Parser	testClass;
+
+	@Before
+	public void setUp() {
+		testClass = new ParserImpl();
+	}
+
+	@After
+	public void cleanUp() {
+	}
+
+	/**
+	 * Test for parsing to command
+	 */
+	@Test
+	public void testParseToCommandInvalid() {
+		Command obtainedCommand = testClass.parse("      ");
+		assertEquals("checking getUserInput", "      ",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type for blanks", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+	}
+
+	@Test
+	public void testParseToCommandInvalid1() {
+		Command obtainedCommand = testClass.parse("asdasd");
+		assertEquals("checking getUserInput", "asdasd",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type for asdasd", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+	}
+
+	@Test
+	public void testParseToCommandAdd() {
+		Command obtainedCommand = testClass.parse("add hello");
+		assertEquals("checking user input", "add hello",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.CREATE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "hello",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking message", obtainedCommand.getMessage().isEmpty());
+		assertNotNull("checking iterator for nullity",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandAdd1() {
+		Command obtainedCommand = testClass.parse("add hello -ds tester");
+		assertEquals("checking command type", CommandType.CREATE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "hello",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking message", obtainedCommand.getMessage().isEmpty());
+		assertNotNull("checking iterator for nullity",
+				obtainedCommand.getAdditionalArguments());
+		Iterator<AdditionalArgument> toCheck = obtainedCommand
+				.getAdditionalArguments();
+		AdditionalArgument addArg = toCheck.next();
+		assertEquals("checking additional argument type",
+				ArgumentType.DESCRIPTION, addArg.getArgumentType());
+		assertEquals("checking additional argument operand", "tester",
+				addArg.getOperand());
+	}
+
+	@Test
+	public void testParseToCommandAdd2() {
+		Command obtainedCommand = testClass
+				.parse("add hello -ds tester -tag cs2103T");
+		assertEquals("checking command type", CommandType.CREATE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "hello",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking message", obtainedCommand.getMessage().isEmpty());
+		assertNotNull("checking iterator for nullity",
+				obtainedCommand.getAdditionalArguments());
+		Iterator<AdditionalArgument> toCheck = obtainedCommand
+				.getAdditionalArguments();
+		AdditionalArgument addArg = toCheck.next();
+		assertEquals("checking additional argument type",
+				ArgumentType.DESCRIPTION, addArg.getArgumentType());
+		assertEquals("checking additional argument operand", "tester",
+				addArg.getOperand());
+		addArg = toCheck.next();
+		assertEquals("checking additional argument type",
+				ArgumentType.TAG, addArg.getArgumentType());
+		assertEquals("checking additional argument operand", "cs2103T",
+				addArg.getOperand());
+	}
+
+	@Test
+	public void testParseToCommandAdd3() {
+		Command obtainedCommand = testClass.parse("add ");
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Empty operand for create command not supported.\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandAdd4() {
+		Command obtainedCommand = testClass.parse("add --name");
+		assertEquals("Checking user input", "add --name",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Operand should follow additional argument name.\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandAdd5() {
+		Command obtainedCommand = testClass.parse("add hello --name world");
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"name argument is invalid for create command type.\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandAdd6() {
+		Command obtainedCommand = testClass
+				.parse("add hello -p high --name world");
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"name argument is invalid for create command type.\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandUpdate() {
+		Command obtainedCommand = testClass.parse("update 1");
+		assertEquals("checking user input", "update 1",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.UPDATE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "1",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandUpdate1() {
+		Command obtainedCommand = testClass.parse("update 1 --name new name");
+		assertEquals("checking command type", CommandType.UPDATE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "1",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+		Iterator<AdditionalArgument> toCheck = obtainedCommand
+				.getAdditionalArguments();
+		AdditionalArgument addArg = toCheck.next();
+		assertEquals("checking argument type", ArgumentType.NAME,
+				addArg.getArgumentType());
+		assertEquals("checking argument operand", "new name",
+				addArg.getOperand());
+	}
+
+	@Test
+	public void testParseToCommandUpdate2() {
+		Command obtainedCommand = testClass.parse("update 4 -p high");
+		assertEquals("checking command type", CommandType.UPDATE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "4",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+		Iterator<AdditionalArgument> toCheck = obtainedCommand
+				.getAdditionalArguments();
+		AdditionalArgument addArg = toCheck.next();
+		assertEquals("checking argument type", ArgumentType.PRIORITY,
+				addArg.getArgumentType());
+		assertEquals("checking argument operand", "high", addArg.getOperand());
+	}
+
+	@Test
+	public void testParseToCommandUpdate3() {
+		Command obtainedCommand = testClass.parse("update 26 -ds new desc");
+		assertEquals("checking command type", CommandType.UPDATE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "26",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+		Iterator<AdditionalArgument> toCheck = obtainedCommand
+				.getAdditionalArguments();
+		AdditionalArgument addArg = toCheck.next();
+		assertEquals("checking argument type", ArgumentType.DESCRIPTION,
+				addArg.getArgumentType());
+		assertEquals("checking argument operand", "new desc",
+				addArg.getOperand());
+	}
+
+	@Test
+	public void testParseToCommandUpdate4() {
+		Command obtainedCommand = testClass.parse("update 56 -dl 10 nov 2014");
+		assertEquals("checking command type", CommandType.UPDATE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "56",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+		Iterator<AdditionalArgument> toCheck = obtainedCommand
+				.getAdditionalArguments();
+		AdditionalArgument addArg = toCheck.next();
+		assertEquals("checking argument type", ArgumentType.DEADLINE,
+				addArg.getArgumentType());
+		assertEquals("checking argument operand", "10 nov 2014",
+				addArg.getOperand());
+	}
+
+	@Test
+	public void testParseToCommandUpdate5() {
+		Command obtainedCommand = testClass.parse("update 3 --done");
+		assertEquals("checking command type", CommandType.UPDATE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "3",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+		Iterator<AdditionalArgument> toCheck = obtainedCommand
+				.getAdditionalArguments();
+		AdditionalArgument addArg = toCheck.next();
+		assertEquals("checking argument type", ArgumentType.TAG,
+				addArg.getArgumentType());
+		assertEquals("checking argument operand", "done",
+				addArg.getOperand());
+	}
+
+	@Test
+	public void testParseToCommandUpdate6() {
+		Command obtainedCommand = testClass
+				.parse("update 1 --time from 3pm to 4pm");
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"\"from 3pm to 4pm\" is not a valid operand for time.\n",
+				obtainedCommand.getMessage());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandUpdate7() {
+		Command obtainedCommand = testClass.parse("update a");
+		assertEquals("Checking user input", "update a",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Primary operand for update should contain numbers.\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandUpdate8() {
+		Command obtainedCommand = testClass.parse("update ");
+		assertEquals("Checking user input", "update ",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Empty operand for update command not supported.\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandUpdate9() {
+		Command obtainedCommand = testClass.parse("update -1");
+		assertEquals("Checking user input", "update -1",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Invalid additional argument entered.\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandUpdate10() {
+		Command obtainedCommand = testClass.parse("update 0");
+		assertEquals("Checking user input", "update 0",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Primary operand should not be less than 1.\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandUpdate11() {
+		Command obtainedCommand = testClass.parse("update 300 --time 3pm 4pm");
+		assertEquals("checking command type", CommandType.UPDATE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "300",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+		Iterator<AdditionalArgument> toCheck = obtainedCommand
+				.getAdditionalArguments();
+		AdditionalArgument addArg = toCheck.next();
+		assertEquals("checking argument type", ArgumentType.TIME,
+				addArg.getArgumentType());
+		assertEquals("checking argument operand", "3pm 4pm",
+				addArg.getOperand());
+	}
+
+	@Test
+	public void testParseToCommandUpdate12() {
+		Command obtainedCommand = testClass
+				.parse("update 300 --time 3pm 4pm --deadline 10 Nov 2014");
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals(
+				"checking invalid message",
+				"Not possible to set both deadline and time range for the same task.\n",
+				obtainedCommand.getMessage());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandDelete() {
+		Command obtainedCommand = testClass.parse("delete 1");
+		assertEquals("checking user input", "delete 1",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.DELETE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "1",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandDelete1() {
+		Command obtainedCommand = testClass.parse("delete all");
+		assertEquals("checking user input", "delete all",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.DELETE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "all",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandDelete2() {
+		Command obtainedCommand = testClass.parse("delete a");
+		assertEquals("checking user input", "delete a",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Primary operand for delete should contain numbers.\n",
+				obtainedCommand.getMessage());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandDelete3() {
+		Command obtainedCommand = testClass.parse("delete ");
+		assertEquals("Checking user input", "delete ",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Empty operand for delete command not supported.\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandDelete4() {
+		Command obtainedCommand = testClass.parse("delete -3");
+		assertEquals("Checking user input", "delete -3",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Invalid additional argument entered.\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandDelete5() {
+		Command obtainedCommand = testClass.parse("delete 0");
+		assertEquals("Checking user input", "delete 0",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Primary operand should not be less than 1.\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandDelete6() {
+		Command obtainedCommand = testClass.parse("delete --name hello");
+		assertEquals("Checking user input", "delete --name hello",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"name argument is invalid for delete command type.\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve() {
+		Command obtainedCommand = testClass.parse("retrieve 1");
+		assertEquals("checking user input", "retrieve 1",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.RETRIEVE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "1",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve1() {
+		Command obtainedCommand = testClass.parse("show 11");
+		assertEquals("checking user input", "show 11",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.RETRIEVE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "11",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve2() {
+		Command obtainedCommand = testClass.parse("view 50");
+		assertEquals("checking user input", "view 50",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.RETRIEVE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "50",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve3() {
+		Command obtainedCommand = testClass.parse("retrieve all");
+		assertEquals("checking user input", "retrieve all",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.RETRIEVE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "all",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve4() {
+		Command obtainedCommand = testClass.parse("view all");
+		assertEquals("checking user input", "view all",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.RETRIEVE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "all",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve5() {
+		Command obtainedCommand = testClass.parse("show all");
+		assertEquals("checking user input", "show all",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.RETRIEVE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "all",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve6() {
+		Command obtainedCommand = testClass.parse("show");
+		assertEquals("checking user input", "show",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.RETRIEVE,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve7() {
+		Command obtainedCommand = testClass.parse("show --tag hello");
+		assertEquals("Checking user input", "show --tag hello",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"tag argument is invalid for retrieve command type.\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve8() {
+		Command obtainedCommand = testClass.parse("retrieve a");
+		assertEquals("checking user input", "retrieve a",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Primary operand for retrieve should contain numbers.\n",
+				obtainedCommand.getMessage());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve9() {
+		Command obtainedCommand = testClass.parse("view a");
+		assertEquals("checking user input", "view a",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Primary operand for retrieve should contain numbers.\n",
+				obtainedCommand.getMessage());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve10() {
+		Command obtainedCommand = testClass.parse("show a");
+		assertEquals("checking user input", "show a",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Primary operand for retrieve should contain numbers.\n",
+				obtainedCommand.getMessage());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve11() {
+		Command obtainedCommand = testClass.parse("retrieve -33");
+		assertEquals("Checking user input", "retrieve -33",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Invalid additional argument entered.\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve12() {
+		Command obtainedCommand = testClass.parse("view -183");
+		assertEquals("Checking user input", "view -183",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Invalid additional argument entered.\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve13() {
+		Command obtainedCommand = testClass.parse("show -593");
+		assertEquals("Checking user input", "show -593",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Invalid additional argument entered.\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve14() {
+		Command obtainedCommand = testClass.parse("retrieve 0");
+		assertEquals("Checking user input", "retrieve 0",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Primary operand should not be less than 1.\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve15() {
+		Command obtainedCommand = testClass.parse("view 0");
+		assertEquals("Checking user input", "view 0",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Primary operand should not be less than 1.\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandRetrieve16() {
+		Command obtainedCommand = testClass.parse("show 0");
+		assertEquals("Checking user input", "show 0",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertEquals("checking invalid message",
+				"Primary operand should not be less than 1.\n",
+				obtainedCommand.getMessage());
+	}
+
+	@Test
+	public void testParseToCommandSync() {
+		Command obtainedCommand = testClass.parse("sync");
+		assertEquals("Checking user input", "sync",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.SYNC,
+				obtainedCommand.getCommandType());
+		assertTrue("checking primary operand", obtainedCommand
+				.getPrimaryOperand().isEmpty());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandSync1() {
+		Command obtainedCommand = testClass.parse("sync 1");
+		assertEquals("Checking user input", "sync 1",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.SYNC,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "1",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandSync2() {
+		Command obtainedCommand = testClass.parse("sync a");
+		assertEquals("Checking user input", "sync a",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.SYNC,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "a",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandSearch() {
+		Command obtainedCommand = testClass.parse("search hello there");
+		assertEquals("checking command type", CommandType.SEARCH,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "hello there",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandSearch1() {
+		Command obtainedCommand = testClass.parse("search ");
+		assertEquals("checking command type", CommandType.SEARCH,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandSearch2() {
+		Command obtainedCommand = testClass.parse("search 96489748");
+		assertEquals("checking command type", CommandType.SEARCH,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "96489748",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandSearch3() {
+		Command obtainedCommand = testClass.parse("search -desc this");
+		assertEquals("checking command type", CommandType.SEARCH,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+		Iterator<AdditionalArgument> toCheck = obtainedCommand
+				.getAdditionalArguments();
+		AdditionalArgument addArg = toCheck.next();
+		assertEquals("checking additional argument type",
+				ArgumentType.DESCRIPTION, addArg.getArgumentType());
+		assertEquals("checking additional argument operand", "this",
+				addArg.getOperand());
+	}
+
+	@Test
+	public void testParseToCommandSearch4() {
+		Command obtainedCommand = testClass.parse("search --priority high");
+		assertEquals("checking command type", CommandType.SEARCH,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+		Iterator<AdditionalArgument> toCheck = obtainedCommand
+				.getAdditionalArguments();
+		AdditionalArgument addArg = toCheck.next();
+		assertEquals("checking additional argument type",
+				ArgumentType.PRIORITY, addArg.getArgumentType());
+		assertEquals("checking additional argument operand", "high",
+				addArg.getOperand());
+	}
+
+	@Test
+	public void testParseToCommandSearch5() {
+		Command obtainedCommand = testClass
+				.parse("search --tag cs2103T -dd 10/11/14");
+		assertEquals("checking command type", CommandType.SEARCH,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+		Iterator<AdditionalArgument> toCheck = obtainedCommand
+				.getAdditionalArguments();
+		AdditionalArgument addArg = toCheck.next();
+		assertEquals("checking additional argument type",
+				ArgumentType.TAG, addArg.getArgumentType());
+		assertEquals("checking additional argument operand", "cs2103T",
+				addArg.getOperand());
+		addArg = toCheck.next();
+		assertEquals("checking additional argument type",
+				ArgumentType.DEADLINE, addArg.getArgumentType());
+		assertEquals("checking additional argument operand", "10/11/14",
+				addArg.getOperand());
+	}
+
+	@Test
+	public void testParseToCommandSearch6() {
+		Command obtainedCommand = testClass.parse("search --time 23:59");
+		assertEquals("checking command type", CommandType.SEARCH,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+		Iterator<AdditionalArgument> toCheck = obtainedCommand
+				.getAdditionalArguments();
+		AdditionalArgument addArg = toCheck.next();
+		assertEquals("checking additional argument type",
+				ArgumentType.TIME, addArg.getArgumentType());
+		assertEquals("checking additional argument operand", "23:59",
+				addArg.getOperand());
+	}
+
+	@Test
+	public void testParseToCommandHelp() {
+		Command obtainedCommand = testClass.parse("help");
+		assertEquals("checking user input", "help",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.HELP,
+				obtainedCommand.getCommandType());
+		assertTrue("checking empty primary operand",
+				obtainedCommand.getPrimaryOperand().isEmpty());
+		assertTrue("checking message", obtainedCommand.getMessage().isEmpty());
+		assertNotNull("checking iterator for nullity",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandHelp1() {
+		Command obtainedCommand = testClass.parse("help --help");
+		assertEquals("checking user input", "help --help",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.HELP,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "help",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking message", obtainedCommand.getMessage().isEmpty());
+		assertNotNull("checking iterator for nullity",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandHelp2() {
+		Command obtainedCommand = testClass.parse("add --help");
+		assertEquals("checking user input", "add --help",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.HELP,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "create",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking message", obtainedCommand.getMessage().isEmpty());
+		assertNotNull("checking iterator for nullity",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandHelp3() {
+		Command obtainedCommand = testClass.parse("update --help");
+		assertEquals("checking user input", "update --help",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.HELP,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "update",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking message", obtainedCommand.getMessage().isEmpty());
+		assertNotNull("checking iterator for nullity",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandHelp4() {
+		Command obtainedCommand = testClass.parse("delete --help");
+		assertEquals("checking user input", "delete --help",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.HELP,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "delete",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking message", obtainedCommand.getMessage().isEmpty());
+		assertNotNull("checking iterator for nullity",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandHelp5() {
+		Command obtainedCommand = testClass.parse("retrieve --help");
+		assertEquals("checking user input", "retrieve --help",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.HELP,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "retrieve",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking message", obtainedCommand.getMessage().isEmpty());
+		assertNotNull("checking iterator for nullity",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandHelp6() {
+		Command obtainedCommand = testClass.parse("view --help");
+		assertEquals("checking user input", "view --help",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.HELP,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "retrieve",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking message", obtainedCommand.getMessage().isEmpty());
+		assertNotNull("checking iterator for nullity",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandHelp7() {
+		Command obtainedCommand = testClass.parse("show --help");
+		assertEquals("checking user input", "show --help",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.HELP,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "retrieve",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking message", obtainedCommand.getMessage().isEmpty());
+		assertNotNull("checking iterator for nullity",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandHelp8() {
+		Command obtainedCommand = testClass.parse("sync --help");
+		assertEquals("checking user input", "sync --help",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.HELP,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "sync",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking message", obtainedCommand.getMessage().isEmpty());
+		assertNotNull("checking iterator for nullity",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandHelp9() {
+		Command obtainedCommand = testClass.parse("search --help");
+		assertEquals("checking user input", "search --help",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.HELP,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "search",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking message", obtainedCommand.getMessage().isEmpty());
+		assertNotNull("checking iterator for nullity",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandHelp10() {
+		Command obtainedCommand = testClass.parse("undo --help");
+		assertEquals("checking user input", "undo --help",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.HELP,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "undo",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking message", obtainedCommand.getMessage().isEmpty());
+		assertNotNull("checking iterator for nullity",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandHelp11() {
+		Command obtainedCommand = testClass.parse("exit --help");
+		assertEquals("checking user input", "exit --help",
+				obtainedCommand.getUserInput());
+		assertEquals("checking command type", CommandType.HELP,
+				obtainedCommand.getCommandType());
+		assertEquals("checking primary operand", "exit",
+				obtainedCommand.getPrimaryOperand());
+		assertTrue("checking message", obtainedCommand.getMessage().isEmpty());
+		assertNotNull("checking iterator for nullity",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandUndo() {
+		Command obtainedCommand = testClass.parse("undo");
+		assertEquals("checking command type", CommandType.UNDO,
+				obtainedCommand.getCommandType());
+		assertTrue("checking empty primary operand", obtainedCommand
+				.getPrimaryOperand().isEmpty());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandUndo1() {
+		Command obtainedCommand = testClass.parse("undo --name hi");
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertTrue("checking empty primary operand", obtainedCommand
+				.getPrimaryOperand().isEmpty());
+		assertEquals("checking invalid message",
+				"name argument is invalid for undo command type.\n",
+				obtainedCommand.getMessage());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandExit() {
+		Command obtainedCommand = testClass.parse("exit");
+		assertEquals("checking command type", CommandType.EXIT,
+				obtainedCommand.getCommandType());
+		assertTrue("checking empty primary operand", obtainedCommand
+				.getPrimaryOperand().isEmpty());
+		assertTrue("checking empty message", obtainedCommand.getMessage()
+				.isEmpty());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	@Test
+	public void testParseToCommandExit1() {
+		Command obtainedCommand = testClass.parse("exit --desc hi");
+		assertEquals("checking command type", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+		assertTrue("checking empty primary operand", obtainedCommand
+				.getPrimaryOperand().isEmpty());
+		assertEquals("checking invalid message",
+				"description argument is invalid for exit command type.\n",
+				obtainedCommand.getMessage());
+		assertNotNull("checking for null iterator",
+				obtainedCommand.getAdditionalArguments());
+	}
+
+	/**
+	 * Testing equals method
+	 */
+
+	@Test
+	public void testEqualsWithNull() {
+		Command obtainedCommand = testClass.parse("add test");
+		assertFalse("Checking if equals compares correctly with null",
+				obtainedCommand.equals(null));
+	}
+
+	@Test
+	public void testEqualWithSelf() {
+		Command obtainedCommand = testClass.parse("add test");
+		assertTrue("Checking if equals compares correctly with self",
+				obtainedCommand.equals(obtainedCommand));
+	}
+
+	@Test
+	public void testEqualsWithNonCommandObjects() {
+		Command obtainedCommand = testClass.parse("add test");
+		assertFalse("Checking if equals compares correctly with other objects",
+				obtainedCommand.equals("test"));
+	}
+
+	@Test
+	public void testEqualsWithAddCommand() {
+		Command obtainedCommand = testClass.parse("add test");
+		assertTrue(
+				"Checking if equals compares correctly with same object for add",
+				obtainedCommand.equals(testClass.parse("add test")));
+	}
+
+	@Test
+	public void testEqualsWithUpdateCommand() {
+		Command obtainedCommand = testClass.parse("update 1");
+		assertTrue(
+				"Checking if equals compares correctly with same object for update",
+				obtainedCommand.equals(testClass.parse("update 1")));
+	}
+
+	@Test
+	public void testEqualsWithDeleteCommand() {
+		Command obtainedCommand = testClass.parse("delete 1");
+		assertTrue(
+				"Checking if equals compares correctly with same object for delete",
+				obtainedCommand.equals(testClass.parse("delete 1")));
+	}
+
+	@Test
+	public void testEqualsWithRetrieveCommand() {
+		Command obtainedCommand = testClass.parse("retrieve 1");
+		assertTrue(
+				"Checking if equals compares correctly with same object for retrieve",
+				obtainedCommand.equals(testClass.parse("retrieve 1")));
+	}
+
+	@Test
+	public void testEqualsWithSyncCommand() {
+		Command obtainedCommand = testClass.parse("sync");
+		assertTrue(
+				"Checking if equals compares correctly with same object for sync",
+				obtainedCommand.equals(testClass.parse("sync")));
+	}
+
+	@Test
+	public void testEqualsWithExitCommand() {
+		Command obtainedCommand = testClass.parse("exit");
+		assertTrue(
+				"Checking if equals compares correctly with same object for exit",
+				obtainedCommand.equals(testClass.parse("exit")));
+	}
+
+	@Test
+	public void testEqualsWithSearchCommand() {
+		Command obtainedCommand = testClass.parse("search hello");
+		assertTrue(
+				"Checking if equals compares correctly with same object for saerch",
+				obtainedCommand.equals(testClass.parse("search hello")));
+	}
+
+	/**
+	 * Test for parsing to date
+	 */
+
+	// dd MMM yy hha
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate() {
+		Date obtainedDate = testClass.parseToDate("1 Jan 14 2pm");
+		assertEquals("checking for day", 1, obtainedDate.getDate());
+		assertEquals("checking for month", 0, obtainedDate.getMonth());
+		assertEquals("checking for year", 2014 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 14, obtainedDate.getHours());
+		assertEquals("checking for minute", 00, obtainedDate.getMinutes());
+	}
+
+	// dd MMM yyyy hha
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate1() {
+		Date obtainedDate = testClass.parseToDate("11 jan 1993 3am");
+		assertEquals("checking for day", 11, obtainedDate.getDate());
+		assertEquals("checking for month", 0, obtainedDate.getMonth());
+		assertEquals("checking for year", 1993 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 03, obtainedDate.getHours());
+		assertEquals("checking for minute", 00, obtainedDate.getMinutes());
+	}
+
+	// dd MMM yy hh:mma
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate2() {
+		Date obtainedDate = testClass.parseToDate("17 aug 92 6:03am");
+		assertEquals("checking for day", 17, obtainedDate.getDate());
+		assertEquals("checking for month", 7, obtainedDate.getMonth());
+		assertEquals("checking for year", 1992 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 06, obtainedDate.getHours());
+		assertEquals("checking for minute", 03, obtainedDate.getMinutes());
+	}
+
+	// dd MMM yyyy hh:mma
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate3() {
+		Date obtainedDate = testClass.parseToDate("17 Aug 1993 4:03pm");
+		assertEquals("checking for day", 17, obtainedDate.getDate());
+		assertEquals("checking for month", 7, obtainedDate.getMonth());
+		assertEquals("checking for year", 1993 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 16, obtainedDate.getHours());
+		assertEquals("checking for minute", 03, obtainedDate.getMinutes());
+	}
+
+	// dd MMM yy HH:mm
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate4() {
+		Date obtainedDate = testClass.parseToDate("16 oct 1996 18:38");
+		assertEquals("checking for day", 16, obtainedDate.getDate());
+		assertEquals("checking for month", 9, obtainedDate.getMonth());
+		assertEquals("checking for year", 1996 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 18, obtainedDate.getHours());
+		assertEquals("checking for minute", 38, obtainedDate.getMinutes());
+	}
+
+	// dd MMM yyyy HH:mm
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate5() {
+		Date obtainedDate = testClass.parseToDate("11 nov 2014 14:40");
+		assertEquals("checking for day", 11, obtainedDate.getDate());
+		assertEquals("checking for month", 10, obtainedDate.getMonth());
+		assertEquals("checking for year", 2014 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 14, obtainedDate.getHours());
+		assertEquals("checking for minute", 40, obtainedDate.getMinutes());
+	}
+
+	// dd/MM/yy hha
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate6() {
+		Date obtainedDate = testClass.parseToDate("26/11/68 9pm");
+		assertEquals("checking for day", 26, obtainedDate.getDate());
+		assertEquals("checking for month", 10, obtainedDate.getMonth());
+		assertEquals("checking for year", 1968 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 21, obtainedDate.getHours());
+		assertEquals("checking for minute", 00, obtainedDate.getMinutes());
+	}
+
+	// dd/MM/yyyy hha
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate7() {
+		Date obtainedDate = testClass.parseToDate("26/08/1968 5am");
+		assertEquals("checking for day", 26, obtainedDate.getDate());
+		assertEquals("checking for month", 07, obtainedDate.getMonth());
+		assertEquals("checking for year", 1968 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 05, obtainedDate.getHours());
+		assertEquals("checking for minute", 00, obtainedDate.getMinutes());
+	}
+
+	// dd/MM/yy hh:mma
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate8() {
+		Date obtainedDate = testClass.parseToDate("15/2/32 7:32am");
+		assertEquals("checking for day", 15, obtainedDate.getDate());
+		assertEquals("checking for month", 1, obtainedDate.getMonth());
+		assertEquals("checking for year", 2032 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 07, obtainedDate.getHours());
+		assertEquals("checking for minute", 32, obtainedDate.getMinutes());
+	}
+
+	// dd/MM/yyyy hh:mma
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate9() {
+		Date obtainedDate = testClass.parseToDate("29/02/2012 3:33pm");
+		assertEquals("checking for day", 29, obtainedDate.getDate());
+		assertEquals("checking for month", 1, obtainedDate.getMonth());
+		assertEquals("checking for year", 2012 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 15, obtainedDate.getHours());
+		assertEquals("checking for minute", 33, obtainedDate.getMinutes());
+	}
+
+	// dd/MM/yy HH:mm
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate10() {
+		Date obtainedDate = testClass.parseToDate("29/02/13 15:55");
+		assertEquals("checking for day", 1, obtainedDate.getDate());
+		assertEquals("checking for month", 2, obtainedDate.getMonth());
+		assertEquals("checking for year", 2013 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 15, obtainedDate.getHours());
+		assertEquals("checking for minute", 55, obtainedDate.getMinutes());
+	}
+
+	// dd/MM/yyyy HH:mm
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate11() {
+		Date obtainedDate = testClass.parseToDate("32/1/54 16:61");
+		assertEquals("checking for day", 1, obtainedDate.getDate());
+		assertEquals("checking for month", 1, obtainedDate.getMonth());
+		assertEquals("checking for year", 1954 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 17, obtainedDate.getHours());
+		assertEquals("checking for minute", 01, obtainedDate.getMinutes());
+	}
+
+	// dd MMM yy
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate12() {
+		Date obtainedDate = testClass.parseToDate("32 mar 28");
+		assertEquals("checking for day", 1, obtainedDate.getDate());
+		assertEquals("checking for month", 3, obtainedDate.getMonth());
+		assertEquals("checking for year", 2028 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 23, obtainedDate.getHours());
+		assertEquals("checking for minute", 59, obtainedDate.getMinutes());
+	}
+
+	// dd MMM yyyy
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate13() {
+		Date obtainedDate = testClass.parseToDate("31 apr 2195");
+		assertEquals("checking for day", 1, obtainedDate.getDate());
+		assertEquals("checking for month", 4, obtainedDate.getMonth());
+		assertEquals("checking for year", 2195 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 23, obtainedDate.getHours());
+		assertEquals("checking for minute", 59, obtainedDate.getMinutes());
+	}
+
+	// dd/MM/yy
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate14() {
+		Date obtainedDate = testClass.parseToDate("32/5/34 ");
+		assertEquals("checking for day", 1, obtainedDate.getDate());
+		assertEquals("checking for month", 5, obtainedDate.getMonth());
+		assertEquals("checking for year", 2034 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 23, obtainedDate.getHours());
+		assertEquals("checking for minute", 59, obtainedDate.getMinutes());
+	}
+
+	// dd/MM/yyyy
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate15() {
+		Date obtainedDate = testClass.parseToDate("31/6/5672");
+		assertEquals("checking for day", 1, obtainedDate.getDate());
+		assertEquals("checking for month", 6, obtainedDate.getMonth());
+		assertEquals("checking for year", 5672 - 1900, obtainedDate.getYear());
+		assertEquals("checking for hour", 23, obtainedDate.getHours());
+		assertEquals("checking for minute", 59, obtainedDate.getMinutes());
+	}
+
+	// hha
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate16() {
+		Date obtainedDate = testClass.parseToDate("12pm");
+		Date today = new Date();
+		assertEquals("checking for day", today.getDate(),
+				obtainedDate.getDate());
+		assertEquals("checking for month", today.getMonth(),
+				obtainedDate.getMonth());
+		assertEquals("checking for year", today.getYear(),
+				obtainedDate.getYear());
+		assertEquals("checking for hour", 12, obtainedDate.getHours());
+		assertEquals("checking for minute", 0, obtainedDate.getMinutes());
+	}
+
+	// hh:mma
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate17() {
+		Date obtainedDate = testClass.parseToDate("12:00am");
+		Date today = new Date();
+		assertEquals("checking for day", today.getDate(),
+				obtainedDate.getDate());
+		assertEquals("checking for month", today.getMonth(),
+				obtainedDate.getMonth());
+		assertEquals("checking for year", today.getYear(),
+				obtainedDate.getYear());
+		assertEquals("checking for hour", 0, obtainedDate.getHours());
+		assertEquals("checking for minute", 0, obtainedDate.getMinutes());
+	}
+
+	// HH:mm
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testParseToDate18() {
+		Date obtainedDate = testClass.parseToDate("24:01");
+		Date today = new Date();
+		assertEquals("checking for day", today.getDate(),
+				obtainedDate.getDate());
+		assertEquals("checking for month", today.getMonth(),
+				obtainedDate.getMonth());
+		assertEquals("checking for year", today.getYear(),
+				obtainedDate.getYear());
+		assertEquals("checking for hour", 0, obtainedDate.getHours());
+		assertEquals("checking for minute", 1, obtainedDate.getMinutes());
+	}
+
+	/**
+	 * Tests for private helper methods
+	 * The following tests are to ensure that all the helper methods in the
+	 * Command class is working properly. The method that each test is
+	 * concerned with is indicated above them with in a line of comment.
+	 */
+
+	// void populateCmdMap()
+	@Test
+	public void testPopulateCmdMap() throws Exception {
+		testClass.parse("add test");
+		Field cmdMap = testClass.getClass().getDeclaredField("_cmdMap");
+		cmdMap.setAccessible(true);
+		assertNotNull("checking if cmdMap is null", cmdMap);
+
+	}
+
+	// String getFirstWord(String)
+	@Test
+	public void testGetFirstWord() throws Exception {
+		Method getFirstWord = getMethodFromClass("getFirstWord", String.class);
+		assertEquals("Getting first word from string", "first",
+				getFirstWord.invoke(testClass, "first second third"));
+	}
+
+	// String removeFirstWord(String)
+	@Test
+	public void testRemoveFirstWord() throws Exception {
+		Method removeFirstWord = getMethodFromClass("removeFirstWord",
+				String.class);
+		assertEquals("Removing first word from string", "second third",
+				removeFirstWord.invoke(testClass, "first second third"));
+	}
+
+	// String[] splitToArguments(String)
+	@Test
+	public void testSplitToArgumentsWithNothing() throws Exception {
+		Method splitToArguments = getMethodFromClass("splitToArguments",
+				String.class);
+		String[] expected = new String[] {};
+		String[] actual = (String[]) splitToArguments.invoke(testClass,
+				"");
+		assertArrayEquals(
+				"Testing splitToArguments for no additional arguments",
+				expected, actual);
+	}
+
+	@Test
+	public void testSplitToArgumentsWithOneWord() throws Exception {
+		Method splitToArguments = getMethodFromClass("splitToArguments",
+				String.class);
+		String[] expected = new String[] { "tag test" };
+		String[] actual = (String[]) splitToArguments
+				.invoke(testClass, "--tag test");
+		assertArrayEquals("Testing splitToArguments with one word before dash",
+				expected, actual);
+	}
+
+	@Test
+	public void testSplitToArgumentsWithMultipleWords() throws Exception {
+		Method splitToArguments = getMethodFromClass("splitToArguments",
+				String.class);
+		String[] expected = new String[] { "tag important" };
+		String[] actual = (String[]) splitToArguments.invoke(testClass,
+				"--tag important");
+		assertArrayEquals(
+				"Testing splitToArguments with multiple words before dash",
+				expected, actual);
+	}
+
+	@Test
+	public void testSplitToArgumentsWithSingleDash() throws Exception {
+		Method splitToArguments = getMethodFromClass("splitToArguments",
+				String.class);
+		String[] expected = new String[] { "a single" };
+		String[] actual = (String[]) splitToArguments.invoke(testClass,
+				"-a single");
+		assertArrayEquals(
+				"Testing splitToArguments with Single dash in string",
+				expected, actual);
+	}
+
+	@Test
+	public void testSplitToArgumentsWithTwoDashes() throws Exception {
+		Method splitToArguments = getMethodFromClass("splitToArguments",
+				String.class);
+		String[] expected = new String[] { "a multiple dashes", "tag test" };
+		String[] actual = (String[]) splitToArguments.invoke(testClass,
+				"-a multiple dashes --tag test");
+		assertArrayEquals(
+				"Testing splitToArguments with two sets of dashes in string",
+				expected, actual);
+
+	}
+
+	@Test
+	public void testNoInput() throws Exception {
+		Command obtainedCommand = testClass.parse("");
+		assertEquals("testing no input", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+	}
+
+	@Test
+	public void testBlankInput() throws Exception {
+		Command obtainedCommand = testClass.parse(" ");
+		assertEquals("testing blank input", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+	}
+
+	@Test
+	public void testMultipleBlanksInput() throws Exception {
+		Command obtainedCommand = testClass.parse("          ");
+		assertEquals("testing multiple blanks in input", CommandType.INVALID,
+				obtainedCommand.getCommandType());
+	}
+
+	@Test
+	public void testAddWithEmptyPrimary() throws Exception {
+		Command obtainedCommand = testClass.parse("add ");
+		assertEquals("testing add with empty primary operand",
+				CommandType.INVALID, obtainedCommand.getCommandType());
+	}
+
+	@Test
+	public void testUpdateWithEmptyPrimary() throws Exception {
+		Command obtainedCommand = testClass.parse("update ");
+		assertEquals("testing update with empty primary operand",
+				CommandType.INVALID, obtainedCommand.getCommandType());
+	}
+
+	@Test
+	public void testDeleteWithEmptyPrimary() throws Exception {
+		Command obtainedCommand = testClass.parse("delete ");
+		assertEquals("testing delete with empty primary operand",
+				CommandType.INVALID, obtainedCommand.getCommandType());
+	}
+
+	@Test
+	public void testUpdateWithNonDigit() throws Exception {
+		Command obtainedCommand = testClass.parse("update a");
+		assertEquals("testing update with empty primary operand",
+				CommandType.INVALID, obtainedCommand.getCommandType());
+	}
+
+	@Test
+	public void testDeleteWithNonDigit() throws Exception {
+		Command obtainedCommand = testClass.parse("delete a");
+		assertEquals("testing delete with non digit primary operand",
+				CommandType.INVALID, obtainedCommand.getCommandType());
+	}
+
+	/**
+	 * Gets a method from the testClass with the specified method name and
+	 * parameter type and sets it to be accessible
+	 * 
+	 * @param methodName
+	 *            The name of the method to get from the class
+	 * @param parameterType
+	 *            The parameter array
+	 * @return the Method object for the method of this class matching the
+	 *         specified name and parameters
+	 * @throws NoSuchMethodException
+	 *             if a matching method is not found
+	 * @throws NullPointerException
+	 *             if name is null
+	 * @throws SecurityException
+	 *             If a security manager, s, is present and any of the following
+	 *             conditions is met: invocation of s.checkMemberAccess(this,
+	 *             Member.DECLARED) denies access to the declared method the
+	 *             caller's class loader is not the same as or an ancestor of
+	 *             the class loader for the current class and invocation of
+	 *             s.checkPackageAccess() denies access to the package of this
+	 *             class
+	 */
+	private Method getMethodFromClass(String methodName,
+			Class<?>... parameterType) throws NoSuchMethodException,
+			NullPointerException, SecurityException {
+		Method method = testClass.getClass().getDeclaredMethod(methodName,
+				parameterType);
+		method.setAccessible(true);
+		return method;
+
+	}
+}
+
+	// End of segment: src\sg\codengineers\ldo\parser\ParserImplTest.java
+
+
+
+
+
+	/**
+	 * origin: src\sg\codengineers\ldo\parser\ResultImpl.java
+	 */
+
+
+package sg.codengineers.ldo.parser;
+
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import sg.codengineers.ldo.model.Result;
+import sg.codengineers.ldo.model.Task;
+import sg.codengineers.ldo.model.Command.CommandType;
+
+/**
+ * This class specifies the implementation of the Result class as specified by
+ * the Result interface
+ * 
+ */
+public class ResultImpl implements Result {
+
+	private CommandType	_commandType;
+	private String		_primaryOperand;
+	private String		_message;
+	private Time		_operationTime;
+	private List<Task>	_tasks;
+
+	/* Constructors */
+	public ResultImpl(CommandType commandType, String primaryOperand,
+			Time time, List<Task> tasks) {
+		_commandType = commandType;
+		_primaryOperand = primaryOperand;
+		_operationTime = time;
+		_tasks = tasks;
+	}
+
+	public ResultImpl(CommandType commandType, String primaryOperand,
+			Time time, Task task) {
+		_commandType = commandType;
+		_primaryOperand = primaryOperand;
+		_operationTime = time;
+		_tasks = new ArrayList<Task>();
+		_tasks.add(task);
+	}
+
+	public ResultImpl(CommandType commandType, String message, Time time) {
+		_commandType = commandType;
+		_primaryOperand = "";
+		_message = message;
+		_operationTime = time;
+		_tasks = new ArrayList<Task>();
+	}
+
+	/* Public Methods */
+	@Override
+	public CommandType getCommandType() {
+		return _commandType;
+	}
+
+	@Override
+	public String getPrimaryOperand() {
+		return _primaryOperand;
+	}
+
+	@Override
+	public String getMessage() {
+		return _message;
+	}
+
+	@Override
+	/**
+	 * Gets the time taken for the operation to complete
+	 */
+	public Time getOperationTime() {
+		return _operationTime;
+	}
+
+	@Override
+	/**
+	 * Returns an iterator which iterates through all the
+	 * tasks completed.
+	 */
+	public Iterator<Task> getTasksIterator() {
+		return _tasks.iterator();
+	}
+}
+	// End of segment: src\sg\codengineers\ldo\parser\ResultImpl.java
+
+
+
+
+
+	/**
+	 * origin: src\sg\codengineers\ldo\ui\InputImpl.java
 	 */
 
 
@@ -57,14 +3409,14 @@ public class InputImpl implements Input {
 
 }
 
-	// End of segment: ui\InputImpl.java
+	// End of segment: src\sg\codengineers\ldo\ui\InputImpl.java
 
 
 
 
 
 	/**
-	 * origin: ui\OutputImpl.java
+	 * origin: src\sg\codengineers\ldo\ui\OutputImpl.java
 	 */
 
 
@@ -662,14 +4014,14 @@ public class OutputImpl implements Output {
 	}
 
 }
-	// End of segment: ui\OutputImpl.java
+	// End of segment: src\sg\codengineers\ldo\ui\OutputImpl.java
 
 
 
 
 
 	/**
-	 * origin: ui\OutputImplTest.java
+	 * origin: src\sg\codengineers\ldo\ui\OutputImplTest.java
 	 */
 
 
@@ -744,14 +4096,14 @@ public class OutputImplTest {
 
 }
 
-	// End of segment: ui\OutputImplTest.java
+	// End of segment: src\sg\codengineers\ldo\ui\OutputImplTest.java
 
 
 
 
 
 	/**
-	 * origin: ui\UIImpl.java
+	 * origin: src\sg\codengineers\ldo\ui\UIImpl.java
 	 */
 
 
@@ -804,7 +4156,7 @@ public class UIImpl implements UI {
 	}
 }
 
-	// End of segment: ui\UIImpl.java
+	// End of segment: src\sg\codengineers\ldo\ui\UIImpl.java
 
 
 

@@ -3,7 +3,7 @@
 
 
 	/**
-	 * origin: db\Database.java
+	 * origin: src\sg\codengineers\ldo\db\Database.java
 	 */
 
 
@@ -15,15 +15,144 @@ package sg.codengineers.ldo.db;
  * to save all data and how to go about doing it. It chooses the appropriate
  * connector which saves the data diligently. All changes to the data must go
  * through this class
- *
-	// End of segment: db\Database.java
+ */
+
+import java.util.*;
+
+public class Database {
+	private static final int FIRST = 0;
+
+	private Map<String, List<DBConnector>> classToConnector;
+	
+	private static Database database;
+	private static boolean isInitialized = false;
+	
+	public static Database initDatabase() {
+		if (!isInitialized) { 
+			database = new Database();
+		}
+		return database;
+	}
+
+	/**
+	 * Constructor This is where we choose which connector to use and
+	 * initialize them accordingly.
+	 */
+	private Database() {
+		classToConnector = DBConfig.initDatabases();
+	}
+	
+	/**
+	 * This allows a class to create a new instance which represents
+	 * one entry in the database and save it to the database
+	 * 
+	 * @param data The data to be saved
+	 * @param className The name of the model in question
+	 */
+	public boolean create(Object data, String className) {
+		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
+		boolean success = true;
+
+		for (DBConnector connector : connectorList) {
+			// If anyone of the process fails, the whole operation fails
+			success = success && connector.create(data);
+		}
+		return success;
+	}
+	
+	/**
+	 * This allows the model to get all entries in the database
+	 * 
+	 * @param className The name of the model in question
+	 */
+	public List<String> read(String className) {
+		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
+		
+		// Make sure that the first one is authoritative
+		DBConnector authoritative = connectorList.get(FIRST);
+		if (authoritative == null) {
+			return null;
+		} else {
+			return authoritative.read();
+		}
+	}
+	
+	/**
+	 * This allows the model to update an entry in the database
+	 * 
+	 * @param data The data to be updated
+	 * @param className The name of the model in question
+	 */
+	public boolean update(Object data, String className) {
+		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
+		boolean success = true;
+
+		for (DBConnector connector : connectorList) {
+			// If anyone of the process fails, the whole operation fails
+			success = success &&connector.update(data);
+		}
+		return success;
+	}
+	
+	/**
+	 * This allows entries in the database to be deleted
+	 * 
+	 * @param id The id of the entry to be deleted
+	 * @param className The name of the model in question
+	 */
+	public boolean delete(Object data, String className) {
+		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
+		boolean success = true;
+		
+		for (DBConnector connector : connectorList) {
+			// If anyone of the process fails, the whole operation fails
+			success = success && connector.delete(data);
+		}
+		return success;
+	}
+	
+	/**
+	 * This method is used to clear the database of entries
+	 * This is only meant for unit testing purposes, to ensure
+	 * a clean state of the database so that the tests does not
+	 * depend on the information already present
+	 * 
+	 * @param className The class name to clear out
+	 * @return True if the operation succeeds
+	 */
+	public boolean clear(String className) {
+		List<DBConnector> connectorList = classToConnector.get(className.toLowerCase());
+		boolean success = true;
+		
+		for (DBConnector connector : connectorList) {
+			// If anyone of the process fails, the whole operation fails
+			success = success && connector.clear();
+		}
+		return success;
+	}
+	
+	public void gCalAuth() {
+		GCalDBConnector.auth();
+	}
+	
+	public boolean loginGCal(String authCode) {
+		GCalDBConnector gCal = GCalDBConnector.setup(authCode);
+		List<DBConnector> connectorList = classToConnector.get("task");
+		connectorList.add(gCal);
+		classToConnector.put("task", connectorList);
+		
+		return (gCal == null);
+	}
+}
+
+	// End of segment: src\sg\codengineers\ldo\db\Database.java
 
 
 
 
 
 	/**
-	 * origin: db\DatabaseTest.java
+	 * origin: src\sg\codengineers\ldo\db\DatabaseTest.java
 	 */
 
 
@@ -153,14 +282,14 @@ public class DatabaseTest {
 	}
 }
 
-	// End of segment: db\DatabaseTest.java
+	// End of segment: src\sg\codengineers\ldo\db\DatabaseTest.java
 
 
 
 
 
 	/**
-	 * origin: db\DBConfig.java
+	 * origin: src\sg\codengineers\ldo\db\DBConfig.java
 	 */
 
 
@@ -177,15 +306,245 @@ package sg.codengineers.ldo.db;
  * information from the objects of this class, hence keeping
  * to the abstraction layers would inevitably result in a
  * circular definition.
- * 
-	// End of segment: db\DBConfig.java
+ */
+
+import java.util.*;
+
+public class DBConfig {
+	// Essential information for the configuration of the database
+	private static DBConnector config;
+	private static Map<String, DBConfig> configList;
+	private static Map<String, List<DBConnector>> classToConnector;
+	private static boolean isInitialized = false;
+	
+	// Filename of the config file
+	private static final String FILENAME = "dbconfig";
+	private static final String SEPERATOR = "<;>";
+	
+	private static final int FIRST_WORD = 0;
+	private static final int SECOND_WORD = 1;
+	private static final int TYPE_ARRAY = 2;	
+	
+	private static final String[] DEFAULT_SETTINGS = {"0<;>task<;>textfile", "1<;>test<;>textfile"};
+	
+	private String className;
+	private List<String> types;
+	private int id;
+
+	/**
+	 * Constructor
+	 * 
+	 * @param className The name of the class whose
+	 * data is being saved
+	 * @param types The types of database that the type
+	 * of class has
+	 */
+	public DBConfig(String className, String[] types) {
+		this.id = configList.size();
+		this.className = className;
+		this.types = new ArrayList<String>();
+		
+		for (String s : types) {
+			this.types.add(s);
+		}
+	}
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param id The id of the object
+	 * @param className The name of the class whose
+	 * data is being saved
+	 * @param types The types of database that the type
+	 * of class has
+	 */
+	public DBConfig(int id, String className, String[] types) {
+		this.id = id;
+		this.className = className;
+		this.types = new ArrayList<String>();
+		
+		for (String s : types) {
+			this.types.add(s);
+		}
+	}
+
+	public int getId() {
+		return id;
+	}
+	
+	/**
+	 * Getter method for class name of the configuration
+	 * 
+	 * @return The name of the class
+	 */
+
+	public String getClassName() {
+		return className;
+	}
+	
+	/**
+	 * Getter method for the array of types of database
+	 * that the class can have
+	 * 
+	 * @return An list of the database types
+	 */
+	public List<String> getTypes() {
+		return types;
+	}
+	
+	public boolean addType(String type) {
+		types.add(type);
+		return true;
+	}
+	
+	/**
+	 * Initialize the different types of database connectors
+	 * that a class can have
+	 */
+	private void initDB() {
+		List<DBConnector> connectorList = null;
+
+		if (classToConnector.containsKey(className)) {
+			connectorList = classToConnector.get(className);
+		} else {
+			connectorList = new ArrayList<DBConnector>();
+		}
+
+		for (String s : types) {
+			if (s.equalsIgnoreCase("textfile")) {
+				connectorList.add(new TextDBConnector(className));
+			} else if (s.equalsIgnoreCase("GCal")) {
+				connectorList.add(new GCalDBConnector());
+			}
+		}
+		
+		classToConnector.remove(className);
+		classToConnector.put(className, connectorList);
+	}
+
+	/**
+	 * Initializes all the connections to the databases
+	 * in accordance to the configurations in the config
+	 * file
+	 * 
+	 * @return A mapping of the text representation of the
+	 * class name to the database connector that it needs
+	 */
+	public static Map<String, List<DBConnector>> initDatabases() {
+		if (!isInitialized) {
+
+			/* 
+			 * Open a connection to the config file, skipping
+			 * the database abstraction layer. There is no way
+			 * around this since this is needed to initialize 
+			 * the layer.
+			 */
+
+			config = new TextDBConnector(FILENAME);
+			List<String> textConfigList = config.read();
+			
+			// Use the default settings if there isn't any
+			// existing settings
+			if (textConfigList.isEmpty()) {
+				textConfigList = addDefaultSettings();
+			}
+			
+			classToConnector = new HashMap<String, List<DBConnector>>();
+			configList = new HashMap<String, DBConfig>();
+
+			for (String s : textConfigList) {
+				DBConfig config = DBConfig.fromString(s);
+				configList.put(config.getClassName(), config);
+				config.initDB();
+			}
+
+			isInitialized = true;
+		}
+
+		return classToConnector;
+	}
+	
+	public static void addNewSettings(String className, String type, DBConnector connector) {
+		DBConfig dBConfig = configList.get(className);
+		List<DBConnector> connectorList = classToConnector.get(className);
+		
+		if (dBConfig == null) {
+			connectorList = new ArrayList<DBConnector>();
+			String[] types = new String[] {type};
+			dBConfig = new DBConfig(className, types);
+			config.create(dBConfig);
+			connectorList.add(connector);
+			classToConnector.put(className, connectorList);
+		} else {
+			dBConfig.addType(type);
+			config.update(dBConfig);
+			connectorList.add(connector);
+			classToConnector.put(className, connectorList);
+		}
+		
+	}
+
+	private static List<String> addDefaultSettings() {
+		List<String> settings = new ArrayList<String>();
+
+		for (String s : DEFAULT_SETTINGS) {
+			config.create(s);
+			settings.add(s);
+		}		
+		return settings;
+	}
+	
+	/*****************************
+	 * Convert to string
+	 *****************************/
+
+	public String toString() {
+		String types = listToString(getTypes());		
+		return getId() + SEPERATOR + getClassName()+ SEPERATOR + types;
+	}
+	
+	public static DBConfig fromString(String entry) {
+		int id = getIdFromEntry(entry);
+		String className = getClassFromEntry(entry);
+		String[] typeArray = getTypeFromEntry(entry);
+		return new DBConfig(id, className, typeArray);
+	}
+	
+	private static String listToString(List<String> list) {
+		StringBuilder builder = new StringBuilder();
+		
+		for (String s : list) {
+			builder.append(s);
+			builder.append(",");
+		}
+		
+		// Remove the last comma. Index starts from 0
+		builder.deleteCharAt(builder.length() - 1);
+		return builder.toString();
+	}
+	
+	private static int getIdFromEntry(String entry) {
+		return Integer.parseInt(entry.trim().split(SEPERATOR, 3)[FIRST_WORD]);
+	}
+	
+	private static String getClassFromEntry(String entry) {
+		return entry.trim().split(SEPERATOR, 3)[SECOND_WORD];
+	}
+	
+	private static String[] getTypeFromEntry(String entry) {
+		String types = entry.trim().split(SEPERATOR, 3)[TYPE_ARRAY];
+		return types.split(",");
+	}
+}
+
+	// End of segment: src\sg\codengineers\ldo\db\DBConfig.java
 
 
 
 
 
 	/**
-	 * origin: db\DBConnector.java
+	 * origin: src\sg\codengineers\ldo\db\DBConnector.java
 	 */
 
 
@@ -194,15 +553,69 @@ package sg.codengineers.ldo.db;
 /**
  * This class is the connector between the database
  * implementation and the database abstraction layer
- *
-	// End of segment: db\DBConnector.java
+ */
+
+import java.util.*;
+
+public interface DBConnector {
+	/**
+	 * A create method to enter new data into the
+	 * database.
+	 * 
+	 * @param data The data to be entered. It 
+	 * must already be converted to string format using
+	 * the toString implementation within the model
+	 * @return true if the operation succeeds
+	 */
+	public boolean create(Object data);
+
+	/**
+	 * An update method that allows each entry in the
+	 * database to be updated.
+	 * 
+	 * @param data The data to be updated. It 
+	 * must already be converted to string format using
+	 * the toString implementation within the model
+	 * @return true if the operation succeeds
+	 */
+	public boolean update(Object data);
+	
+	/**
+	 * A method that retrieves all entries from the
+	 * database.
+	 * 
+	 * @return A list containing all the entries from
+	 * the database
+	 */
+	public List<String> read();
+	
+	/**
+	 * A method that deletes an entry from the database
+	 * 
+	 * @param id The unique identifier of the entry
+	 * @return true if the operation succeeds
+	 */
+	public boolean delete(Object data);
+	
+	/**
+	 * This method is used to clear the database of entries
+	 * This is only meant for unit testing purposes, to ensure
+	 * a clean state of the database so that the tests does not
+	 * depend on the information already present
+	 * 
+	 * @return True if the operation succeeds
+	 */
+	public boolean clear();
+}
+
+	// End of segment: src\sg\codengineers\ldo\db\DBConnector.java
 
 
 
 
 
 	/**
-	 * origin: db\GCalDBConnector.java
+	 * origin: src\sg\codengineers\ldo\db\GCalDBConnector.java
 	 */
 
 
@@ -542,14 +955,14 @@ package sg.codengineers.ldo.db;
 	}
 }
 
-	// End of segment: db\GCalDBConnector.java
+	// End of segment: src\sg\codengineers\ldo\db\GCalDBConnector.java
 
 
 
 
 
 	/**
-	 * origin: db\TextDBConnector.java
+	 * origin: src\sg\codengineers\ldo\db\TextDBConnector.java
 	 */
 
 
@@ -560,8 +973,173 @@ package sg.codengineers.ldo.db;
  * interface. Specifically, it is the connection between
  * the program and a textfile representation of the data
  * in the program.
- * 
-	// End of segment: db\TextDBConnector.java
+ */
+
+import java.io.*;
+import java.util.*;
+
+public class TextDBConnector implements DBConnector {
+	private static final String SEPARATOR = "<;>";
+	private static final int FIRST_WORD = 0;
+
+	private String filename;
+	private File file;
+	private List<String> dataList;
+
+	/**
+	 * Constructor
+	 * 
+	 * @param filename The name of the file to save the data to
+	 * @throws IOException
+	 */
+	public TextDBConnector(String filename) {
+		this.filename = filename;
+		if (initFile()) {
+			dataList = read();
+		}		
+	}
+
+	/**
+	 * Initializes the file to make sure it exist before any IO
+	 * operations are performed on it. Create a new file with the
+	 * supplied filename if the file does not already exist
+	 * 
+	 * @return true if the operation succeeds
+	 */
+	private boolean initFile() {
+		try {
+			file = new File(filename);
+
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			return true;
+		} catch(IOException e) {
+			e.printStackTrace();
+			System.exit(1);
+			return false;
+		}
+	}
+
+	@Override
+	public boolean create(Object data) {
+		return write(data.toString());
+	}
+
+	/**
+	 * This method writes one data to the database
+	 * 
+	 * @param data The data to be written
+	 * @return true if the operation succeeds
+	 */
+	private boolean write(String data) {
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
+			
+			// Defensive code
+			if (dataList == null || dataList.isEmpty()) {
+				dataList = read();
+			}
+
+			bw.write(data);
+			
+			// A new line represents the separation of data
+			bw.newLine();
+			bw.close();
+			
+			// The dataList would exist by now
+			dataList.add(data);
+			return true;
+		} catch(IOException e) {
+			e.printStackTrace();
+			System.exit(1);
+			return false;
+		}
+	}
+
+	@Override
+	public boolean update(Object data) {
+		int id = Integer.parseInt(data
+				.toString()
+				.trim()
+				.split(SEPARATOR)[FIRST_WORD]);
+		dataList.remove(id);
+		dataList.add(id, data.toString());
+		return writeList();
+	}
+
+	/**
+	 * This method rewrites the database with the data in the list
+	 * 
+	 * @return true if the operation succeeds
+	 */
+	private boolean writeList() {
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+			
+			for (String s : dataList) {
+				bw.write(s);
+				bw.newLine();
+			}
+			
+			bw.close();
+			return true;
+		} catch(IOException e) {
+			e.printStackTrace();
+			System.exit(1);
+			return false;
+		}
+	}
+
+	@Override
+	public List<String> read() {
+		try {
+			// Defensive check
+			if (dataList == null || dataList.isEmpty()) {
+				dataList = new ArrayList<String>();
+				
+				BufferedReader br = new BufferedReader(new FileReader(file));
+				String line;
+
+				while ((line = br.readLine()) != null) {
+					dataList.add(line);
+				}
+		
+				br.close();
+			}
+			
+			return dataList;
+		} catch(IOException e) {
+			e.printStackTrace();
+			System.exit(1);
+			return null;
+		}
+	}
+
+	@Override
+	public boolean delete(Object data) {
+		return update(data.toString() + SEPARATOR + "deleted");
+	}
+
+	@Override
+	public boolean clear() {
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+			
+			bw.write("");			
+			bw.close();
+			dataList.clear();
+
+			return true;
+		} catch(IOException e) {
+			e.printStackTrace();
+			System.exit(1);
+			return false;
+		}
+	}
+}
+
+	// End of segment: src\sg\codengineers\ldo\db\TextDBConnector.java
 
 
 
