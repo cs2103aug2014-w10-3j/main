@@ -41,6 +41,7 @@ public class GCalDBConnector implements DBConnector {
 	private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 	private static final JacksonFactory JSON_FACTORY = new JacksonFactory();
 	private static final String REFRESH_TOKEN = "refresh_token";
+	private static final int SECOND = 1;
 
 	// Or your redirect URL for web based applications.
 	private static final String REDIRECT_URL = "urn:ietf:wg:oauth:2.0:oob";
@@ -70,7 +71,7 @@ public class GCalDBConnector implements DBConnector {
 				.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
 				.setApplicationName(CALENDAR_SUMMARY)
 				.build();
-		
+
 		if (initCalendar()) {
 			read();
 		}
@@ -130,7 +131,7 @@ public class GCalDBConnector implements DBConnector {
 			gCalEvents.add(createdEvent);
 
 			return true;
-		} catch (Exception e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -289,7 +290,7 @@ public class GCalDBConnector implements DBConnector {
 	private static Event taskToEvent(Task task) {
 		Event event = new Event();
 		
-//		event.setId(String.valueOf(task.getId()));
+		event.setId("ldomanager" + String.valueOf(task.getId()));
 		event.setSummary(task.getName());
 		event.setDescription(task.getDescription());
 		
@@ -313,7 +314,9 @@ public class GCalDBConnector implements DBConnector {
 	private static Task eventToTask(Event event) {
 		Task task = new TaskImpl();
 		
-		//task.setId(Integer.parseInt(event.getId()));
+		String eventId = event.getId();
+		eventId = eventId.trim().split("r", 2)[SECOND];
+		task.setId(Integer.parseInt(eventId));
 		task.setName(event.getSummary());
 		task.setDescription(event.getDescription());
 		
