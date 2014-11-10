@@ -2,6 +2,7 @@ package sg.codengineers.ldo.logic;
 //@author A0119541J
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
 import sg.codengineers.ldo.model.Parser;
 import sg.codengineers.ldo.model.Task;
@@ -28,7 +29,7 @@ public class TaskImpl implements Task {
 	private Date _timeStart, _timeEnd;
 	private Priority _priority;
 	
-	private static int _accumulateId = -1;
+	private static int _accumulateId = 0;
 	
 	public TaskImpl(String name) {
 		_id = getNextId();
@@ -64,8 +65,8 @@ public class TaskImpl implements Task {
 	 * @return the unique ID in integer format.
 	 */
 	public static int getNextId(){
-		_accumulateId ++;
-		return _accumulateId;
+		//wkurniawan07 was here
+		return _accumulateId++;
 	}
 	
 	@Override
@@ -171,11 +172,9 @@ public class TaskImpl implements Task {
 			
 			int id = Integer.valueOf(taskArgs[FIELD_ID_INDEX]);
 			
-			if(_accumulateId <= id){
-				_accumulateId = id + 1;
-			}
-			
 			if(taskArgs.length == FIELD_COUNT_DELETED){
+				//wkurniawan07 was here
+				_accumulateId = id + 1;
 				return null;
 			}
 			
