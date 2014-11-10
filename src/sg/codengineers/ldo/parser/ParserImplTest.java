@@ -688,21 +688,6 @@ public class ParserImplTest {
 				"Primary operand should not be less than 1.\n",
 				obtainedCommand.getMessage());
 	}
-	
-	@Test
-	public void testParseToCommandRetrieve17() {
-		Command obtainedCommand = testClass.parse("show today");
-		assertEquals("checking user input", "show today",
-				obtainedCommand.getUserInput());
-		assertEquals("checking command type", CommandType.RETRIEVE,
-				obtainedCommand.getCommandType());
-		assertEquals("checking primary oeprand", "today",
-				obtainedCommand.getPrimaryOperand());
-		assertTrue("checking empty message", obtainedCommand.getMessage()
-				.isEmpty());
-		assertNotNull("checking for null iterator",
-				obtainedCommand.getAdditionalArguments());
-	}
 
 	@Test
 	public void testParseToCommandSync() {
