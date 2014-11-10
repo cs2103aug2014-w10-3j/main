@@ -13,8 +13,6 @@ package sg.codengineers.ldo.db;
  * information from the objects of this class, hence keeping
  * to the abstraction layers would inevitably result in a
  * circular definition.
- * 
- * @author Sean
  */
 
 import java.util.*;
