@@ -1,10 +1,6 @@
 package sg.codengineers.ldo.controller;
 
-import java.io.IOException;
 import java.util.Date;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import sg.codengineers.ldo.logic.Logic;
 import sg.codengineers.ldo.logic.LogicStub;
@@ -27,9 +23,6 @@ import sg.codengineers.ldo.ui.UIImpl;
 @SuppressWarnings("deprecation")
 public class Controller {
 	//@author A0112171Y
-	
-	//Logger instance
-	private final static Logger logger = Logger.getLogger(Controller.class.getName()); 
 	
 	//These are command strings and messages required in Controller class
 	private static String COMMAND_SHOW_TODAY = "search --time %s";
@@ -55,14 +48,6 @@ public class Controller {
 		logic = Logic.getInstance();
 		ui = new UIImpl();
 		parser = new ParserImpl();
-		
-		try {
-			logger.addHandler(new FileHandler("log.txt"));
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	/**
@@ -94,9 +79,6 @@ public class Controller {
 	 * to the user.
 	 */
 	public void run() {
-		logger.entering("Controller", "run");
-		logger.log(Level.SEVERE, "Running L'Do");
-		
 		processWelcome();
 		
 		while (true) {
@@ -113,9 +95,6 @@ public class Controller {
 	 * 			unprocessed command string
 	 */
 	public void processCommand(String rawCommand){
-		logger.entering("Controller", "processCommand", rawCommand);
-		logger.log(Level.INFO, "Process raw command string: {0}", rawCommand);
-		
 		try {
 			Command command;
 			Result result;
@@ -145,9 +124,6 @@ public class Controller {
 	 * Displays welcome message to start interaction with user.
 	 */
 	public void processWelcome() {
-		logger.entering("Controller", "processWelcome");
-		logger.log(Level.INFO, "Process welcome message");
-		
 		try {
 			//Create new date
 			Date date = new Date();
@@ -193,9 +169,6 @@ public class Controller {
 	 * Shows exit message and exits the system
 	 */
 	private void terminate(){
-		logger.entering("Controller", "terminate");
-		logger.log(Level.INFO, "Terminating L'Do");
-		
 		ui.displayExit();
 		System.exit(0);
 	}
