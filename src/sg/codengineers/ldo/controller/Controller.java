@@ -30,7 +30,7 @@ public class Controller {
 														+ "Please restart the program.";
 	private static String MSG_ERROR_UNABLE_TO_EXECUTE_CMD = "Sorry! There is an error within the program.\n"
 														+ "Please re-enter the command or restart the program.";
-	private static String MSG_GCAL_AUTH_URL = "Open this URL from your web browser to login to Google Calendar:\n%s";
+	private static String MSG_GCAL_AUTH_URL = "Please go to the browser and authorise the application:\n";
 	
 	// Logic instance
 	private static Logic logic;
