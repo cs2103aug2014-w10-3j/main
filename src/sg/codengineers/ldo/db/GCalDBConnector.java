@@ -86,7 +86,7 @@ public class GCalDBConnector implements DBConnector {
 
 		if (initCalendar()) {
 			DBConfig.addNewSettings("task", "GCal", this);
-			//read();
+			read();
 		}
 	}
 	
@@ -312,7 +312,7 @@ public class GCalDBConnector implements DBConnector {
 	private static Task eventToTask(Event event) {
 		Task task = new TaskImpl();
 		
-		task.setId(Integer.parseInt(event.getId()));
+		//task.setId(Integer.parseInt(event.getId()));
 		task.setName(event.getSummary());
 		task.setDescription(event.getDescription());
 		
