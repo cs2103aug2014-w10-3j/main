@@ -583,8 +583,7 @@ public class ParserImpl implements Parser {
 		}
 
 		// RETRIEVE
-		if (cmdType == CommandType.RETRIEVE && !priOp.equalsIgnoreCase("all") 
-				&& !priOp.equalsIgnoreCase("today") 
+		if (cmdType == CommandType.RETRIEVE && !priOp.equalsIgnoreCase("all")
 				&& !_isHelpRequest && !_isEmptyPriOp) {
 
 			if (!isDigit(priOp)) {
