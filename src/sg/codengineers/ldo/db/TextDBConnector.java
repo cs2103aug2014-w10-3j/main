@@ -7,8 +7,6 @@ package sg.codengineers.ldo.db;
  * interface. Specifically, it is the connection between
  * the program and a textfile representation of the data
  * in the program.
- * 
- * @author Sean
  */
 
 import java.io.*;

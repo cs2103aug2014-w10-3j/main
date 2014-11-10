@@ -26,7 +26,6 @@ import sg.codengineers.ldo.logic.Filter;
  * logic operation classes need to implement {@link #execute(String, Iterator)}
  * method and fill in the actual execution there.
  * 
- * @author Wenhao
  *
  */
 public abstract class Handler {
