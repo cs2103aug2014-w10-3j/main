@@ -1,5 +1,5 @@
 package sg.codengineers.ldo.logic;
-
+//@author A0119541J
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -14,9 +14,8 @@ import sg.codengineers.ldo.parser.ResultImpl;
 
 public class DeleteHandler extends Handler {
 
-	
-	public DeleteHandler(List<Task> _taskList) {
-		super(_taskList);
+	public DeleteHandler(List<Task> taskList) {
+		super(taskList);
 	}
 
 	@Override
@@ -29,6 +28,7 @@ public class DeleteHandler extends Handler {
 		if(primaryOperand.equalsIgnoreCase("all")){
 			List<Task> theList = new ArrayList<Task>(_taskList);
 			_taskList.clear();
+			indexMap.clear();
 			result = new ResultImpl(CommandType.DELETE, 
 					primaryOperand,
 					new Time(System.currentTimeMillis()), 
@@ -38,7 +38,9 @@ public class DeleteHandler extends Handler {
 		int id = -1;
 		try{
 			id = Integer.valueOf(primaryOperand) - DIFFERENCE_DIPSLAY_INDEX_AND_SYSTEM_INDEX;
-			task = _taskList.remove(id);
+			task = getTask((int)indexMap.get(id));
+			_taskList.remove(task);
+			indexMap.remove(Integer.valueOf(id));
 		} catch(Exception e){
 			if(Logic.DEBUG){
 				e.printStackTrace();

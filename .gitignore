@@ -2,3 +2,7 @@
 dbconfig
 task
 test
+
+log.txt
+
+log.txt.lck

@@ -1,20 +1,52 @@
 package sg.codengineers.ldo.model;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+
+import sg.codengineers.ldo.model.Task.Priority;
 
 /**
  * This interface specifies the public methods of the Command Class
  * 
  * @author Victor Hazali
- * @Collaborator Sharon Lynn
- * 
+ * @Collaborator Sharon Lynn, Luan Wenhao
  */
 public interface Command {
 
 	// The list of acceptable Command types
 	public enum CommandType {
-		CREATE, UPDATE, DELETE, RETRIEVE, SYNC, SEARCH, HELP, UNDO, EXIT,
-		INVALID
+		CREATE("add"), 
+		UPDATE("update"), 
+		DELETE("delete"), 
+		RETRIEVE("show"), 
+		SYNC("sync"), 
+		SEARCH("search"), 
+		HELP("help"), 
+		UNDO("undo"), 
+		EXIT("exit"),
+		INVALID("invalid");
+
+		private String text;
+		
+
+		CommandType(String text) {
+			this.text = text;
+		}
+
+		public String getText() {
+			return this.text;
+		}
+
+		public static CommandType fromString(String text) {
+			if (text != null) {
+				for (CommandType b : CommandType.values()) {
+					if (text.equalsIgnoreCase(b.text)) {
+						return b;
+					}
+				}
+			}
+			return null;
+		}
 	};
 
 	/**

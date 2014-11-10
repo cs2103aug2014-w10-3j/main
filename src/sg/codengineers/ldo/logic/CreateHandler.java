@@ -1,5 +1,5 @@
 package sg.codengineers.ldo.logic;
-
+//@author A0119541J
 import java.sql.Time;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -14,8 +14,8 @@ import sg.codengineers.ldo.parser.ResultImpl;
 
 public class CreateHandler extends Handler {
 
-	public CreateHandler(List<Task> _taskList) {
-		super(_taskList);
+	public CreateHandler(List<Task> taskList) {
+		super(taskList);
 	}
 
 	@Override

@@ -36,6 +36,8 @@ public interface Task {
 		  }
 		}
 	
+	public void setParams(Task t);
+	
 	/**
 	 * Gets the unique ID of each task
 	 * @return Unique ID of the task
