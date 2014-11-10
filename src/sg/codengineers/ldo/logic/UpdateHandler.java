@@ -58,7 +58,7 @@ public class UpdateHandler extends Handler {
 			_taskList.add(taskId, task);
 		}
 		
-		Result result = new ResultImpl(CommandType.CREATE, 
+		Result result = new ResultImpl(CommandType.UPDATE, 
 							primaryOperand,
 							new Time(System.currentTimeMillis()), 
 							task);
