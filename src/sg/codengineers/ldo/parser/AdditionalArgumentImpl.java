@@ -6,9 +6,8 @@ import sg.codengineers.ldo.model.AdditionalArgument;
  * This class implements Additional Argument as specified by the Additional
  * Argument interface
  * 
- * @author Victor Hazali
- * 
  */
+//@author A0110741X
 public class AdditionalArgumentImpl implements AdditionalArgument {
 
 	/* Member variables */

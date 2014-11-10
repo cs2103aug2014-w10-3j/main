@@ -27,6 +27,8 @@ import sg.codengineers.ldo.model.Task;
 
 import java.io.*;
 import java.util.*;
+import java.net.URI;
+import java.awt.Desktop;
 
 public class GCalDBConnector implements DBConnector {
 
@@ -35,7 +37,6 @@ public class GCalDBConnector implements DBConnector {
 	private static final String CLIENT_ID = "300670791643-aqcjcpka4r18bnr53rl5vtvj2h88l9ga.apps.googleusercontent.com";
 	private static final String CLIENT_SECRET = "pp9dS5SHzSEl_pu5hXw0ZFDk";
 	private static final String CALENDAR_SUMMARY = "L'Do";
-	private static final String CALENDAR_ID = "L-DO@cs2103.nus.edu.sg";
 	private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 	private static final JacksonFactory JSON_FACTORY = new JacksonFactory();
 	
@@ -50,12 +51,13 @@ public class GCalDBConnector implements DBConnector {
 	// No way around this since there is a name clash in the imported libraries
 	private com.google.api.services.calendar.Calendar service = null;
 	private List<Event> gCalEvents = null;
+	private Calendar calendar = null;
 
 	public GCalDBConnector(GoogleCredential credential) {
 		// Create a new authorized API client
 		service = new com.google.api.services.calendar.Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY,
 				credential).build();
-		
+
 		if (initCalendar()) {
 			read();
 		}
@@ -66,12 +68,11 @@ public class GCalDBConnector implements DBConnector {
 			List<CalendarListEntry> calendarList = service.calendarList().list().execute().getItems();
 			
 			if (!isCalendarCreated(calendarList)) {
-				Calendar calendar = new Calendar();
+				calendar = new Calendar();
 	
 				calendar.setSummary(CALENDAR_SUMMARY);
-				calendar.setId(CALENDAR_ID);
 				
-				service.calendars().insert(calendar).execute();
+				calendar = service.calendars().insert(calendar).execute();
 			}
 
 			return true;
@@ -87,7 +88,7 @@ public class GCalDBConnector implements DBConnector {
 			Task task = convertToTask(data);
 			Event event = taskToEvent(task);
 
-			Event createdEvent = service.events().insert(CALENDAR_ID, event).execute();
+			Event createdEvent = service.events().insert(calendar.getId(), event).execute();
 			gCalEvents.add(createdEvent);
 
 			return true;
@@ -103,7 +104,7 @@ public class GCalDBConnector implements DBConnector {
 			Task task = convertToTask(data);
 			Event event = taskToEvent(task);
 
-			service.events().patch(CALENDAR_ID, event.getId(), event).execute();
+			service.events().patch(calendar.getId(), event.getId(), event).execute();
 
 			return true;
 		} catch (IOException e) {
@@ -115,7 +116,7 @@ public class GCalDBConnector implements DBConnector {
 	@Override
 	public List<String> read() {
 		try {
-			Events events = service.events().list(CALENDAR_ID).execute();
+			Events events = service.events().list(calendar.getId()).execute();
 			gCalEvents = events.getItems();
 
 			List<String> taskList = new ArrayList<String>();
@@ -137,7 +138,7 @@ public class GCalDBConnector implements DBConnector {
 			Task task = convertToTask(data);			
 			Event event = taskToEvent(task);
 
-			service.events().delete(CALENDAR_ID, event.getId()).execute();
+			service.events().delete(calendar.getId(), event.getId()).execute();
 
 			return true;
 		} catch (IOException e) {
@@ -152,10 +153,21 @@ public class GCalDBConnector implements DBConnector {
 		return false;
 	}
 	
-	public static String getAuthURL() {
+	public static void auth() {
 		String url = FLOW.newAuthorizationUrl().setRedirectUri(REDIRECT_URL)
 				.build();
-		return url;
+		try {
+			if(Desktop.isDesktopSupported()) {
+				// Windows
+				Desktop.getDesktop().browse(new URI(url));
+			} else {
+				// Ubuntu
+				Runtime runtime = Runtime.getRuntime();
+				runtime.exec("/usr/bin/firefox -new-window " + url);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static GCalDBConnector setup(String authCode) {
@@ -164,28 +176,33 @@ public class GCalDBConnector implements DBConnector {
 					.setRedirectUri(REDIRECT_URL).execute();
 			GoogleCredential credential = new GoogleCredential()
 					.setFromTokenResponse(response);
-
 			
 			return new GCalDBConnector(credential);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 	
 	public boolean isCalendarCreated(List<CalendarListEntry> list) {
-		boolean isCreated = false;
-		String calendarId;
-		
-		for (CalendarListEntry entry : list) {
-			calendarId = entry.getId();
-
-			if (calendarId.equals(CALENDAR_ID)) {
-				isCreated = true;
+		try {
+			boolean isCreated = false;
+			String calendarSummary;
+			
+			for (CalendarListEntry entry : list) {
+				calendarSummary = entry.getSummary();
+	
+				if (calendarSummary.equals(CALENDAR_SUMMARY)) {
+					calendar = service.calendars().get(entry.getId()).execute();
+					isCreated = true;
+				}
 			}
+			
+			return isCreated;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
 		}
-		
-		return isCreated;
 	}
 	
 	/**

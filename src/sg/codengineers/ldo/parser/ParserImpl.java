@@ -17,9 +17,8 @@ import sg.codengineers.ldo.model.Parser;
 /**
  * This class implements a Parser as implemented by the Parser interface.
  * 
- * @author Victor Hazali
- * 
  */
+//@author A0110741X
 public class ParserImpl implements Parser {
 
 	/* Constants */
@@ -27,17 +26,17 @@ public class ParserImpl implements Parser {
 	private static final boolean				DEBUG_MODE					= false;
 
 	/* Messages to show to user for Exceptions */
-	private static String						CODE_FAULT					= "%1s in %2s component is not behaving according to how it should be.\n";
-	private static String						BLANK_INPUT					= "Blank input not acceptable.\n";
-	private static String						INVALID_COMMAND				= "%1s has an Invalid command type entered.\n";
-	private static String						EMPTY_OPR_FOR_CMD			= "Empty operand for %s command not supported.\n";
-	private static String						NUMBER_EXPECTED_FOR_CMD		= "Primary operand for %s should contain numbers.\n";
-	private static String						INVALID_ARGUMENT			= "Invalid additional argument entered.\n";
-	private static String						OPERAND_EXPECTED			= "Operand should follow additional argument %s.\n";
-	private static String						INVALID_INDEX				= "Primary operand should not be less than 1.\n";
-	private static String						INVALID_OPERAND				= "%s is not a valid operand for %s.\n";
-	private static String						INVALID_ARG_FOR_CMD			= "%s argument is invalid for %s command type.\n";
-	private static final String					DEADLINE_AND_TIME			= "Not possible to set both deadline and time range.\n";
+	private static final String					CODE_FAULT					= "%1s in %2s component is not behaving according to how it should be.\n";
+	private static final String					BLANK_INPUT					= "Blank input not acceptable.\n";
+	private static final String					INVALID_COMMAND				= "\"%s\" does not have a valid command type entered.\n";
+	private static final String					EMPTY_OPR_FOR_CMD			= "Empty operand for %s command not supported.\n";
+	private static final String					NUMBER_EXPECTED_FOR_CMD		= "Primary operand for %s should contain numbers.\n";
+	private static final String					INVALID_ARGUMENT			= "Invalid additional argument entered.\n";
+	private static final String					OPERAND_EXPECTED			= "Operand should follow additional argument %s.\n";
+	private static final String					INVALID_INDEX				= "Primary operand should not be less than 1.\n";
+	private static final String					INVALID_OPERAND				= "\"%s\" is not a valid operand for %s.\n";
+	private static final String					INVALID_ARG_FOR_CMD			= "%s argument is invalid for %s command type.\n";
+	private static final String					DEADLINE_AND_TIME			= "Not possible to set both deadline and time range for the same task.\n";
 
 	/* Static Variables */
 	private static Map<String, CommandType>		_cmdMap;

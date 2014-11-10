@@ -2,9 +2,8 @@ package sg.codengineers.ldo.logic;
 
 import java.io.IOException;
 import java.sql.Time;
-import java.util.Iterator;
 
-import sg.codengineers.ldo.model.AdditionalArgument;
+import sg.codengineers.ldo.model.Command;
 import sg.codengineers.ldo.model.Command.CommandType;
 import sg.codengineers.ldo.model.Result;
 import sg.codengineers.ldo.parser.ResultImpl;
@@ -14,23 +13,38 @@ public class LogicStub extends Logic{
 		super(true);
 	}
 	
-	public Result createTask(String primaryOperand,
-			Iterator<AdditionalArgument> iterator) throws IOException{
+	@Override
+	public Result createTask(Command command) throws IOException{
 		return new ResultImpl(CommandType.CREATE, "", new Time(System.currentTimeMillis()));
 	}
-
-	public Result deleteTask(String primaryOperand,
-			Iterator<AdditionalArgument> iterator) throws IOException{
+	
+	@Override
+	public Result deleteTask(Command command) throws IOException{
 		return new ResultImpl(CommandType.DELETE, "", new Time(System.currentTimeMillis()));
 	}
 
-	public Result updateTask(String primaryOperand,
-			Iterator<AdditionalArgument> iterator) throws IOException{
+	@Override
+	public Result updateTask(Command command) throws IOException{
 		return new ResultImpl(CommandType.UPDATE, "", new Time(System.currentTimeMillis()));
 	}
-
-	public Result retrieveTask(String primaryOperand,
-			Iterator<AdditionalArgument> iterator) {
+	
+	@Override
+	public Result searchTask(Command command){
+		return new ResultImpl(CommandType.SEARCH, "", new Time(System.currentTimeMillis()));
+	}
+	
+	@Override
+	public Result showTask(Command command) {
 		return new ResultImpl(CommandType.RETRIEVE, "", new Time(System.currentTimeMillis()));
+	}
+	
+	@Override
+	public Result undoTask() {
+		return new ResultImpl(CommandType.UNDO, "", new Time(System.currentTimeMillis()));
+	}
+	
+	@Override
+	public Result showHelp(Command command) {
+		return new ResultImpl(CommandType.HELP, "", new Time(System.currentTimeMillis()));
 	}
 }

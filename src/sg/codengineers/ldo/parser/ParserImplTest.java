@@ -21,6 +21,7 @@ import sg.codengineers.ldo.model.Command;
 import sg.codengineers.ldo.model.Command.CommandType;
 import sg.codengineers.ldo.model.Parser;
 
+//@author A0110741X
 public class ParserImplTest {
 
 	private Parser	testClass;
@@ -277,7 +278,7 @@ public class ParserImplTest {
 		assertEquals("checking command type", CommandType.INVALID,
 				obtainedCommand.getCommandType());
 		assertEquals("checking invalid message",
-				"from 3pm to 4pm is not a valid operand for time.\n",
+				"\"from 3pm to 4pm\" is not a valid operand for time.\n",
 				obtainedCommand.getMessage());
 		assertNotNull("checking for null iterator",
 				obtainedCommand.getAdditionalArguments());
@@ -357,8 +358,9 @@ public class ParserImplTest {
 				.parse("update 300 --time 3pm 4pm --deadline 10 Nov 2014");
 		assertEquals("checking command type", CommandType.INVALID,
 				obtainedCommand.getCommandType());
-		assertEquals("checking invalid message",
-				"Not possible to set both deadline and time range.\n",
+		assertEquals(
+				"checking invalid message",
+				"Not possible to set both deadline and time range for the same task.\n",
 				obtainedCommand.getMessage());
 		assertNotNull("checking for null iterator",
 				obtainedCommand.getAdditionalArguments());

@@ -1,5 +1,11 @@
 package sg.codengineers.ldo.controller;
 
+import java.io.IOException;
+import java.util.Date;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import sg.codengineers.ldo.logic.Logic;
 import sg.codengineers.ldo.logic.LogicStub;
 import sg.codengineers.ldo.model.Command;
@@ -15,19 +21,27 @@ import sg.codengineers.ldo.ui.UIImpl;
  * It reads the user's input which contains a command,
  * routes what to do with the data according to the
  * command type, and prints the corresponding feedback.
+ * 
+ * Uses java.util.Date class which has been deprecated.
  */
+@SuppressWarnings("deprecation")
 public class Controller {
 	//@author A0112171Y
 	
-	// Logic instance
-	private static Logic logic;
+	//Logger instance
+	private final static Logger logger = Logger.getLogger(Controller.class.getName()); 
 	
-	private static String COMMAND_SHOW_TODAY = "show";
-	private static String MSG_ERROR_UNABLE_TO_START_LDO = "Sorry!\n"
-														+ "There is an error when starting the program.\n"
-														+ "Please restart the program.\n";
+	//These are command strings and messages required in Controller class
+	private static String COMMAND_SHOW_TODAY = "search --time %s";
+	private static String MSG_ERROR_UNABLE_TO_START_LDO = "Sorry! There is an error when starting the program.\n"
+														+ "Please restart the program.";
+	private static String MSG_ERROR_UNABLE_TO_EXECUTE_CMD = "Sorry! There is an error within the program.\n"
+														+ "Please re-enter the command or restart the program.";
 	private static String MSG_GCAL_AUTH_URL = "Open this URL from your web browser to login to Google Calendar:\n%s";
 	
+	// Logic instance
+	private static Logic logic;
+
 	// UI instances
 	private UI ui;
 	
@@ -37,19 +51,29 @@ public class Controller {
 	/**
 	 * Constructors
 	 */
-	public Controller(){
+	private Controller(){
 		logic = Logic.getInstance();
 		ui = new UIImpl();
 		parser = new ParserImpl();
+		
+		try {
+			logger.addHandler(new FileHandler("log.txt"));
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
 	 * This constructor allows the controller to use a logic stub
-	 * for unit testing purposes.
+	 * and has an access modifier of package access, because it is
+	 * used only for unit testing purposes within the package.
 	 * @param stub
-	 * 			true if the unit is under testing, false otherwise
+	 * 			true if the unit is under testing
 	 */
-	protected Controller(boolean stub){
+	Controller(boolean stub){
+		assert (stub == true);
 		logic = new LogicStub();
 	}
 	
@@ -70,6 +94,9 @@ public class Controller {
 	 * to the user.
 	 */
 	public void run() {
+		logger.entering("Controller", "run");
+		logger.log(Level.SEVERE, "Running L'Do");
+		
 		processWelcome();
 		
 		while (true) {
@@ -79,13 +106,16 @@ public class Controller {
 	}
 	
 	/**
-	 * Processes command string and displays
-	 * messages and feedback to continue
-	 * interaction with user.
+	 * Processes raw command string and displays feedback
+	 * to continue interaction with user.
+	 * 
 	 * @param rawCommand
 	 * 			unprocessed command string
 	 */
 	public void processCommand(String rawCommand){
+		logger.entering("Controller", "processCommand", rawCommand);
+		logger.log(Level.INFO, "Process raw command string: {0}", rawCommand);
+		
 		try {
 			Command command;
 			Result result;
@@ -107,13 +137,26 @@ public class Controller {
 				ui.displayError(command.getMessage());
 			}
 		} catch (Exception e) {
-			ui.displayError(MSG_ERROR_UNABLE_TO_START_LDO);
+			ui.displayError(MSG_ERROR_UNABLE_TO_EXECUTE_CMD);
 		}
 	}
 	
+	/**
+	 * Displays welcome message to start interaction with user.
+	 */
 	public void processWelcome() {
+		logger.entering("Controller", "processWelcome");
+		logger.log(Level.INFO, "Process welcome message");
+		
 		try {
-			Command command = parser.parse(COMMAND_SHOW_TODAY);
+			//Create new date
+			Date date = new Date();
+			StringBuilder dateString = new StringBuilder();
+			dateString.append(date.getDate() + "/");
+			dateString.append(date.getMonth()+1 + "/");
+			dateString.append(date.getYear()+1990);
+			
+			Command command = parser.parse(String.format(COMMAND_SHOW_TODAY,dateString.toString()));
 			Result result = executeCommand(command);
 			ui.displayWelcome(result);
 		} catch (Exception e) {
@@ -121,6 +164,13 @@ public class Controller {
 		}
 	}
 	
+	/**
+	 * Validates whether the command type is a valid command type.
+	 * Used to check the command type in Command and Result classes.
+	 * 
+	 * @param commandType
+	 * @return true if valid command type, false otherwise
+	 */
 	private boolean isValidCommandType(CommandType commandType){
 		switch (commandType){
 			case CREATE:
@@ -143,13 +193,16 @@ public class Controller {
 	 * Shows exit message and exits the system
 	 */
 	private void terminate(){
+		logger.entering("Controller", "terminate");
+		logger.log(Level.INFO, "Terminating L'Do");
+		
 		ui.displayExit();
 		System.exit(0);
 	}
 	
 	private Result GCal(){
-		String GCalAuthURL = logic.getGCalAuthURL();
-		ui.displayMessage(String.format(MSG_GCAL_AUTH_URL, GCalAuthURL));
+		logic.gCalAuth();
+		ui.displayMessage(String.format(MSG_GCAL_AUTH_URL));
 		
 		String userGCalAuthKey = ui.readFromUser();
 		return logic.syncGCal(userGCalAuthKey);
