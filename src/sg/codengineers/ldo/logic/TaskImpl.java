@@ -126,12 +126,12 @@ public class TaskImpl implements Task {
 		_description = description;
 	}
 	
-	public void setTimeStart(Date timeEnd) {
-		_timeEnd = timeEnd;
+	public void setTimeStart(Date timeStart) {
+		_timeStart = timeStart;
 	}
 	
 	public void setTimeEnd(Date timeEnd) {
-		_timeStart = timeEnd;
+		_timeEnd = timeEnd;
 	}
 	
 	public void setDeadline(Date deadline) {
