@@ -40,6 +40,7 @@ public class GCalDBConnector implements DBConnector {
 	private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 	private static final JacksonFactory JSON_FACTORY = new JacksonFactory();
 	private static final String REFRESH_TOKEN = "refresh_token";
+	private static final int SECOND = 1;
 
 	// Or your redirect URL for web based applications.
 	private static final String REDIRECT_URL = "urn:ietf:wg:oauth:2.0:oob";
