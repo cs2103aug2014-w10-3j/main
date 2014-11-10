@@ -1,5 +1,10 @@
 package sg.codengineers.ldo.controller;
 
+import java.io.IOException;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import sg.codengineers.ldo.logic.Logic;
 import sg.codengineers.ldo.logic.LogicStub;
 import sg.codengineers.ldo.model.Command;
@@ -21,6 +26,9 @@ public class Controller {
 	
 	// Logic instance
 	private static Logic logic;
+
+	//Logger instance
+	private final static Logger logger = Logger.getLogger(Controller.class.getName()); 
 	
 	private static String COMMAND_SHOW_TODAY = "show";
 	private static String MSG_ERROR_UNABLE_TO_START_LDO = "Sorry! There is an error when starting the program.\n"
@@ -42,6 +50,16 @@ public class Controller {
 		logic = Logic.getInstance();
 		ui = new UIImpl();
 		parser = new ParserImpl();
+		
+		try {
+			logger.addHandler(new FileHandler("log.txt"));
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -71,6 +89,9 @@ public class Controller {
 	 * to the user.
 	 */
 	public void run() {
+		logger.entering("Controller", "run");
+		logger.log(Level.SEVERE, "Running L'Do");
+		
 		processWelcome();
 		
 		while (true) {
@@ -87,6 +108,9 @@ public class Controller {
 	 * 			unprocessed command string
 	 */
 	public void processCommand(String rawCommand){
+		logger.entering("Controller", "processCommand", rawCommand);
+		logger.log(Level.INFO, "Process raw command string: {0}", rawCommand);
+		
 		try {
 			Command command;
 			Result result;
@@ -113,6 +137,9 @@ public class Controller {
 	}
 	
 	public void processWelcome() {
+		logger.entering("Controller", "processWelcome");
+		logger.log(Level.INFO, "Process welcome message");
+		
 		try {
 			Command command = parser.parse(COMMAND_SHOW_TODAY);
 			Result result = executeCommand(command);
@@ -144,6 +171,9 @@ public class Controller {
 	 * Shows exit message and exits the system
 	 */
 	private void terminate(){
+		logger.entering("Controller", "terminate");
+		logger.log(Level.INFO, "Terminating L'Do");
+		
 		ui.displayExit();
 		System.exit(0);
 	}
