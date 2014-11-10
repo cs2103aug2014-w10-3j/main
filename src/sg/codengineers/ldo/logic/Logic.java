@@ -223,15 +223,9 @@ public class Logic {
 		}
 
 	}
-<<<<<<< HEAD
 
-	public String getGCalAuthURL() {
-		return _dbConnector.getGCalAuthURL();
-=======
-	
 	public void gCalAuth(){
 		_dbConnector.gCalAuth();
->>>>>>> origin/controller/sharon
 	}
 
 	public Result syncGCal(String userGCalAuthKey) {
