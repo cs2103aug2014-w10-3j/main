@@ -14,7 +14,6 @@ import sg.codengineers.ldo.parser.ResultImpl;
 
 public class DeleteHandler extends Handler {
 
-	
 	public DeleteHandler(List<Task> _taskList) {
 		super(_taskList);
 	}

@@ -15,8 +15,8 @@ import sg.codengineers.ldo.parser.ResultImpl;
 
 public class SearchHandler extends Handler {
 	
-	String pmOperand;
-	boolean isDone = false;
+	private String pmOperand;
+	private boolean isDone = false;
 	
 	public SearchHandler(List<Task> _taskList) {
 		super(_taskList);
@@ -69,22 +69,7 @@ public class SearchHandler extends Handler {
 		
 		return result;
 	}
-	
-	@Override
-	protected Result constructResult(String operand, List<Task> list){
-		return 	new ResultImpl(CommandType.SEARCH, 
-				operand,
-				new Time(System.currentTimeMillis()), 
-				list);
-	}
-	@Override
-	protected Result constructResult(String operand){
-		return new ResultImpl(CommandType.SEARCH,
-				operand,
-				new Time(System.currentTimeMillis())
-				);
-	}
-	
+
 	private String populateAddArg(String accString, AdditionalArgument arg){
 		if(!accString.isEmpty()){
 			accString+=" and ";

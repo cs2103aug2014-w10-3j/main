@@ -11,8 +11,6 @@ import sg.codengineers.ldo.model.Command.CommandType;
 import sg.codengineers.ldo.parser.ResultImpl;
 
 public class ShowHandler extends Handler {
-	private List<Task> _taskList;
-
 	public ShowHandler(List<Task> taskList) {
 		super(taskList);
 		this._taskList = taskList;
