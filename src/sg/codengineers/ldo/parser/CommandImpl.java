@@ -14,9 +14,8 @@ import sg.codengineers.ldo.model.Command;
  * This class specifies the implementation of Command as specified by the
  * Command interface
  * 
- * @author Victor Hazali
- * 
  */
+//@author A0110741X
 public class CommandImpl implements Command {
 
 	/* Member Variables */

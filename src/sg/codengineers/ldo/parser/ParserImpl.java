@@ -17,9 +17,8 @@ import sg.codengineers.ldo.model.Parser;
 /**
  * This class implements a Parser as implemented by the Parser interface.
  * 
- * @author Victor Hazali
- * 
  */
+//@author A0110741X
 public class ParserImpl implements Parser {
 
 	/* Constants */
