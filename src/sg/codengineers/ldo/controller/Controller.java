@@ -1,6 +1,13 @@
 package sg.codengineers.ldo.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import sg.codengineers.ldo.logic.Logic;
 import sg.codengineers.ldo.logic.LogicStub;
@@ -24,6 +31,9 @@ import sg.codengineers.ldo.ui.UIImpl;
 public class Controller {
 	//@author A0112171Y
 	
+	//Logger instance
+	private final static Logger logger = Logger.getLogger(Controller.class.getName()); 
+	
 	//These are command strings and messages required in Controller class
 	private static String COMMAND_SHOW_TODAY = "search --time %s";
 	private static String MSG_ERROR_UNABLE_TO_START_LDO = "Sorry! There is an error when starting the program.\n"
@@ -31,6 +41,10 @@ public class Controller {
 	private static String MSG_ERROR_UNABLE_TO_EXECUTE_CMD = "Sorry! There is an error within the program.\n"
 														+ "Please re-enter the command or restart the program.";
 	private static String MSG_GCAL_AUTH_URL = "Please go to the browser and authorise the application:\n";
+	
+	//Logging directory and file name
+	private static String LOG_DIRECTORY = "log/";
+	private static String LOG_FILE_NAME = "log.log";
 	
 	// Logic instance
 	private static Logic logic;
@@ -48,6 +62,22 @@ public class Controller {
 		logic = Logic.getInstance();
 		ui = new UIImpl();
 		parser = new ParserImpl();
+		
+		activateLogger();
+	}
+	
+	private void activateLogger(){
+		try {
+			new File(LOG_DIRECTORY).mkdirs();
+			Handler fileHandler = new FileHandler(LOG_DIRECTORY + LOG_FILE_NAME);
+			fileHandler.setFormatter(new SimpleFormatter());
+			logger.addHandler(fileHandler);
+			logger.setUseParentHandlers(false);
+		} catch (SecurityException e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+		}
 	}
 	
 	/**
@@ -79,6 +109,9 @@ public class Controller {
 	 * to the user.
 	 */
 	public void run() {
+		logger.entering("Controller", "run");
+		logger.log(Level.INFO, "Running L'Do");
+		
 		processWelcome();
 		
 		while (true) {
@@ -95,6 +128,9 @@ public class Controller {
 	 * 			unprocessed command string
 	 */
 	public void processCommand(String rawCommand){
+		logger.entering("Controller", "processCommand", rawCommand);
+		logger.log(Level.INFO, "Process raw command string: {0}", rawCommand);
+		
 		try {
 			Command command;
 			Result result;
@@ -124,6 +160,9 @@ public class Controller {
 	 * Displays welcome message to start interaction with user.
 	 */
 	public void processWelcome() {
+		logger.entering("Controller", "processWelcome");
+		logger.log(Level.INFO, "Process welcome message");
+		
 		try {
 			//Create new date
 			Date date = new Date();
@@ -169,6 +208,9 @@ public class Controller {
 	 * Shows exit message and exits the system
 	 */
 	private void terminate(){
+		logger.entering("Controller", "terminate");
+		logger.log(Level.INFO, "Terminating L'Do");
+		
 		ui.displayExit();
 		System.exit(0);
 	}
