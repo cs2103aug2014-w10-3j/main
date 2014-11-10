@@ -17,7 +17,7 @@ public interface Output {
 	 *             Throws an Illegal Argument Exception when command type of
 	 *             result is invalid
 	 */
-	public void displayResult(Result result) throws Exception;
+	public void displayResult(Result result);
 
 	/**
 	 * Displays an exception message to the user. The method will first display
@@ -30,7 +30,7 @@ public interface Output {
 	 *            The exception to be show to the user. Should contain the
 	 *            reason behind the exception.
 	 */
-	public void displayException(Exception e);
+	public void displayError(String errorMessage);
 
 	/**
 	 * Displays the welcome message to the user
@@ -39,4 +39,11 @@ public interface Output {
 	 *            The list of task due today.
 	 */
 	public void displayWelcome(Result result);
+
+	/**
+	 * Displays an exit message to the user.
+	 */
+	public void displayExit();
+	
+	public void displayMessage(String message);
 }

@@ -9,6 +9,33 @@ import java.util.Date;
  */
 public interface Task {
 	
+	public enum Priority {
+		  LOW("low"),
+		  NORMAL("normal"),
+		  HIGH("high");
+
+		  private String text;
+
+		  Priority(String text) {
+		    this.text = text;
+		  }
+
+		  public String getText() {
+		    return this.text;
+		  }
+
+		  public static Priority fromString(String text) {
+		    if (text != null) {
+		      for (Priority b : Priority.values()) {
+		        if (text.equalsIgnoreCase(b.text)) {
+		          return b;
+		        }
+		      }
+		    }
+		    return null;
+		  }
+		}
+	
 	/**
 	 * Gets the unique ID of each task
 	 * @return Unique ID of the task
@@ -51,6 +78,10 @@ public interface Task {
 	 */
 	public Date getDeadline();
 	
+	public Priority getPriority();
+	
+	public void setId(int id);
+	
 	public void setName(String name);
 	
 	public void setTag(String tag);
@@ -62,4 +93,6 @@ public interface Task {
 	public void setTimeEnd(Date timeEnd);
 	
 	public void setDeadline(Date deadline);
+	
+	public void setPriority(Priority priority);
 }

@@ -1,14 +1,15 @@
 package sg.codengineers.ldo.logic;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
+import sg.codengineers.ldo.model.Parser;
 import sg.codengineers.ldo.model.Task;
+import sg.codengineers.ldo.parser.ParserImpl;
 
 public class TaskImpl implements Task {
 	public static String CLASS_NAME = "TASK";
+	public static Parser parser = new ParserImpl();
 	
 	public static int FIELD_ID_INDEX = 0;
 	public static int FIELD_NAME_INDEX = 1;
@@ -16,11 +17,13 @@ public class TaskImpl implements Task {
 	public static int FIELD_TAG_INDEX = 3;
 	public static int FIELD_TIMESTART_INDEX = 4;
 	public static int FIELD_TIMEEND_INDEX = 5;
+	public static int FIELD_PRIORITY_INDEX = 6;
 	
-	public static int FIELD_COUNT = 6;
+	public static int FIELD_COUNT = 7;
 	private int _id;
 	private String _name, _description, _tag;
 	private Date _timeStart, _timeEnd;
+	private Priority _priority;
 	
 	private static int _accumulateId = -1;
 	
@@ -28,7 +31,8 @@ public class TaskImpl implements Task {
 		_id = getNextId();
 		_name = name;
 		_description = _tag = "";
-		_timeStart = _timeEnd = new Date();
+		_timeStart = _timeEnd = null;
+		_priority = Priority.NORMAL;
 	}
 	
 	/**
@@ -42,6 +46,14 @@ public class TaskImpl implements Task {
 		this._timeStart = task.getStartTime();
 		this._timeEnd = task.getEndTime();
 		this._description = task.getDescription();
+		this._priority = task.getPriority();
+	}
+	
+	/**
+	 * Constructs a Task object for manipulation
+	 */
+	public TaskImpl() {
+		
 	}
 	
 	/**
@@ -86,7 +98,17 @@ public class TaskImpl implements Task {
 	@Override
 	public Date getDeadline() {
 		// Deadline tasks have the same start and end time
-		return _timeStart;
+		if(_timeStart!=null){
+			if(_timeStart.equals(_timeEnd)){
+				return _timeStart;
+			}		
+		}
+
+		return null;
+	}
+	
+	public void setId(int id) {
+		_id = id;	
 	}
 	
 	public void setName(String name){
@@ -121,8 +143,15 @@ public class TaskImpl implements Task {
 		builder.append(_name+"<;>");
 		builder.append(_description+"<;>");
 		builder.append(_tag+"<;>");
-		builder.append(Handler.FORMATTER.format(_timeStart)+"<;>");
-		builder.append(Handler.FORMATTER.format(_timeEnd));
+		if(_timeStart != null && _timeEnd !=null){
+			builder.append(parser.parseDateToString(_timeStart)+"<;>");
+			builder.append(parser.parseDateToString(_timeEnd)+"<;>");		
+		}else{
+			builder.append("<;>");
+			builder.append("<;>");
+		}
+
+		builder.append(_priority);
 		return builder.toString();
 	}
 	
@@ -139,6 +168,7 @@ public class TaskImpl implements Task {
 			int id = Integer.valueOf(taskArgs[FIELD_ID_INDEX]);
 			String name = taskArgs[FIELD_NAME_INDEX];
 			task = new TaskImpl(name);
+			task.setId(id);
 			
 			String description = taskArgs[FIELD_DESCRIPTION_INDEX];
 			if(description!= null && !description.isEmpty()){
@@ -155,12 +185,12 @@ public class TaskImpl implements Task {
 			
 			String timeStart = taskArgs[FIELD_TIMESTART_INDEX];
 			if(timeStart!=null && !timeStart.isEmpty()){
-				sTime = Handler.FORMATTER.parse(timeStart);
+				sTime = parser.parseToDate(timeStart);
 			}
 			
 			String timeEnd = taskArgs[FIELD_TIMEEND_INDEX];
 			if(timeEnd!=null && !timeEnd.isEmpty()){
-				eTime = Handler.FORMATTER.parse(timeEnd);
+				eTime = parser.parseToDate(timeEnd);
 			}	
 			
 			if(sTime!=null && eTime!=null && sTime.equals(eTime)){
@@ -169,8 +199,24 @@ public class TaskImpl implements Task {
 				task.setTimeEnd(eTime);
 				task.setTimeStart(sTime);
 			}
+			
+			Priority priority = Priority.fromString(taskArgs[FIELD_PRIORITY_INDEX]);
+			if(priority != null){
+				task.setPriority(priority);
+			}
+
 		}
 		
 		return task;
+	}
+
+	@Override
+	public Priority getPriority() {
+		return _priority;
+	}
+
+	@Override
+	public void setPriority(Priority priority) {
+		this._priority = priority;
 	}
 }

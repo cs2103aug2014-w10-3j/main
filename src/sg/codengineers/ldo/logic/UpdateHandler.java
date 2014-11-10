@@ -37,18 +37,28 @@ public class UpdateHandler extends Handler {
 				
 				task = modifiedTask;
 			}
-		} catch (ParseException | IllegalArgumentException e){
-			throw new IllegalArgumentException("Unable to parse the given parameters!");
+		} catch (Exception e){
+			if(Logic.DEBUG){
+				e.printStackTrace();
+			}
+			return new ResultImpl(CommandType.INVALID, 
+					primaryOperand,
+					new Time(System.currentTimeMillis()), 
+					task);
+			
 		}
 		
 		if(taskId == INVALID_ID || task==null){			
-			return null;
+			return new ResultImpl(CommandType.INVALID, 
+					primaryOperand,
+					new Time(System.currentTimeMillis()), 
+					task);
 		} else {
 			_taskList.remove(taskId);
-			_taskList.add(task);
+			_taskList.add(taskId, task);
 		}
 		
-		Result result = new ResultImpl(CommandType.CREATE, 
+		Result result = new ResultImpl(CommandType.UPDATE, 
 							primaryOperand,
 							new Time(System.currentTimeMillis()), 
 							task);

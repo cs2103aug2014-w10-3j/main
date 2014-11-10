@@ -1,18 +1,14 @@
 package sg.codengineers.ldo.controller;
 
-import java.util.Iterator;
-
 import sg.codengineers.ldo.logic.Logic;
 import sg.codengineers.ldo.logic.LogicStub;
-import sg.codengineers.ldo.model.AdditionalArgument;
 import sg.codengineers.ldo.model.Command;
-import sg.codengineers.ldo.model.Input;
-import sg.codengineers.ldo.model.Output;
+import sg.codengineers.ldo.model.Parser;
 import sg.codengineers.ldo.model.Result;
 import sg.codengineers.ldo.model.Command.CommandType;
-import sg.codengineers.ldo.parser.CommandImpl;
-import sg.codengineers.ldo.ui.InputImpl;
-import sg.codengineers.ldo.ui.OutputImpl;
+import sg.codengineers.ldo.model.UI;
+import sg.codengineers.ldo.parser.ParserImpl;
+import sg.codengineers.ldo.ui.UIImpl;
 
 /**
  * Controller controls the execution of L'Do.
@@ -26,19 +22,33 @@ public class Controller {
 	// Logic instance
 	private static Logic logic;
 	
+	private static String COMMAND_SHOW_TODAY = "show";
+	private static String MSG_ERROR_UNABLE_TO_START_LDO = "Sorry!\n"
+														+ "There is an error when starting the program.\n"
+														+ "Please restart the program.\n";
+	private static String MSG_GCAL_AUTH_URL = "Open this URL from your web browser to login to Google Calendar:\n%s";
+	
 	// UI instances
-	private Input input;
-	private Output output;
+	private UI ui;
+	
+	// Parser instance
+	private Parser parser;
 	
 	/**
 	 * Constructors
 	 */
 	public Controller(){
 		logic = Logic.getInstance();
-		input = new InputImpl();
-		output = new OutputImpl();
+		ui = new UIImpl();
+		parser = new ParserImpl();
 	}
 	
+	/**
+	 * This constructor allows the controller to use a logic stub
+	 * for unit testing purposes.
+	 * @param stub
+	 * 			true if the unit is under testing, false otherwise
+	 */
 	protected Controller(boolean stub){
 		logic = new LogicStub();
 	}
@@ -60,34 +70,89 @@ public class Controller {
 	 * to the user.
 	 */
 	public void run() {
-		try {
-			Command welcomeCommand;
-			Result result;
-			
-			welcomeCommand = new CommandImpl("show welcome");
-			result = executeCommand(welcomeCommand);
-			output.displayResult(result);
-			
-			while (true) {
-				String userInput = input.readFromUser();
-				processString(userInput);
-			}
-		} catch (Exception e) {
-			output.displayException(e);
+		processWelcome();
+		
+		while (true) {
+			String userInput = ui.readFromUser();
+			processCommand(userInput);
 		}
 	}
 	
-	public void processString(String userInput){
-		try{
+	/**
+	 * Processes command string and displays
+	 * messages and feedback to continue
+	 * interaction with user.
+	 * @param rawCommand
+	 * 			unprocessed command string
+	 */
+	public void processCommand(String rawCommand){
+		try {
 			Command command;
 			Result result;
+			CommandType commandType;
 			
-			command = new CommandImpl(userInput);
-			result = executeCommand(command);
-			output.displayResult(result);
+			command = parser.parse(rawCommand);
+			commandType = command.getCommandType();
+			
+			if (isValidCommandType(commandType)){
+				result = executeCommand(command);
+				commandType = result.getCommandType();
+				
+				if (isValidCommandType(commandType)){
+					ui.displayResult(result);
+				} else {
+					ui.displayError(result.getMessage());
+				}
+			} else {
+				ui.displayError(command.getMessage());
+			}
 		} catch (Exception e) {
-			output.displayException(e);
+			ui.displayError(MSG_ERROR_UNABLE_TO_START_LDO);
 		}
+	}
+	
+	public void processWelcome() {
+		try {
+			Command command = parser.parse(COMMAND_SHOW_TODAY);
+			Result result = executeCommand(command);
+			ui.displayWelcome(result);
+		} catch (Exception e) {
+			ui.displayError(MSG_ERROR_UNABLE_TO_START_LDO);
+		}
+	}
+	
+	private boolean isValidCommandType(CommandType commandType){
+		switch (commandType){
+			case CREATE:
+			case DELETE:
+			case UPDATE:
+			case RETRIEVE:
+			case SEARCH:
+			case HELP:
+			case UNDO:
+			case EXIT:
+			case SYNC:
+				return true;
+			case INVALID:
+			default:
+				return false;
+		}
+	}
+	
+	/**
+	 * Shows exit message and exits the system
+	 */
+	private void terminate(){
+		ui.displayExit();
+		System.exit(0);
+	}
+	
+	private Result GCal(){
+		String GCalAuthURL = logic.getGCalAuthURL();
+		ui.displayMessage(String.format(MSG_GCAL_AUTH_URL, GCalAuthURL));
+		
+		String userGCalAuthKey = ui.readFromUser();
+		return logic.syncGCal(userGCalAuthKey);
 	}
 	
 	/**
@@ -101,22 +166,29 @@ public class Controller {
 	 */
 	Result executeCommand(Command command) throws Exception {
 		CommandType commandType = command.getCommandType();
-		String primaryOperand = command.getPrimaryOperand();
-		Iterator<AdditionalArgument> iterator = command.getAdditionalArguments();
 		
 		switch (commandType) {
 			case CREATE:
-				return logic.createTask(primaryOperand, iterator);
+				return logic.createTask(command);
 			case DELETE:
-				return logic.deleteTask(primaryOperand, iterator);
+				return logic.deleteTask(command);
 			case UPDATE:
-				return logic.updateTask(primaryOperand, iterator);
+				return logic.updateTask(command);
 			case RETRIEVE:
-				return logic.retrieveTask(primaryOperand, iterator);
+				return logic.showTask(command);
 			case SEARCH:
-				return logic.retrieveTask(primaryOperand, iterator);
+				return logic.searchTask(command);
+			case HELP:
+				return logic.showHelp(command);
+			case UNDO:
+				return logic.undoTask();
+			case EXIT:
+				terminate();
+			case SYNC:
+				return GCal();
+			case INVALID:
 			default:
-				throw new Exception("Invalid command.");
+				throw new Error("Invalid command type.");
 		}
 	}
 }

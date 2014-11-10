@@ -10,8 +10,11 @@ import java.util.Iterator;
  * 
  */
 public interface Command {
+
+	// The list of acceptable Command types
 	public enum CommandType {
-		CREATE, UPDATE, DELETE, RETRIEVE, SYNC, SEARCH, EXIT, INVALID
+		CREATE, UPDATE, DELETE, RETRIEVE, SYNC, SEARCH, HELP, UNDO, EXIT,
+		INVALID
 	};
 
 	/**
@@ -41,6 +44,17 @@ public interface Command {
 	public String getPrimaryOperand();
 
 	/**
+	 * Gets the message field of the command.
+	 * 
+	 * The message field should only be used when the commandType is INVALID.
+	 * The message will then contain the error message explaining why is the
+	 * command invalid.
+	 * 
+	 * @return A string containing the message
+	 */
+	public String getMessage();
+
+	/**
 	 * Gets an iterator to iterate through all the additional arguments received
 	 * from the user.
 	 * 
@@ -48,4 +62,21 @@ public interface Command {
 	 *         arguments
 	 */
 	public Iterator<AdditionalArgument> getAdditionalArguments();
+
+	/**
+	 * Displays the contents of the command class in the following format:
+	 * 
+	 * user input:\t <userInput>
+	 * command type:\t<commandType>
+	 * primary operand:\t<primaryOp>
+	 * message:\t<message>
+	 * additional arguments:
+	 * <additional argument>
+	 * <additional argument>
+	 * 
+	 * @return a string object containing the contents of the command object in
+	 *         the format specified
+	 */
+	@Override
+	public String toString();
 }
