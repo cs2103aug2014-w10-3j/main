@@ -47,7 +47,8 @@ public class DBConfig {
 	 * @param types The types of database that the type
 	 * of class has
 	 */
-	public DBConfig(String className, String[] type) {
+	public DBConfig(String className, String[] types) {
+		this.id = configList.size();
 		this.className = className;
 		this.type = type;
 	}
