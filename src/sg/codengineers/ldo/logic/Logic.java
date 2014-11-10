@@ -3,8 +3,10 @@ package sg.codengineers.ldo.logic;
 import java.io.IOException;
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 import sg.codengineers.ldo.db.Database;
@@ -31,6 +33,7 @@ public class Logic {
 	private List<Task> _taskList;
 	private Stack<List<Task>> _listStack;
 	private Stack<Command> _commandStack;
+	private Stack<Map<Integer, Integer>> _mapStack;
 	private boolean _isInitialized = false;
 
 	private Handler createHandler, searchHandler, updateHandler, deleteHandler,
@@ -94,6 +97,7 @@ public class Logic {
 		_listStack = new Stack<List<Task>>();
 		_listStack.push(new ArrayList<Task>(_taskList));
 		_commandStack = new Stack<Command>();
+		_mapStack = new Stack<Map<Integer, Integer>>();
 	}
 
 	public Result createTask(Command command) throws IOException {
@@ -107,6 +111,7 @@ public class Logic {
 					TaskImpl.CLASS_NAME);
 			_listStack.push(new ArrayList<Task>(_taskList));
 			_commandStack.push(command);
+			_mapStack.push(new HashMap<Integer, Integer>(Handler.indexMap));
 		} catch (Exception e) {
 			if (DEBUG) {
 				e.printStackTrace();
@@ -133,6 +138,7 @@ public class Logic {
 			}
 			_listStack.push(new ArrayList<Task>(_taskList));
 			_commandStack.push(command);
+			_mapStack.push(new HashMap<Integer, Integer>(Handler.indexMap));
 		} catch (Exception e) {
 			if(DEBUG){
 				e.printStackTrace();
@@ -156,7 +162,11 @@ public class Logic {
 					TaskImpl.CLASS_NAME);
 			_listStack.push(new ArrayList<Task>(_taskList));
 			_commandStack.push(command);
+			_mapStack.push(new HashMap<Integer, Integer>(Handler.indexMap));
 		} catch (Exception e) {
+			if(DEBUG){
+				e.printStackTrace();
+			}
 			return new ResultImpl(CommandType.INVALID,
 					"Cannot update task with " + command.getUserInput(),
 					new Time(System.currentTimeMillis()));
@@ -209,6 +219,10 @@ public class Logic {
 			userInput = _commandStack.pop().getUserInput();
 		}
 		Task task = null;
+		Handler.indexMap.clear();
+		if(!_mapStack.isEmpty()){
+			Handler.indexMap.putAll(_mapStack.pop());
+		}
 		return new ResultImpl(CommandType.UNDO, userInput, new Time(
 				System.currentTimeMillis()), task);
 	}
