@@ -69,6 +69,7 @@ public class Controller {
 	 * 			true if the unit is under testing
 	 */
 	Controller(boolean stub){
+		assert (stub == true);
 		logic = new LogicStub();
 	}
 	
